@@ -9,21 +9,20 @@ dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
 article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
+figure, figcaption, footer, header,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
     margin: 0;
     padding: 0;
     border: 0;
     font-size: 100%;
-    font: inherit;
     vertical-align: baseline;
     box-sizing: border-box;
 }
 
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
+footer, header, menu, nav, section {
     display: block;
 }
 body {
@@ -37,7 +36,6 @@ blockquote, q {
 }
 blockquote:before, blockquote:after,
 q:before, q:after {
-    content: '';
     content: none;
 }
 table {
@@ -46,12 +44,23 @@ table {
 }
 
 /************* Main styles *************/
+.hidden {
+    visibility: hidden;
+}
 .wrap {
     width: 100%;
     max-width: 400px;
-    margin: 0 auto;
+    margin: 10px auto 0 auto;
     /*padding: 60px;*/
     /*background: url("img/grid_s.png") no-repeat;*/
+    font-family: Arial, sans-serif;
+}
+#gameInfo .playersName{
+    display: inline-block;
+}
+#gameInfo label {
+    display: block;
+    margin: 10px 0;
 }
 #play_field {
     width: 400px;
@@ -65,32 +74,27 @@ table {
     text-align: center;
     vertical-align: middle;
     font-size: 60px;
-    line-height: 0em;
+    /*line-height: 0em;*/
     cursor: pointer;
 }
 #start_button {
     display: block;
     width: 30%;
     height: 80px;
-    margin: 0 auto;
-    margin-top: 50px;
+    margin: 50px auto 0;
     font-size: 20px;
 }
 .cell.cross{
-    background-image: url("../img/cross_s.png");
-    background-position: center;
-    background-repeat: no-repeat;
+    /*background: url("../img/cross_s.png") no-repeat center;*/
 }
 .cell.nought{
-    background-image: url("../img/nought_s.png");
-    background-position: center;
-    background-repeat: no-repeat;
+    /*background: url("../img/nought_s.png") no-repeat center;*/
 }
 .status {
     display: block;
     text-align: left;
-    height: 80px;
-    font-size: 30px;
+    height: 30px;
+    font-size: 20px;
     /*line-height: 80px;*/
 }
 .crossWin {

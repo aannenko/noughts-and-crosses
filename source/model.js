@@ -92,7 +92,7 @@ ComputerPlayer.prototype = Object.create(Player.prototype);
 ComputerPlayer.prototype.constructor = ComputerPlayer;
 
 
-function Game(humanPlayersCount, firstPlayerName, secondPlayerName) {
+function Game(humanPlayer, firstPlayerName, secondPlayerName) {
     let self = this;
     let currentPlayerIndex = 0;
     let gameStatuses = ['Playing', 'Winner', 'Tie'];
@@ -130,7 +130,7 @@ function Game(humanPlayersCount, firstPlayerName, secondPlayerName) {
         playersArr.push(new Player(firstPlayerName, 'X', field));
 
         let secondPlayer;
-        if (humanPlayersCount == 2) {
+        if (humanPlayer) { //true
             secondPlayer = new Player(secondPlayerName, 'O', field);
         } else {
             secondPlayer = new ComputerPlayer('Computer', 'O', field);

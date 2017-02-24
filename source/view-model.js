@@ -8,7 +8,7 @@ function ViewModel() {
     this.init = function () {
         let firstTestPlayer = 'First';
         let secondTestPlayer = 'Second';
-        this.game = new Game(1, firstTestPlayer, secondTestPlayer);
+        this.game = new Game(false, firstTestPlayer, secondTestPlayer);
         this.gameInfo = new GameInfo(this.game);
         this.game.startTurn();
         this.finishTurn = function (id) {

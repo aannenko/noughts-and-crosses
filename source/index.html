@@ -11,7 +11,28 @@
 </head>
 <body>
     <div class="wrap">
-        <p class="status">Game status:  <span id="gameStatus"></span></p>
+        <div id="gameInfo">
+            <div class="playersName">
+                <p>X player</p>
+                <label>
+                    <input id="firstPlayerName" type="text" title="Your name" placeholder="Input your name">
+                </label>
+            </div>
+            <div class="playersName">
+                <p>O player</p>
+                <label>
+                    <!--<input id="secondPlayerName" class="hidden" type="text" title="Opponent's name" placeholder="Input opponent's name">-->
+                    <input id="secondPlayerName" type="text" title="Opponent's name" placeholder="Computer" readonly>
+                </label>
+            </div>
+
+            <label>
+                <input id="humanChecker" type="checkbox" title="Play with human">Play with human?
+            </label>
+
+            <p class="status">Game status:  <span id="gameStatus"></span></p>
+        </div>
+
         <table id="play_field">
             <tr id="top">
                 <td class="cell" id="0" ></td>

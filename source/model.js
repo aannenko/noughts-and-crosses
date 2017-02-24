@@ -9,8 +9,8 @@ function Field() {
     let cellsCount = 9;
     this.fieldCells = [];
 
-    this.updateCell = function (id, symbol) {
-        return self.fieldCells[id] != null ? false : self.fieldCells[id] = symbol;
+    this.updateCell = function (cellNum, symbol) {
+        return self.fieldCells[cellNum] != null ? false : self.fieldCells[cellNum] = symbol;
     };
 
     this.getEmptyCells = function () {
@@ -36,23 +36,23 @@ function WinnerChecker(field) {
     ];
     let currentWinCombination = null;
 
-    this.getWinner = function (id, symbol) {
+    this.getWinner = function (cellNum, symbol) {
         let winArray = [];
         for (let i = 0; i < winCombinations.length; i++) {
-            if (winCombinations[i].indexOf(id) != -1) {
+            if (winCombinations[i].indexOf(cellNum) != -1) {
                 winArray.push(winCombinations[i]);
             }
         }
-        for (let key in winArray) {
+        for (let winSegment in winArray) {
             let isWinnerFound = true;
-            for (let i = 0; i < winArray[key].length; i++) {
-                if (field.fieldCells[winArray[key][i]] != symbol) {
+            for (let i = 0; i < winArray[winSegment].length; i++) {
+                if (field.fieldCells[winArray[winSegment][i]] != symbol) {
                     isWinnerFound = false;
                     break;
                 }
             }
             if (isWinnerFound) {
-                return currentWinCombination = winArray[key];
+                return currentWinCombination = winArray[winSegment];
             }
         }
         return false;
@@ -66,8 +66,8 @@ function Player(name, symbol, field) {
     this.myGame = null;
 
     this.startMove = function () { };
-    this.finishMove = function (id) {
-        return this.gameField.updateCell(id, this.playerSymbol);
+    this.finishMove = function (cellNum) {
+        return this.gameField.updateCell(cellNum, this.playerSymbol);
     };
 }
 
@@ -75,8 +75,8 @@ function ComputerPlayer(name, symbol, field) {
     Player.apply(this, arguments);
 
     this.startMove = function () {
-        let identifier = cellFinder();
-        this.myGame.finishTurn(identifier);
+        let computerCellNum = cellFinder();
+        this.myGame.finishTurn(computerCellNum);
     };
 
     function cellFinder() {
@@ -110,15 +110,15 @@ function Game(humanPlayer, firstPlayerName, secondPlayerName) {
         players[currentPlayerIndex].startMove();
     };
 
-    this.finishTurn = function (id) {
-        if (self.currentStatus == gameStatuses[0] && self.currentPlayer.finishMove(id)) {
-            if (winnerChecker.getWinner(id, self.currentPlayer.playerSymbol)) {
+    this.finishTurn = function (cellNum) {
+        if (self.currentStatus == gameStatuses[0] && self.currentPlayer.finishMove(cellNum)) {
+            if (winnerChecker.getWinner(cellNum, self.currentPlayer.playerSymbol)) {
                 self.currentStatus = gameStatuses[1];
             } else if (!field.areCellsAvailable()) {
                 self.currentStatus = gameStatuses[2];
             } else {
                 currentPlayerIndex = currentPlayerIndex == 0 ? 1 : 0;
-                self.currentPlayer = players[currentPlayerIndex];//??
+                self.currentPlayer = players[currentPlayerIndex];
                 self.startTurn();
             }
         }
@@ -129,7 +129,7 @@ function Game(humanPlayer, firstPlayerName, secondPlayerName) {
         playersArr.push(new Player(firstPlayerName, 'X', field));
 
         let secondPlayer;
-        if (humanPlayer) { //true
+        if (humanPlayer) {
             secondPlayer = new Player(secondPlayerName, 'O', field);
         } else {
             secondPlayer = new ComputerPlayer('Computer', 'O', field);

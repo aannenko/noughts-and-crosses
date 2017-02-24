@@ -26,7 +26,7 @@ function View() {
     }
 
     function changeCurrentStatus(){
-        statusField.innerHTML = viewModel.getCurrentStatus();
+        statusField.innerHTML = viewModel.gameInfo.getCurrentStatus();
     }
 
     function setCurrentCell() {
@@ -37,12 +37,5 @@ function View() {
             }
             occupiedCells[i] = fieldCellsArr[i];
         }
-    }
-}
-
-function GameInit() {
-    let view = new View();
-    this.start = function () {
-        return view.init();
     }
 }

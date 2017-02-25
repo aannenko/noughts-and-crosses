@@ -36,7 +36,7 @@ function WinnerChecker(field){
     ];
 
     this.getWinner = function (cellNum, symbol){
-        let currentWinCombination = null;
+        // let currentWinCombination = null;
         let winArray = [];
         for (let i = 0; i < winCombinations.length; i++){
             if (winCombinations[i].indexOf(cellNum) != -1) {
@@ -52,7 +52,8 @@ function WinnerChecker(field){
                 }
             }
             if (isWinnerFound) {
-                return currentWinCombination = winArray[winSegment];
+                // return currentWinCombination = winArray[winSegment];
+                return winArray[winSegment];
             }
         }
         return false;

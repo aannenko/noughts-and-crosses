@@ -7,6 +7,8 @@
 function View(){
     let cells = document.getElementsByClassName("cell");
     let statusField = document.getElementById("gameStatus");
+
+
     let viewModel = new ViewModel();
     let occupiedCells = [];
 

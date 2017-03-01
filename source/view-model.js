@@ -5,15 +5,28 @@
 /*********************** View-Model **********************/
 "use strict";
 function ViewModel(){
+    this.game = null;
+
+    this.getPlayersArray = function () {
+        let array = [];
+        let factory = new Factory();
+        array.push(factory.createPlayer('human', 'First', 'X'));// (type, name, symbol);
+        // array.push(factory.createPlayer('human', 'Second', 'Z'));
+        array.push(factory.createPlayer('computer', 'Computer', 'O'));
+        return array;
+    };
+
     this.init = function(){
-        let firstTestPlayer = 'First';
-        let secondTestPlayer = 'Second';
-        let game = new Game(false, firstTestPlayer, secondTestPlayer);
-        this.gameInfo = new GameInfo(game);
-        game.startTurn();
-        this.finishTurn = function(id){
-            game.finishTurn(id);
-        };
+        let playersArray = this.getPlayersArray();
+        this.game = new Game(playersArray);
+        this.gameInfo = new GameInfo(this.game);
+        this.game.startTurn();
+    };
+
+    this.finishTurn = function(id){
+        if(this.game){
+            this.game.finishTurn(id);
+        }
     };
 }
 
@@ -23,11 +36,7 @@ function GameInfo(game){
     };
     this.getCurrentStatus = function(){
         let gameStatus = game.currentStatus;
-        let playerName = gameStatus == 'Tie' ? 'It' : game.currentPlayer.playerName;
+        let playerName = gameStatus == 'Tie' ? 'It' : game.iterator.getCurrent().playerName;
         return  playerName + ' is ' + gameStatus;
-    }
+    };
 }
-
-
-
-

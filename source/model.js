@@ -7,9 +7,10 @@
 
 let singletonField = (function(){
     let instance;
+
     function createInstance(){
         return new Field();
-    }
+    };
 
     function Field(){
         let self = this;
@@ -33,7 +34,7 @@ let singletonField = (function(){
         this.areCellsAvailable = function(){
             return self.getEmptyCells().length > 0;
         }
-    }
+    };
 
     return {
         getInstance: function(){
@@ -42,7 +43,7 @@ let singletonField = (function(){
             }
             return instance;
         }
-    }
+    };
 })();
 
 function WinnerChecker(field){
@@ -72,22 +73,20 @@ function WinnerChecker(field){
             }
         }
         return false;
-    }
-}
+    };
+};
 
 function Player(name, symbol){
-    this.gameField = singletonField.getInstance();
     this.playerName = name;
     this.playerSymbol = symbol;
 
     this.startMove = function(game){ };
     this.finishMove = function (cellNum){
-        return this.gameField.updateCell(cellNum, this.playerSymbol);
+        return singletonField.getInstance().updateCell(cellNum, this.playerSymbol);
     };
-}
+};
 
 function ComputerPlayer(name, symbol){
-    let self = this;
     Player.apply(this, arguments);
 
     this.startMove = function(game){
@@ -96,12 +95,12 @@ function ComputerPlayer(name, symbol){
     };
 
     function cellFinder(){
-        let emptyCellsArr = self.gameField.getEmptyCells();
+        let emptyCellsArr = singletonField.getInstance().getEmptyCells();
         let min = 0;
         let max = emptyCellsArr.length > 0 ? emptyCellsArr.length - 1 : 0;
         let random = Math.floor(Math.random() * (max - min + 1)) + min;
         return emptyCellsArr[random];
-    }
+    };
 }
 
 ComputerPlayer.prototype = Object.create(Player.prototype);
@@ -109,59 +108,63 @@ ComputerPlayer.prototype.constructor = ComputerPlayer;
 
 function Iterator(array) {
     let index = 0;
+
     this.getCurrent = function(){
         return array[index];
     };
+
     this.moveNext = function(){
         index = index == array.length-1 ? 0 : ++index;
-    }
-}
+    };
+};
 
 function Game(players){
     let self = this;
-    this.field = singletonField.getInstance();
-    this.iterator = new Iterator(players);
-    let winnerChecker = new WinnerChecker(self.field);
     let gameStatuses = ['Playing', 'Winner', 'Tie'];
+    let field = singletonField.getInstance();
+    let winnerChecker = new WinnerChecker(field);
+    let iterator = new Iterator(players);
 
     this.currentStatus = gameStatuses[0];
 
+    this.currentPlayerName = function(){
+        return iterator.getCurrent().playerName;
+    };
+
     this.getFieldCells = function(){
-        return self.field.fieldCells.slice(0);
+        return field.fieldCells.slice(0);
     };
 
     this.startTurn = function(){
-        self.iterator.getCurrent().startMove(self);
+        iterator.getCurrent().startMove(self);
     };
 
     this.finishTurn = function(cellNum){
-        if (self.currentStatus == gameStatuses[0] && self.iterator.getCurrent().finishMove(cellNum)) {
-            if (winnerChecker.getWinner(cellNum, self.iterator.getCurrent().playerSymbol)) {
+        if (self.currentStatus == gameStatuses[0] && iterator.getCurrent().finishMove(cellNum)) {
+            if (winnerChecker.getWinner(cellNum, iterator.getCurrent().playerSymbol)) {
                 self.currentStatus = gameStatuses[1];
-            } else if (!self.field.areCellsAvailable()) {
+            } else if (!field.areCellsAvailable()) {
                 self.currentStatus = gameStatuses[2];
             } else {
-                self.iterator.moveNext();
+                iterator.moveNext();
                 self.startTurn();
             }
         }
     };
-}
+};
 
 function Factory(){
-    this.createPlayer = function(type, name, symbol){
-        let player = '';
-        switch (type) {
-            case 'human':
-                player = new Player(name, symbol);
-                break;
-            case 'computer':
-                player = new ComputerPlayer(name, symbol);
-                break;
-            default:
-                return null;
+    let playerTypes = {
+        'human' : 'Player',
+        'computer' : 'ComputerPlayer'
+    };
+
+    this.createPlayer = function(type, name, symbol) {
+        let player = null;
+        type = type.toLowerCase();
+        if(playerTypes[type] && playerTypes[type] !== undefined){
+            player = new window[playerTypes[type]](name, symbol);
         }
         return player;
-    }
-}
-Factory.prototype.constructor = Factory;
+    };
+};

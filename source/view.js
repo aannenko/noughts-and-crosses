@@ -7,8 +7,6 @@
 function View(){
     let cells = document.getElementsByClassName("cell");
     let statusField = document.getElementById("gameStatus");
-
-
     let viewModel = new ViewModel();
     let occupiedCells = [];
 
@@ -17,21 +15,22 @@ function View(){
         setListenersToCells();
         changeCurrentStatus();
     };
+
     function setListenersToCells(){
         for (let i = 0; i < cells.length; i++) {
             cells[i].addEventListener("click", function(){
                 viewModel.finishTurn(i);
-                setCurrentCell();
+                updateCellContent();
                 changeCurrentStatus();
             });
         }
-    }
+    };
 
     function changeCurrentStatus(){
         statusField.innerHTML = viewModel.gameInfo.getCurrentStatus();
-    }
+    };
 
-    function setCurrentCell(){
+    function updateCellContent(){
         let fieldCellsArr = viewModel.gameInfo.getFieldCells();
         for (let i = 0; i < fieldCellsArr.length; i++) {
             if (fieldCellsArr[i] != undefined && occupiedCells[i] != fieldCellsArr[i]) {
@@ -39,5 +38,5 @@ function View(){
             }
             occupiedCells[i] = fieldCellsArr[i];
         }
-    }
-}
+    };
+};

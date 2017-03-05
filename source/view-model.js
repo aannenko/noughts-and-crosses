@@ -11,8 +11,7 @@ function ViewModel(){
         let array = [];
         let factory = new Factory();
         array.push(factory.createPlayer('human', 'First', 'X'));
-        array.push(factory.createPlayer('human', 'Second', 'Z'));
-        // array.push(factory.createPlayer('computer', 'Computer', 'O'));
+        array.push(factory.createPlayer('computer', 'Computer', 'O'));
         return array;
     };
 
@@ -37,7 +36,7 @@ function GameInfo(game){
 
     this.getCurrentStatus = function(){
         let gameStatus = game.currentStatus;
-        let playerName = gameStatus == 'Tie' ? 'It' : game.currentPlayerName();
+        let playerName = gameStatus == 'Tie' ? 'It' : game.getCurrentPlayerName();
         return  playerName + ' is ' + gameStatus;
     };
 };

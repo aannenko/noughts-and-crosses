@@ -127,7 +127,7 @@ function Game(players){
 
     this.currentStatus = gameStatuses[0];
 
-    this.currentPlayerName = function(){
+    this.getCurrentPlayerName = function(){
         return iterator.getCurrent().playerName;
     };
 

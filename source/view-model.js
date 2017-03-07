@@ -4,14 +4,23 @@
 
 /*********************** View-Model **********************/
 "use strict";
+function GamePreset(){
+    this.players = [
+        {type : 'human', name : 'First', symbol : 'X'},
+        {type : 'computer', name : 'Computer', symbol : 'O'}
+    ];
+};
+
 function ViewModel(){
     this.game = null;
 
     this.getPlayersArray = function () {
         let array = [];
         let factory = new Factory();
-        array.push(factory.createPlayer('human', 'First', 'X'));
-        array.push(factory.createPlayer('computer', 'Computer', 'O'));
+        let gamePreset = new GamePreset();
+        for(let i = 0; i < gamePreset.players.length; i++){
+            array.push(factory.createPlayer(gamePreset.players[i].type, gamePreset.players[i].name, gamePreset.players[i].symbol));
+        }
         return array;
     };
 

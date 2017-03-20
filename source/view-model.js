@@ -11,6 +11,18 @@ function GamePreset(){
     ];
 };
 
+function GameInfo(game){
+    this.getFieldCells = function(){
+        return game.getFieldCells();
+    };
+
+    this.getCurrentStatus = function(){
+        let gameStatus = game.currentStatus;
+        let playerName = gameStatus == 'Tie' ? 'It' : game.getCurrentPlayerName();
+        return  playerName + ' is ' + gameStatus;
+    };
+};
+
 function ViewModel(){
     this.game = null;
 
@@ -18,9 +30,10 @@ function ViewModel(){
         let array = [];
         let factory = new Factory();
         let gamePreset = new GamePreset();
-        for(let i = 0; i < gamePreset.players.length; i++){
-            array.push(factory.createPlayer(gamePreset.players[i].type, gamePreset.players[i].name, gamePreset.players[i].symbol));
-        }
+
+        gamePreset.players.forEach(function(item){
+           array.push(factory.createPlayer(item.type, item.name, item.symbol));
+        });
         return array;
     };
 
@@ -35,17 +48,5 @@ function ViewModel(){
         if(this.game){
             this.game.finishTurn(id);
         }
-    };
-};
-
-function GameInfo(game){
-    this.getFieldCells = function(){
-        return game.getFieldCells();
-    };
-
-    this.getCurrentStatus = function(){
-        let gameStatus = game.currentStatus;
-        let playerName = gameStatus == 'Tie' ? 'It' : game.getCurrentPlayerName();
-        return  playerName + ' is ' + gameStatus;
     };
 };

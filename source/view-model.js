@@ -4,14 +4,36 @@
 
 /*********************** View-Model **********************/
 "use strict";
+function GamePreset(){
+    this.players = [
+        {type : 'human', name : 'First', symbol : 'X'},
+        {type : 'computer', name : 'Computer', symbol : 'O'}
+    ];
+};
+
+function GameInfo(game){
+    this.getFieldCells = function(){
+        return game.getFieldCells();
+    };
+
+    this.getCurrentStatus = function(){
+        let gameStatus = game.currentStatus;
+        let playerName = gameStatus == 'Tie' ? 'It' : game.getCurrentPlayerName();
+        return  playerName + ' is ' + gameStatus;
+    };
+};
+
 function ViewModel(){
     this.game = null;
 
     this.getPlayersArray = function () {
         let array = [];
         let factory = new Factory();
-        array.push(factory.createPlayer('human', 'First', 'X'));
-        array.push(factory.createPlayer('computer', 'Computer', 'O'));
+        let gamePreset = new GamePreset();
+
+        gamePreset.players.forEach(function(item){
+           array.push(factory.createPlayer(item.type, item.name, item.symbol));
+        });
         return array;
     };
 
@@ -26,17 +48,5 @@ function ViewModel(){
         if(this.game){
             this.game.finishTurn(id);
         }
-    };
-};
-
-function GameInfo(game){
-    this.getFieldCells = function(){
-        return game.getFieldCells();
-    };
-
-    this.getCurrentStatus = function(){
-        let gameStatus = game.currentStatus;
-        let playerName = gameStatus == 'Tie' ? 'It' : game.getCurrentPlayerName();
-        return  playerName + ' is ' + gameStatus;
     };
 };

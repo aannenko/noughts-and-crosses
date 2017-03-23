@@ -18,18 +18,16 @@ function GameInfo(game){
 
 let gamePreset = {
     players: [
-        {playerId : '01', type : 'human', name : 'First', symbol : 'X'},
-        {playerId : '02', type : 'computer', name : 'Computer', symbol : 'O'}
+        {type : 'human', name : 'First', symbol : 'X'},
+        {type : 'computer', name : 'Computer', symbol : 'O'}
     ],
 
-    setPlayer: function(id, key, value){
+    setPlayer: function(key, value){
         this.players.forEach(function(item){
-            if(item.playerId == id){
-                for(let i in item){
-                    if(i == key && item.hasOwnProperty(i)){
-                        item[i] = value;
-                        break;
-                    }
+            for(let i in item){
+                if(i == key && item.hasOwnProperty(i)){
+                    item[i] = value;
+                    break;
                 }
             }
         });
@@ -42,20 +40,16 @@ let gamePreset = {
 
     addPlayer: function(type, name, symbol){
         let newPlayer = {
-            playerId: '0' + (this.players.length + 1),
             type: type,
             name: name,
             symbol: symbol
         };
-        // hardcode
-        //if (len < 6){
         this.players.splice(this.players.length, 0, newPlayer);
-        //}
     },
 
-    deletePlayer: function(id){
+    deletePlayer: function(name){
         for(let i = 0; i < this.players.length; i++){
-            if(this.players[i].playerId == id){
+            if(this.players[i].name == name){
                 this.players.splice(i, 1);
             }
         }

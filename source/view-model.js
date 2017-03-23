@@ -38,6 +38,27 @@ let gamePreset = {
 
     getPlayer: function(){
         return this.players;
+    },
+
+    addPlayer: function(type, name, symbol){
+        let newPlayer = {
+            playerId: '0' + (this.players.length + 1),
+            type: type,
+            name: name,
+            symbol: symbol
+        };
+        // hardcode
+        //if (len < 6){
+        this.players.splice(this.players.length, 0, newPlayer);
+        //}
+    },
+
+    deletePlayer: function(id){
+        for(let i = 0; i < this.players.length; i++){
+            if(this.players[i].playerId == id){
+                this.players.splice(i, 1);
+            }
+        }
     }
 };
 
@@ -49,7 +70,7 @@ function ViewModel(){
         let array = [];
         let factory = new Factory();
 
-        gamePreset.getPlayers.forEach(function(item){
+        gamePreset.getPlayer().forEach(function(item){
             array.push(factory.createPlayer(item.type, item.name, item.symbol));
         });
         return array;

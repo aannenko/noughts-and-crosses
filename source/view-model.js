@@ -18,7 +18,7 @@ function GameInfo(game){
 
 let gamePreset = {
     players: [
-        {type : 'human', name : 'First', symbol : 'X'},
+        {type : 'human', name : 'Player', symbol : 'X'},
         {type : 'computer', name : 'Computer', symbol : 'O'}
     ],
 

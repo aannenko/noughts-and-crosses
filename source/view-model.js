@@ -22,20 +22,14 @@ let gamePreset = {
         {type : 'computer', name : 'Computer', symbol : 'O'}
     ],
 
-    setPlayer: function(key, value){
-        this.players.forEach(function(item){
-            for(let i in item){
-                if(i == key && item.hasOwnProperty(i)){
-                    item[i] = value;
-                    break;
-                }
-            }
+    findPlayer: function(playerName){
+        return this.players.find(function(item){
+            return item.name == playerName;
         });
-        return this.players;
     },
 
-    getPlayer: function(){
-        return this.players;
+    updatePlayer: function(playerName, prop, value){
+        this.findPlayer(playerName)[prop] = value;
     },
 
     addPlayer: function(type, name, symbol){
@@ -64,7 +58,7 @@ function ViewModel(){
         let array = [];
         let factory = new Factory();
 
-        gamePreset.getPlayer().forEach(function(item){
+        gamePreset.players.forEach(function(item){
             array.push(factory.createPlayer(item.type, item.name, item.symbol));
         });
         return array;

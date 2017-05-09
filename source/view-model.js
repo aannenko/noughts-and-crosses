@@ -11,7 +11,7 @@ function GameInfo(game){
 
     this.getCurrentStatus = function(){
         let gameStatus = game.currentStatus;
-        let playerName = gameStatus == 'Tie' ? 'It' : game.getCurrentPlayerName();
+        let playerName = gameStatus === 'Tie' ? 'It' : game.getCurrentPlayerName();
         return  playerName + ' is ' + gameStatus;
     };
 };
@@ -20,11 +20,15 @@ let gamePreset = {
     players: [
         {type : 'human', name : 'Player', symbol : 'X'},
         {type : 'computer', name : 'Computer', symbol : 'O'}
+        // {type : 'human', name : 'Player2', symbol : 'O'}
     ],
+    rowsInField: 3,
+    columnsInField: 3,
+    winCombinationLength: 3,
 
     findPlayer: function(playerName){
         return this.players.find(function(item){
-            return item.name == playerName;
+            return item.name === playerName;
         });
     },
 
@@ -43,16 +47,18 @@ let gamePreset = {
 
     deletePlayer: function(name){
         for(let i = 0; i < this.players.length; i++){
-            if(this.players[i].name == name){
+            if(this.players[i].name === name){
                 this.players.splice(i, 1);
             }
         }
     }
 };
 
-
 function ViewModel(){
     this.game = null;
+    this.rowsInField = gamePreset.rowsInField;
+    this.columnsInField = gamePreset.columnsInField;
+    this.winCombinationLength = gamePreset.winCombinationLength;
 
     this.getPlayersArray = function () {
         let array = [];
@@ -64,17 +70,16 @@ function ViewModel(){
         return array;
     };
 
-    this.init = function(){
+    this.init = function(rows, columns){
         let playersArray = this.getPlayersArray();
-        this.game = new Game(playersArray);
+        this.game = new Game(playersArray, rows, columns, this.winCombinationLength);
         this.gameInfo = new GameInfo(this.game);
         this.game.startTurn();
     };
 
-    this.finishTurn = function(id){
+    this.finishTurn = function(row, col){
         if(this.game){
-            this.game.finishTurn(id);
+            this.game.finishTurn(row, col);
         }
     };
 };
-

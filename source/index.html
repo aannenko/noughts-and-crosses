@@ -11,7 +11,8 @@
 <body>
     <div class="wrap">
         <p class="status">Game status:  <span id="gameStatus"></span></p>
-        <table id="play_field">
+        <div id="play_field">
+            <!--
             <tr id="top">
                 <td class="cell" id="0" ></td>
                 <td class="cell" id="1" ></td>
@@ -27,13 +28,15 @@
                 <td class="cell" id="7" ></td>
                 <td class="cell" id="8" ></td>
             </tr>
-        </table>
+            -->
+        </div>
         <input id="start_button" type="button" value="Reload" onClick="window.location.reload()" />
     </div>
 
     <script>
         let view = new View();
         view.init();
+
     </script>
 </body>
 </html>

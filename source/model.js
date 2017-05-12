@@ -4,24 +4,34 @@
 
 /********************** Model **********************/
 "use strict";
+function GamePreset() {
+    this.players = [
+        {type: 'human', name: 'Player', symbol: 'X'},
+        {type: 'computer', name: 'Computer', symbol: 'O'}
+    ];
+    this.rows = 3;
+    this.columns = 3;
+    this.winningLineLength = 3;
+};
+
+let gamePreset = new GamePreset();
+
 let singletonField = (function(){
     let instance;
 
     function Field(rows, columns){
         let self = this;
+        this.fieldCells = createFieldCells();
 
-        this.fieldCells = [];
-
-        this.fieldCellsCreate = function(){
-            this.fieldCells = new Array(rows);
+        function createFieldCells(){
+            let cells = new Array(rows);
             for (let i = 0; i < rows; i++){
-                this.fieldCells[i] = new Array(columns);
+                cells[i] = new Array(columns);
             }
-            return this.fieldCells;
+            return cells;
         };
-        this.fieldCellsCreate();
 
-        this.updateCell = function(row, col, obj){
+        this.updateCell = function (row, col, obj) {
             if (self.fieldCells[row][col] === undefined) {
                 self.fieldCells[row][col] = obj;
                 return true;
@@ -46,11 +56,13 @@ let singletonField = (function(){
 
         this.areCellsAvailable = function(){
             return self.getEmptyCells().length > 0;
-        }
-    };
+        };
+    }
 
     return {
-        getInstance: function(rows, columns){
+        getInstance: function(){
+            let rows = gamePreset.rows;
+            let columns = gamePreset.columns;
             if(!instance){
                 instance = new Field(rows, columns);
             }
@@ -59,24 +71,25 @@ let singletonField = (function(){
     };
 })();
 
-function WinnerChecker(field, winCombinationLength){
-    let directions = [
+function WinnerChecker(){
+    let field = singletonField.getInstance();
+    let directionPairsList = [
         [0, 4], [1, 5], [2, 6], [3, 7]
     ];
 
-    this.getWinner = function(row, col, obj){
-        for (let i = 0; i < directions.length; i++) {
+    this.isWinnerFound = function(row, col, obj){
+        for (let i = 0; i < directionPairsList.length; i++) {
             let winArray = [];
             let currentCell = [{row: row, col: col, object: obj}];
             winArray.push(currentCell);
-            for (let j = 0; j < directions[i].length; j++) {
-                let nextGameCell = getNextCell(currentCell, directions[i][j]);
-                while (nextGameCell !== null) {
-                    winArray.push(nextGameCell);
-                    if (winArray.length === winCombinationLength){
+            for (let j = 0; j < directionPairsList[i].length; j++) {
+                let nextCell = getNextCell(currentCell, directionPairsList[i][j]);
+                while (nextCell !== null) {
+                    winArray.push(nextCell);
+                    if (winArray.length === gamePreset.winningLineLength){
                         return true;
                     }
-                    nextGameCell = getNextCell(nextGameCell, directions[i][j]);
+                    nextCell = getNextCell(nextCell, directionPairsList[i][j]);
                 }
             }
         }
@@ -84,41 +97,41 @@ function WinnerChecker(field, winCombinationLength){
     };
 
     function getNextCell(currentCell, direction){
-        let nextCell;
+        let next;
         switch(direction){
             case 0: /*up*/
-                nextCell = [{row: currentCell[0].row-1, col: currentCell[0].col, object: currentCell[0].object}];
+                next = [{row: currentCell[0].row-1, col: currentCell[0].col, object: currentCell[0].object}];
                 break;
             case 1: /*top right*/
-                nextCell = [{row: currentCell[0].row-1, col: currentCell[0].col+1, object: currentCell[0].object}];
+                next = [{row: currentCell[0].row-1, col: currentCell[0].col+1, object: currentCell[0].object}];
                 break;
             case 2: /*right*/
-                nextCell = [{row: currentCell[0].row, col: currentCell[0].col+1, object: currentCell[0].object}];
+                next = [{row: currentCell[0].row, col: currentCell[0].col+1, object: currentCell[0].object}];
                 break;
             case 3: /*down right*/
-                nextCell = [{row: currentCell[0].row+1, col: currentCell[0].col+1, object: currentCell[0].object}];
+                next = [{row: currentCell[0].row+1, col: currentCell[0].col+1, object: currentCell[0].object}];
                 break;
             case 4: /*down*/
-                nextCell = [{row: currentCell[0].row+1, col: currentCell[0].col, object: currentCell[0].object}];
+                next = [{row: currentCell[0].row+1, col: currentCell[0].col, object: currentCell[0].object}];
                 break;
             case 5: /*down left*/
-                nextCell = [{row: currentCell[0].row+1, col: currentCell[0].col-1, object: currentCell[0].object}];
+                next = [{row: currentCell[0].row+1, col: currentCell[0].col-1, object: currentCell[0].object}];
                 break;
             case 6: /*left*/
-                nextCell = [{row: currentCell[0].row, col: currentCell[0].col-1, object: currentCell[0].object}];
+                next = [{row: currentCell[0].row, col: currentCell[0].col-1, object: currentCell[0].object}];
                 break;
             case 7: /*top left*/
-                nextCell = [{row: currentCell[0].row-1, col: currentCell[0].col-1, object: currentCell[0].object}];
+                next = [{row: currentCell[0].row-1, col: currentCell[0].col-1, object: currentCell[0].object}];
                 break;
             default:
-                nextCell = null;
+                next = null;
                 break;
         }
 
-        if (nextCell !== null &&
-            isCellInField(nextCell) &&
-            field.fieldCells[nextCell[0].row][nextCell[0].col] === currentCell[0].object){
-            return nextCell;
+        if (next !== null &&
+            isCellInField(next) &&
+            field.fieldCells[next[0].row][next[0].col] === currentCell[0].object){
+            return next;
         } else {
             return null;
         }
@@ -140,7 +153,7 @@ function Player(name, symbol){
 
     this.startMove = function(game){ };
     this.finishMove = function(row, col){
-        return singletonField.getInstance(row, col).updateCell(row, col, this.playerSymbol);
+        return singletonField.getInstance().updateCell(row, col, this.playerSymbol);
     };
 };
 
@@ -148,12 +161,12 @@ function ComputerPlayer(name, symbol){
     Player.apply(this, arguments);
 
     this.startMove = function(game){
-        let computerCellNum = cellFinder();
-        game.finishTurn(computerCellNum.row, computerCellNum.col);
+        let randomCell = findRandomCell();
+        game.finishTurn(randomCell.row, randomCell.col);
     };
 
-    function cellFinder(){
-        let emptyCellsArr = singletonField.getInstance(/*row, col ???*/).getEmptyCells();//????
+    function findRandomCell(){
+        let emptyCellsArr = singletonField.getInstance().getEmptyCells();
         let min = 0;
         let max = emptyCellsArr.length > 0 ? emptyCellsArr.length - 1 : 0;
         let random = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -171,19 +184,55 @@ function Iterator(array) {
         return array[index];
     };
 
-    this.moveNext = function(){
-        index = index === array.length-1 ? 0 : ++index;
+    this.setNext = function(){
+        index = index === array.length - 1 ? 0 : ++index;
     };
 };
 
-function Game(players, rows, columns, winCombinationLength){
-    let self = this;
-    let gameStatuses = ['Playing', 'Winner', 'Tie'];
-    let field = singletonField.getInstance(rows, columns);
-    let winnerChecker = new WinnerChecker(field, winCombinationLength);
-    let iterator = new Iterator(players);
+function PlayersCreator() {
+    this.updatePlayer = function(playerName, prop, value){
+        gamePreset.players.find(function(item){
+            return item.name === playerName;
+        })[prop] = value;
+    };
 
-    this.currentStatus = gameStatuses[0];
+    this.addPlayer = function(type, name, symbol){
+        let newPlayer = {
+            type: type,
+            name: name,
+            symbol: symbol
+        };
+        gamePreset.players.splice(gamePreset.players.length, 0, newPlayer);
+    };
+
+    this.deletePlayer = function(name){
+        for(let i = 0; i < gamePreset.players.length; i++){
+            if(gamePreset.players[i].name === name){
+                gamePreset.players.splice(i, 1);
+            }
+        }
+    };
+}
+
+function Game(){
+    let self = this;
+    let gameStatusList = ['Playing', 'Winner', 'Tie'];
+    let field = singletonField.getInstance();
+    let winnerChecker = new WinnerChecker();
+    let iterator = new Iterator(getPlayersArray());
+
+    function getPlayersArray(){
+        let array = [];
+        let factory = new Factory();
+        let players = gamePreset.players.slice(0);
+
+        players.forEach(function(item){
+            array.push(factory.createPlayer(item.type, item.name, item.symbol));
+        });
+        return array;
+    };
+
+    this.currentStatus = gameStatusList[0];
 
     this.getCurrentPlayerName = function(){
         return iterator.getCurrent().playerName;
@@ -198,13 +247,13 @@ function Game(players, rows, columns, winCombinationLength){
     };
 
     this.finishTurn = function(row, col){
-        if (self.currentStatus === gameStatuses[0] && iterator.getCurrent().finishMove(row, col)) {
-            if (winnerChecker.getWinner(row, col, iterator.getCurrent().playerSymbol)) {
-                self.currentStatus = gameStatuses[1];
+        if (self.currentStatus === gameStatusList[0] && iterator.getCurrent().finishMove(row, col)) {
+            if (winnerChecker.isWinnerFound(row, col, iterator.getCurrent().playerSymbol)) {
+                self.currentStatus = gameStatusList[1];
             } else if (!field.areCellsAvailable()) {
-                self.currentStatus = gameStatuses[2];
+                self.currentStatus = gameStatusList[2];
             } else {
-                iterator.moveNext();
+                iterator.setNext();
                 self.startTurn();
             }
         }

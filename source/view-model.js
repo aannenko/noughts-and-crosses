@@ -7,8 +7,8 @@
 function ViewModel(){
     let game = null;
 
-    this.rowsPreset = gamePreset.rows;
-    this.columnsPreset = gamePreset.columns;
+    this.rowsPreset = singletonGameDataManager.getInstance().getRows();
+    this.columnsPreset = singletonGameDataManager.getInstance().getColumns();
 
     this.init = function(){
         game = new Game();

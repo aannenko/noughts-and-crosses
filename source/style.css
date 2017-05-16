@@ -61,12 +61,14 @@ table {
     height: 100%;
 }
 #play_field td {
-    width: 30%;
-    height: 30%;
+    max-width: 30%;
+    min-width: 50px;
+    max-height: 30%;
+    min-height: 50px;
     border: 1px solid #000;
     text-align: center;
     vertical-align: middle;
-    font-size: 60px;
+    font-size: 3em;
     /*line-height: 0em;*/
     cursor: pointer;
 }

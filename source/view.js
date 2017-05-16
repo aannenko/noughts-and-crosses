@@ -12,6 +12,7 @@ function View(){
     this.init = function(){
         let rowsUserSet = viewModel.rowsPreset;
         let columnsUserSet = viewModel.columnsPreset;
+
         viewModel.init();
         createPlayField(rowsUserSet, columnsUserSet);
         createOccupiedCells(rowsUserSet, columnsUserSet);
@@ -38,7 +39,7 @@ function View(){
         }
     }
 
-    function createOccupiedCells(rows, columns) {
+    function createOccupiedCells(rows, columns){
         let arr = new Array(rows);
         for (let i = 0; i < rows; i++){
             arr[i] = new Array(columns);
@@ -75,4 +76,4 @@ function View(){
         let statusField = document.getElementById("gameStatus");
         statusField.innerHTML = viewModel.getCurrentStatus();
     }
-}   
+}

@@ -9,117 +9,146 @@ let playerTypes = {
     'computer' : 'ComputerPlayer'
 };
 
-let singletonGameDataManager = (function(){
+let singletonGameDataManager;
+singletonGameDataManager = (function () {
     let instance;
 
     function GameDataManager() {
-        let players = [
-            {type: 'human', name: 'Player', symbol: 'X'},
-            {type: 'computer', name: 'Computer', symbol: 'O'}
+        let symbolCollection = [
+            'X', 'O', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
+            'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z'
         ];
 
-        let statusList = ['Playing', 'Winner', 'Tie'];
+        let players = [
+            {type: 'human', name: 'Player', symbol: symbolCollection[0]},
+            {type: 'computer', name: 'Computer', symbol: symbolCollection[1]}
+        ];
 
-        let _rows = 5;
-        let _columns = 4;
+        let _rows = 3;
+        let _columns = 3;
         let _winLength = 3;
 
-        this.getStatusList = function(){
-            return statusList;
-        };
+        let availableSymbolsList = (function(){
+            let collection = symbolCollection.slice(0);
+            for (let j = 0; j < players.length; j++) {
+                collection.splice(collection.indexOf(players[j].symbol), 1);
+            }
+            return collection;
+        })();
 
-        this.getRows = function(){
+        this.getRows = function () {
             return _rows;
         };
 
-        this.getColumns = function(){
+        this.getColumns = function () {
             return _columns;
         };
 
-        this.getWinLength = function(){
+        this.getWinLength = function () {
             return _winLength;
         };
 
-        this.setRows = function(rows){
-            if (Number.isInteger(rows) && rows > 2 && rows <= 10){
+        this.setRows = function (rows) {
+            if (Number.isInteger(rows) && rows > 2 && rows <= 10) {
                 _rows = rows;
                 validateWinLength(rows);
             }
         };
 
-        this.setColumns = function(columns){
+        this.setColumns = function (columns) {
             if (Number.isInteger(columns) && columns > 2 && columns <= 10) {
                 _columns = columns;
                 validateWinLength(columns);
             }
         };
 
-        this.setWinLength = function(winLength){
+        this.setWinLength = function (winLength) {
             if (Number.isInteger(winLength) && winLength > 2 && winLength <= getDiagonal()) {
                 _winLength = winLength;
             }
         };
 
-        this.getPlayerList = function(){
+        this.getPlayerList = function () {
             return players.slice(0);
         };
 
-        this.updatePlayer = function(name, prop, value){
+        this.updatePlayer = function (name, prop, value) {
+            let oldPlayerSymbol;
+            prop = prop.toLowerCase();
+
             if (prop !== 'type') {
-                players.find(function(item) {
+                let player = players.find(function (item){
                     return item.name === name;
-                })[prop] = value;
+                });
+                if (player === undefined) {
+                    return;
+                }
+                oldPlayerSymbol = player.symbol;
+                player[prop] = value;
+            }
+            if (prop === 'symbol') {
+                availableSymbolsList.splice(availableSymbolsList.indexOf(value), 1);
+                availableSymbolsList.push(oldPlayerSymbol);
             }
         };
 
         this.addPlayer = function(type, name, symbol){
+            let tempName = name;
+            let index = 1;
             type = type.toLowerCase();
-            if (canAddPlayer() && playerTypes[type] && playerTypes[type] !== undefined) {
+            if (canAddPlayer()
+                && playerTypes[type]
+                && playerTypes[type] !== undefined
+                && getAvailableSymbols().includes(symbol)) {
                 for (let i = 0; i < players.length; i++) {
-                    if (players[i].name === name)       name = name + '' + i;
-                    if (players[i].symbol === symbol)   symbol = symbol + '' + i;
+                    if (players[i].name === tempName) {
+                        tempName = name + '' + index;
+                        index++;
+                    }
                 }
-                let newPlayer = {
-                    type: type,
-                    name: name,
-                    symbol: symbol
-                };
+                let newPlayer = {type: type, name: tempName, symbol: symbol};
                 players.splice(players.length, 0, newPlayer);
+                availableSymbolsList.splice(availableSymbolsList.indexOf(symbol), 1);
             }
-            else console.log('Cannot add player');
         };
 
-        this.deletePlayer = function(name){
-            for(let i = 0; i < players.length; i++){
-                if(canDeletePlayer() && players[i].name === name){
-                    players.splice(i, 1);
+        this.removePlayer = function(name){
+            if (canRemovePlayer()) {
+                for (let i = 0; i < players.length; i++) {
+                    if (players[i].name === name) {
+                        availableSymbolsList.push(players[i].symbol);
+                        players.splice(i, 1);
+                    }
                 }
             }
         };
 
-        function validateWinLength(x){
+        function getAvailableSymbols() {
+            return availableSymbolsList.slice(0);
+        }
+
+        function validateWinLength(x) {
             if (x < _winLength) {
                 _winLength = x;
             }
         }
 
-        function getDiagonal(){
+        function getDiagonal() {
             return (_columns - _rows) < 0 ? _columns : _rows;
         }
 
-        function canAddPlayer(){
+        function canAddPlayer() {
             return players.length < getDiagonal() - 1;
-
         }
 
-        function canDeletePlayer(){
+        function canRemovePlayer() {
             return players.length > 2;
         }
     }
 
     return {
-        getInstance: function(){
-            if(!instance){
+        getInstance: function () {
+            if (!instance) {
                 instance = new GameDataManager();
             }
             return instance;
@@ -156,7 +185,7 @@ let singletonField = (function(){
             let emptyCells = [];
 
             for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < columns; c++){
+                for (let c = 0; c < columns; c++) {
                     if (self.fieldCells[r][c] === undefined) {
                         emptyCells.push({ row : r, col : c});
                     }
@@ -193,6 +222,7 @@ function WinnerChecker(){
             let winArray = [];
             let currentCell = [{row: row, col: col, obj: obj}];
             winArray.push(currentCell);
+
             for (let j = 0; j < directionPairsList[i].length; j++) {
                 let nextCell = getNextCell(currentCell, directionPairsList[i][j]);
                 while (nextCell !== null) {
@@ -239,9 +269,9 @@ function WinnerChecker(){
                 break;
         }
 
-        if (next !== null &&
-            isCellInField(next) &&
-            field.fieldCells[next[0].row][next[0].col] === currentCell[0].obj){
+        if (next !== null
+            && isCellInField(next)
+            && field.fieldCells[next[0].row][next[0].col] === currentCell[0].obj) {
             return next;
         } else {
             return null;
@@ -302,7 +332,7 @@ function Iterator(array) {
 
 function Game(){
     let self = this;
-    let gameStatusList = singletonGameDataManager.getInstance().getStatusList();
+    let gameStatusList = ['Playing', 'Winner', 'Tie'];
     let field = singletonField.getInstance();
     let winnerChecker = new WinnerChecker();
     let iterator = new Iterator(getPlayersArray());

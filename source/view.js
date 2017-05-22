@@ -30,6 +30,7 @@ function View(){
             let rowField = document.createElement('tr');
             rowField.setAttribute('class', 'row');
             fieldTbl.appendChild(rowField);
+
             for (let c = 0; c < columns; c++) {
                 let cellField = document.createElement('td');
                 cellField.setAttribute('class', 'cell');
@@ -41,7 +42,8 @@ function View(){
 
     function createOccupiedCells(rows, columns){
         let arr = new Array(rows);
-        for (let i = 0; i < rows; i++){
+
+        for (let i = 0; i < rows; i++) {
             arr[i] = new Array(columns);
         }
         occupiedCells = arr;
@@ -61,6 +63,7 @@ function View(){
 
     function updateCellContent(){
         let fieldCellsArr = viewModel.getFieldCells();
+
         for (let r = 0; r < fieldCellsArr.length; r++) {
             for (let c = 0; c < fieldCellsArr[r].length; c++) {
                 if (fieldCellsArr[r][c] !== undefined

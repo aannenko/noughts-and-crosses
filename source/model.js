@@ -10,10 +10,10 @@ let playerTypes = {
 };
 
 let singletonGameDataManager;
-singletonGameDataManager = (function () {
+singletonGameDataManager = (function(){
     let instance;
 
-    function GameDataManager() {
+    function GameDataManager(){
         let symbolCollection = [
             'X', 'O', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
             'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z'
@@ -36,48 +36,48 @@ singletonGameDataManager = (function () {
             return collection;
         })();
 
-        this.getRows = function () {
+        this.getRows = function(){
             return _rows;
         };
 
-        this.getColumns = function () {
+        this.getColumns = function(){
             return _columns;
         };
 
-        this.getWinLength = function () {
+        this.getWinLength = function(){
             return _winLength;
         };
 
-        this.setRows = function (rows) {
+        this.setRows = function(rows){
             if (Number.isInteger(rows) && rows > 2 && rows <= 10) {
                 _rows = rows;
                 validateWinLength(rows);
             }
         };
 
-        this.setColumns = function (columns) {
+        this.setColumns = function(columns){
             if (Number.isInteger(columns) && columns > 2 && columns <= 10) {
                 _columns = columns;
                 validateWinLength(columns);
             }
         };
 
-        this.setWinLength = function (winLength) {
+        this.setWinLength = function(winLength){
             if (Number.isInteger(winLength) && winLength > 2 && winLength <= getDiagonal()) {
                 _winLength = winLength;
             }
         };
 
-        this.getPlayerList = function () {
+        this.getPlayerList = function(){
             return players.slice(0);
         };
 
-        this.updatePlayer = function (name, prop, value) {
+        this.updatePlayer = function(name, prop, value){
             let oldPlayerSymbol;
             prop = prop.toLowerCase();
 
             if (prop !== 'type') {
-                let player = players.find(function (item){
+                let player = players.find(function(item){
                     return item.name === name;
                 });
                 if (player === undefined) {
@@ -123,31 +123,31 @@ singletonGameDataManager = (function () {
             }
         };
 
-        function getAvailableSymbols() {
+        function getAvailableSymbols(){
             return availableSymbolsList.slice(0);
         }
 
-        function validateWinLength(x) {
+        function validateWinLength(x){
             if (x < _winLength) {
                 _winLength = x;
             }
         }
 
-        function getDiagonal() {
+        function getDiagonal(){
             return (_columns - _rows) < 0 ? _columns : _rows;
         }
 
-        function canAddPlayer() {
+        function canAddPlayer(){
             return players.length < getDiagonal() - 1;
         }
 
-        function canRemovePlayer() {
+        function canRemovePlayer(){
             return players.length > 2;
         }
     }
 
     return {
-        getInstance: function () {
+        getInstance: function(){
             if (!instance) {
                 instance = new GameDataManager();
             }
@@ -337,6 +337,11 @@ function Game(){
     let winnerChecker = new WinnerChecker();
     let iterator = new Iterator(getPlayersArray());
 
+    let state = {getPlayersArray: getPlayersArray, getCurrentPlayerName: getCurrentPlayerName}; //.........
+    function getState() {
+        return state;//...........
+    }
+
     function getPlayersArray(){
         let array = [];
         let players = singletonGameDataManager.getInstance().getPlayerList();
@@ -371,6 +376,7 @@ function Game(){
                 iterator.moveNext();
                 self.startTurn();
             }
+            //updateState();//...........
         }
     };
 }

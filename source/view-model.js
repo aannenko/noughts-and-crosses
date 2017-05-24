@@ -16,12 +16,12 @@ function ViewModel(){
     };
 
     this.getFieldCells = function(){
-        return game.getFieldCells();
+        return game.getState().getFieldCells();
     };
 
     this.getCurrentStatus = function(){
-        let gameStatus = game.currentStatus;
-        let playerName = gameStatus === 'Tie' ? 'It' : game.getCurrentPlayerName();
+        let gameStatus = game.getState().currentStatus;
+        let playerName = gameStatus === 'Tie' ? 'It' : game.getState().getCurrentPlayerName();
         return  playerName + ' is ' + gameStatus;
     };
 

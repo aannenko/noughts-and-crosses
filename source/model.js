@@ -336,11 +336,44 @@ function Game(){
     let field = singletonField.getInstance();
     let winnerChecker = new WinnerChecker();
     let iterator = new Iterator(getPlayersArray());
+    // let iterator = new Iterator(this.getState().getPlayers);
 
-    let state = {getPlayersArray: getPlayersArray, getCurrentPlayerName: getCurrentPlayerName}; //.........
-    function getState() {
-        return state;//...........
-    }
+    let state = {
+        // getPlayers: getPlayersArray(),
+        currentStatus: gameStatusList[0],
+        getCurrentPlayerName: function(){
+            return iterator.getCurrent().playerName.slice(0);
+        },
+        getFieldCells: function(){
+            return field.fieldCells.slice(0);
+        }
+    };
+
+    this.getState = function(){
+        return state;
+    };
+
+    this.startTurn = function(){
+        iterator.getCurrent().startMove(self);
+    };
+
+    this.finishTurn = function(row, col){
+        if (self.getState().currentStatus === gameStatusList[0] && iterator.getCurrent().finishMove(row, col)) {
+            if (winnerChecker.isWinnerFound(row, col, iterator.getCurrent().playerSymbol)) {
+                self.getState().currentStatus = gameStatusList[1];
+            } else if (!field.areCellsAvailable()) {
+                self.getState().currentStatus = gameStatusList[2];
+            } else {
+                iterator.moveNext();
+                self.startTurn();
+            }
+            // self.getState();//...........
+            console.log(self.getState().currentStatus + '\n' +
+            self.getState().getCurrentPlayerName() + '\n' +
+            self.getState().getFieldCells()
+            );
+        }
+    };
 
     function getPlayersArray(){
         let array = [];
@@ -351,32 +384,4 @@ function Game(){
         });
         return array;
     }
-
-    this.currentStatus = gameStatusList[0];
-
-    this.getCurrentPlayerName = function(){
-        return iterator.getCurrent().playerName;
-    };
-
-    this.getFieldCells = function(){
-        return field.fieldCells.slice(0);
-    };
-
-    this.startTurn = function(){
-        iterator.getCurrent().startMove(self);
-    };
-
-    this.finishTurn = function(row, col){
-        if (self.currentStatus === gameStatusList[0] && iterator.getCurrent().finishMove(row, col)) {
-            if (winnerChecker.isWinnerFound(row, col, iterator.getCurrent().playerSymbol)) {
-                self.currentStatus = gameStatusList[1];
-            } else if (!field.areCellsAvailable()) {
-                self.currentStatus = gameStatusList[2];
-            } else {
-                iterator.moveNext();
-                self.startTurn();
-            }
-            //updateState();//...........
-        }
-    };
 }

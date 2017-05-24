@@ -54,6 +54,7 @@ function View(){
             cells[i].addEventListener("click", function(){
                 let cellsRow = cells[i].id.split('-')[0];
                 let cellsCol= cells[i].id.split('-')[1];
+
                 viewModel.finishTurn(+cellsRow, +cellsCol);
                 updateCellContent();
                 changeCurrentStatus();

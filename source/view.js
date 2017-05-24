@@ -5,15 +5,15 @@
 /********************** View **********************/
 "use strict";
 function View(){
-    let viewModel = new ViewModel();
-    let cells = document.getElementsByClassName("cell");
-    let occupiedCells;
+    let _viewModel = new ViewModel();
+    let _cells = document.getElementsByClassName("cell");
+    let _occupiedCells;
 
     this.init = function(){
-        let rowsUserSet = viewModel.rowsPreset;
-        let columnsUserSet = viewModel.columnsPreset;
+        let rowsUserSet = _viewModel.rowsPreset;
+        let columnsUserSet = _viewModel.columnsPreset;
 
-        viewModel.init();
+        _viewModel.init();
         createPlayField(rowsUserSet, columnsUserSet);
         createOccupiedCells(rowsUserSet, columnsUserSet);
         setListenerToCells();
@@ -46,16 +46,16 @@ function View(){
         for (let i = 0; i < rows; i++) {
             arr[i] = new Array(columns);
         }
-        occupiedCells = arr;
+        _occupiedCells = arr;
     }
 
     function setListenerToCells(){
-        for (let i = 0; i < cells.length; i++) {
-            cells[i].addEventListener("click", function(){
-                let cellsRow = cells[i].id.split('-')[0];
-                let cellsCol= cells[i].id.split('-')[1];
+        for (let i = 0; i < _cells.length; i++) {
+            _cells[i].addEventListener("click", function(){
+                let cellsRow = _cells[i].id.split('-')[0];
+                let cellsCol= _cells[i].id.split('-')[1];
 
-                viewModel.finishTurn(+cellsRow, +cellsCol);
+                _viewModel.finishTurn(+cellsRow, +cellsCol);
                 updateCellContent();
                 changeCurrentStatus();
             });
@@ -63,21 +63,21 @@ function View(){
     }
 
     function updateCellContent(){
-        let fieldCellsArr = viewModel.getFieldCells();
+        let fieldCellsArr = _viewModel.getFieldCells();
 
         for (let r = 0; r < fieldCellsArr.length; r++) {
             for (let c = 0; c < fieldCellsArr[r].length; c++) {
                 if (fieldCellsArr[r][c] !== undefined
-                    && fieldCellsArr[r][c] !== occupiedCells[r][c]) {
-                    cells[r+'-'+c].innerHTML = fieldCellsArr[r][c];
+                    && fieldCellsArr[r][c] !== _occupiedCells[r][c]) {
+                    _cells[r+'-'+c].innerHTML = fieldCellsArr[r][c];
                 }
-                occupiedCells[r][c] = fieldCellsArr[r][c];
+                _occupiedCells[r][c] = fieldCellsArr[r][c];
             }
         }
     }
 
     function changeCurrentStatus(){
         let statusField = document.getElementById("gameStatus");
-        statusField.innerHTML = viewModel.getCurrentStatus();
+        statusField.innerHTML = _viewModel.getCurrentStatus();
     }
 }

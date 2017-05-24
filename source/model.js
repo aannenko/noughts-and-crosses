@@ -9,29 +9,29 @@ let playerTypes = {
     'computer' : 'ComputerPlayer'
 };
 
-let singletonGameDataManager;
-singletonGameDataManager = (function(){
+let gameDataManagerSingleton;
+gameDataManagerSingleton = (function(){
     let instance;
 
     function GameDataManager(){
-        let symbolCollection = [
+        let _symbolCollection = [
             'X', 'O', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
             'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z'
         ];
 
-        let players = [
-            {type: 'human', name: 'Player', symbol: symbolCollection[0]},
-            {type: 'computer', name: 'Computer', symbol: symbolCollection[1]}
+        let _playerList = [
+            {type: 'human', name: 'Player', symbol: _symbolCollection[0]},
+            {type: 'computer', name: 'Computer', symbol: _symbolCollection[1]}
         ];
 
         let _rows = 3;
         let _columns = 3;
         let _winLength = 3;
 
-        let availableSymbolsList = (function(){
-            let collection = symbolCollection.slice(0);
-            for (let j = 0; j < players.length; j++) {
-                collection.splice(collection.indexOf(players[j].symbol), 1);
+        let _availableSymbolsList = (function(){
+            let collection = _symbolCollection.slice(0);
+            for (let j = 0; j < _playerList.length; j++) {
+                collection.splice(collection.indexOf(_playerList[j].symbol), 1);
             }
             return collection;
         })();
@@ -69,7 +69,7 @@ singletonGameDataManager = (function(){
         };
 
         this.getPlayerList = function(){
-            return players.slice(0);
+            return _playerList.slice(0);
         };
 
         this.updatePlayer = function(name, prop, value){
@@ -77,7 +77,7 @@ singletonGameDataManager = (function(){
             prop = prop.toLowerCase();
 
             if (prop !== 'type') {
-                let player = players.find(function(item){
+                let player = _playerList.find(function(item){
                     return item.name === name;
                 });
                 if (player === undefined) {
@@ -87,8 +87,8 @@ singletonGameDataManager = (function(){
                 player[prop] = value;
             }
             if (prop === 'symbol') {
-                availableSymbolsList.splice(availableSymbolsList.indexOf(value), 1);
-                availableSymbolsList.push(oldPlayerSymbol);
+                _availableSymbolsList.splice(_availableSymbolsList.indexOf(value), 1);
+                _availableSymbolsList.push(oldPlayerSymbol);
             }
         };
 
@@ -100,31 +100,31 @@ singletonGameDataManager = (function(){
                 && playerTypes[type]
                 && playerTypes[type] !== undefined
                 && getAvailableSymbols().includes(symbol)) {
-                for (let i = 0; i < players.length; i++) {
-                    if (players[i].name === tempName) {
+                for (let i = 0; i < _playerList.length; i++) {
+                    if (_playerList[i].name === tempName) {
                         tempName = name + '' + index;
                         index++;
                     }
                 }
                 let newPlayer = {type: type, name: tempName, symbol: symbol};
-                players.splice(players.length, 0, newPlayer);
-                availableSymbolsList.splice(availableSymbolsList.indexOf(symbol), 1);
+                _playerList.splice(_playerList.length, 0, newPlayer);
+                _availableSymbolsList.splice(_availableSymbolsList.indexOf(symbol), 1);
             }
         };
 
         this.removePlayer = function(name){
             if (canRemovePlayer()) {
-                for (let i = 0; i < players.length; i++) {
-                    if (players[i].name === name) {
-                        availableSymbolsList.push(players[i].symbol);
-                        players.splice(i, 1);
+                for (let i = 0; i < _playerList.length; i++) {
+                    if (_playerList[i].name === name) {
+                        _availableSymbolsList.push(_playerList[i].symbol);
+                        _playerList.splice(i, 1);
                     }
                 }
             }
         };
 
         function getAvailableSymbols(){
-            return availableSymbolsList.slice(0);
+            return _availableSymbolsList.slice(0);
         }
 
         function validateWinLength(x){
@@ -138,11 +138,11 @@ singletonGameDataManager = (function(){
         }
 
         function canAddPlayer(){
-            return players.length < getDiagonal() - 1;
+            return _playerList.length < getDiagonal() - 1;
         }
 
         function canRemovePlayer(){
-            return players.length > 2;
+            return _playerList.length > 2;
         }
     }
 
@@ -156,24 +156,16 @@ singletonGameDataManager = (function(){
     };
 })();
 
-let singletonField = (function(){
+let fieldSingleton = (function(){
     let instance;
 
     function Field(rows, columns){
-        let self = this;
+        let _self = this;
         this.fieldCells = createFieldCells();
 
-        function createFieldCells(){
-            let cells = new Array(rows);
-            for (let i = 0; i < rows; i++){
-                cells[i] = new Array(columns);
-            }
-            return cells;
-        }
-
         this.updateCell = function(row, col, obj){
-            if (self.fieldCells[row][col] === undefined) {
-                self.fieldCells[row][col] = obj;
+            if (_self.fieldCells[row][col] === undefined) {
+                _self.fieldCells[row][col] = obj;
                 return true;
             }
             else {
@@ -186,7 +178,7 @@ let singletonField = (function(){
 
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < columns; c++) {
-                    if (self.fieldCells[r][c] === undefined) {
+                    if (_self.fieldCells[r][c] === undefined) {
                         emptyCells.push({ row : r, col : c});
                     }
                 }
@@ -195,14 +187,22 @@ let singletonField = (function(){
         };
 
         this.areCellsAvailable = function(){
-            return self.getEmptyCells().length > 0;
+            return _self.getEmptyCells().length > 0;
         };
+
+        function createFieldCells(){
+            let cells = new Array(rows);
+            for (let i = 0; i < rows; i++){
+                cells[i] = new Array(columns);
+            }
+            return cells;
+        }
     }
 
     return {
         getInstance: function(){
-            let rows = singletonGameDataManager.getInstance().getRows();
-            let columns = singletonGameDataManager.getInstance().getColumns();
+            let rows = gameDataManagerSingleton.getInstance().getRows();
+            let columns = gameDataManagerSingleton.getInstance().getColumns();
             if(!instance){
                 instance = new Field(rows, columns);
             }
@@ -212,25 +212,26 @@ let singletonField = (function(){
 })();
 
 function WinnerChecker(){
-    let field = singletonField.getInstance();
-    let directionPairsList = [
+    let _field = fieldSingleton.getInstance();
+    let _winningLength = gameDataManagerSingleton.getInstance().getWinLength();
+    let _directionPairsList = [
         [0, 4], [1, 5], [2, 6], [3, 7]
     ];
 
     this.isWinnerFound = function(row, col, obj){
-        for (let i = 0; i < directionPairsList.length; i++) {
+        for (let i = 0; i < _directionPairsList.length; i++) {
             let winArray = [];
             let currentCell = [{row: row, col: col, obj: obj}];
             winArray.push(currentCell);
 
-            for (let j = 0; j < directionPairsList[i].length; j++) {
-                let nextCell = getNextCell(currentCell, directionPairsList[i][j]);
+            for (let j = 0; j < _directionPairsList[i].length; j++) {
+                let nextCell = getNextCell(currentCell, _directionPairsList[i][j]);
                 while (nextCell !== null) {
                     winArray.push(nextCell);
-                    if (winArray.length === singletonGameDataManager.getInstance().getWinLength()){
+                    if (winArray.length === _winningLength){
                         return true;
                     }
-                    nextCell = getNextCell(nextCell, directionPairsList[i][j]);
+                    nextCell = getNextCell(nextCell, _directionPairsList[i][j]);
                 }
             }
         }
@@ -271,7 +272,7 @@ function WinnerChecker(){
 
         if (next !== null
             && isCellInField(next)
-            && field.fieldCells[next[0].row][next[0].col] === currentCell[0].obj) {
+            && _field.fieldCells[next[0].row][next[0].col] === currentCell[0].obj) {
             return next;
         } else {
             return null;
@@ -283,8 +284,8 @@ function WinnerChecker(){
         let col = cellObject[0].col;
         return row >= 0
             && col >= 0
-            && row < field.fieldCells.length
-            && col < field.fieldCells[0].length;
+            && row < _field.fieldCells.length
+            && col < _field.fieldCells[0].length;
     }
 }
 
@@ -294,7 +295,7 @@ function Player(name, symbol){
 
     this.startMove = function(game){ };
     this.finishMove = function(row, col){
-        return singletonField.getInstance().updateCell(row, col, this.playerSymbol);
+        return fieldSingleton.getInstance().updateCell(row, col, this.playerSymbol);
     };
 }
 
@@ -307,7 +308,7 @@ function ComputerPlayer(name, symbol){
     };
 
     function findRandomCell(){
-        let emptyCellsArr = singletonField.getInstance().getEmptyCells();
+        let emptyCellsArr = fieldSingleton.getInstance().getEmptyCells();
         let min = 0;
         let max = emptyCellsArr.length > 0 ? emptyCellsArr.length - 1 : 0;
         let random = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -319,65 +320,66 @@ ComputerPlayer.prototype = Object.create(Player.prototype);
 ComputerPlayer.prototype.constructor = ComputerPlayer;
 
 function Iterator(array) {
-    let index = 0;
+    let _index = 0;
 
     this.getCurrent = function(){
-        return array[index];
+        return array[_index];
     };
 
     this.moveNext = function(){
-        index = index === array.length - 1 ? 0 : ++index;
+        _index = _index === array.length - 1 ? 0 : ++_index;
     };
 }
 
 function Game(){
-    let self = this;
-    let gameStatusList = ['Playing', 'Winner', 'Tie'];
-    let field = singletonField.getInstance();
-    let winnerChecker = new WinnerChecker();
-    let iterator = new Iterator(getPlayersArray());
-    // let iterator = new Iterator(this.getState().getPlayers);
+    let _self = this;
+    let _gameStatusList = ['Playing', 'Winner', 'Tie'];
+    let _field = fieldSingleton.getInstance();
+    let _winnerChecker = new WinnerChecker();
+    let _iterator = new Iterator(getPlayersArray());
+    // let _iterator = new Iterator(this.getState().getPlayers);
 
-    let state = {
+    let _state = {
         // getPlayers: getPlayersArray(),
-        currentStatus: gameStatusList[0],
+        currentStatus: _gameStatusList[0],
         getCurrentPlayerName: function(){
-            return iterator.getCurrent().playerName.slice(0);
+            return _iterator.getCurrent().playerName.slice(0);
         },
         getFieldCells: function(){
-            return field.fieldCells.slice(0);
+            return _field.fieldCells.slice(0);
         }
     };
 
     this.getState = function(){
-        return state;
+        return _state;
     };
 
     this.startTurn = function(){
-        iterator.getCurrent().startMove(self);
+        _iterator.getCurrent().startMove(_self);
     };
 
     this.finishTurn = function(row, col){
-        if (self.getState().currentStatus === gameStatusList[0] && iterator.getCurrent().finishMove(row, col)) {
-            if (winnerChecker.isWinnerFound(row, col, iterator.getCurrent().playerSymbol)) {
-                self.getState().currentStatus = gameStatusList[1];
-            } else if (!field.areCellsAvailable()) {
-                self.getState().currentStatus = gameStatusList[2];
+        if (_self.getState().currentStatus === _gameStatusList[0] && _iterator.getCurrent().finishMove(row, col)) {
+            if (_winnerChecker.isWinnerFound(row, col, _iterator.getCurrent().playerSymbol)) {
+                _self.getState().currentStatus = _gameStatusList[1];
+            } else if (!_field.areCellsAvailable()) {
+                _self.getState().currentStatus = _gameStatusList[2];
             } else {
-                iterator.moveNext();
-                self.startTurn();
+                _iterator.moveNext();
+                _self.startTurn();
             }
-            // self.getState();//...........
-            console.log(self.getState().currentStatus + '\n' +
-            self.getState().getCurrentPlayerName() + '\n' +
-            self.getState().getFieldCells()
-            );
+            // _self.getState();//.......??????
+
+            // console.log(_self.getState().currentStatus + '\n' +
+            // _self.getState().getCurrentPlayerName() + '\n' +
+            // _self.getState().getFieldCells()
+            // );
         }
     };
 
     function getPlayersArray(){
         let array = [];
-        let players = singletonGameDataManager.getInstance().getPlayerList();
+        let players = gameDataManagerSingleton.getInstance().getPlayerList();
 
         players.forEach(function(item){
             array.push(new window[playerTypes[item.type]](item.name, item.symbol));

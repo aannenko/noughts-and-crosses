@@ -5,29 +5,29 @@
 /*********************** View-Model **********************/
 "use strict";
 function ViewModel(){
-    let game = null;
+    let _game = null;
 
-    this.rowsPreset = singletonGameDataManager.getInstance().getRows();
-    this.columnsPreset = singletonGameDataManager.getInstance().getColumns();
+    this.rowsPreset = gameDataManagerSingleton.getInstance().getRows();
+    this.columnsPreset = gameDataManagerSingleton.getInstance().getColumns();
 
     this.init = function(){
-        game = new Game();
-        game.startTurn();
+        _game = new Game();
+        _game.startTurn();
     };
 
     this.getFieldCells = function(){
-        return game.getState().getFieldCells();
+        return _game.getState().getFieldCells();
     };
 
     this.getCurrentStatus = function(){
-        let gameStatus = game.getState().currentStatus;
-        let playerName = gameStatus === 'Tie' ? 'It' : game.getState().getCurrentPlayerName();
+        let gameStatus = _game.getState().currentStatus;
+        let playerName = gameStatus === 'Tie' ? 'It' : _game.getState().getCurrentPlayerName();
         return  playerName + ' is ' + gameStatus;
     };
 
     this.finishTurn = function(row, col){
-        if(game){
-            game.finishTurn(row, col);
+        if(_game){
+            _game.finishTurn(row, col);
         }
     };
 }

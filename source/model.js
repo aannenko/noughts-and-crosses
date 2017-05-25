@@ -337,10 +337,8 @@ function Game(){
     let _field = fieldSingleton.getInstance();
     let _winnerChecker = new WinnerChecker();
     let _iterator = new Iterator(getPlayersArray());
-    // let _iterator = new Iterator(this.getState().getPlayers);
 
     let _state = {
-        // getPlayers: getPlayersArray(),
         currentStatus: _gameStatusList[0],
         getCurrentPlayerName: function(){
             return _iterator.getCurrent().playerName.slice(0);
@@ -368,12 +366,6 @@ function Game(){
                 _iterator.moveNext();
                 _self.startTurn();
             }
-            // _self.getState();//.......??????
-
-            // console.log(_self.getState().currentStatus + '\n' +
-            // _self.getState().getCurrentPlayerName() + '\n' +
-            // _self.getState().getFieldCells()
-            // );
         }
     };
 

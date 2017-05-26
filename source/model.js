@@ -21,8 +21,7 @@ gameDataManagerSingleton = (function(){
 
         let _playerList = [
             {type: 'human', name: 'Player', symbol: _symbolCollection[0]},
-            {type: 'human', name: 'Ksena', symbol: _symbolCollection[2]}
-            // {type: 'computer', name: 'Computer', symbol: _symbolCollection[1]}
+            {type: 'computer', name: 'Computer', symbol: _symbolCollection[1]}
         ];
 
         let _rows = 3;
@@ -377,9 +376,8 @@ function Game(){
     }
 
     function getFreshState(){
-        let currentStatus = _currentStatus;
         let currentPlayerName = _iterator.getCurrent().playerName;
         let fieldCells = _field.fieldCells.slice(0);
-        return new State(currentStatus, currentPlayerName, fieldCells);
+        return new State(_currentStatus, currentPlayerName, fieldCells);
     }
 }

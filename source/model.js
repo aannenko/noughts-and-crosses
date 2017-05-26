@@ -161,11 +161,14 @@ let fieldSingleton = (function(){
 
     function Field(rows, columns){
         let _self = this;
-        this.fieldCells = createFieldCells();
+        let _fieldCells = createFieldCells();
+
+        this.fieldCells = getFieldCellsCopy();
 
         this.updateCell = function(row, col, obj){
-            if (_self.fieldCells[row][col] === undefined) {
-                _self.fieldCells[row][col] = obj;
+            if (_fieldCells[row][col] === undefined) {
+                _fieldCells[row][col] = obj;
+                _self.fieldCells = getFieldCellsCopy();
                 return true;
             }
             else {
@@ -178,7 +181,7 @@ let fieldSingleton = (function(){
 
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < columns; c++) {
-                    if (_self.fieldCells[r][c] === undefined) {
+                    if (_fieldCells[r][c] === undefined) {
                         emptyCells.push({ row : r, col : c});
                     }
                 }
@@ -196,6 +199,12 @@ let fieldSingleton = (function(){
                 cells[i] = new Array(columns);
             }
             return cells;
+        }
+
+        function getFieldCellsCopy(){
+            return _fieldCells.map(function(arr) {
+                return arr.slice();
+            });
         }
     }
 
@@ -377,7 +386,6 @@ function Game(){
 
     function getFreshState(){
         let currentPlayerName = _iterator.getCurrent().playerName;
-        let fieldCells = _field.fieldCells.slice(0);
-        return new State(_currentStatus, currentPlayerName, fieldCells);
+        return new State(_currentStatus, currentPlayerName, _field.fieldCells);
     }
 }

@@ -21,7 +21,8 @@ gameDataManagerSingleton = (function(){
 
         let _playerList = [
             {type: 'human', name: 'Player', symbol: _symbolCollection[0]},
-            {type: 'computer', name: 'Computer', symbol: _symbolCollection[1]}
+            {type: 'human', name: 'Ksena', symbol: _symbolCollection[2]}
+            // {type: 'computer', name: 'Computer', symbol: _symbolCollection[1]}
         ];
 
         let _rows = 3;
@@ -331,41 +332,37 @@ function Iterator(array) {
     };
 }
 
+function State(status, player, field){
+    this.currentStatus = status;
+    this.currentPlayerName = player;
+    this.fieldCells = field;
+}
+
 function Game(){
     let _self = this;
     let _gameStatusList = ['Playing', 'Winner', 'Tie'];
+    let _currentStatus = _gameStatusList[0];
     let _field = fieldSingleton.getInstance();
     let _winnerChecker = new WinnerChecker();
     let _iterator = new Iterator(getPlayersArray());
 
-    let _state = {
-        currentStatus: _gameStatusList[0],
-        getCurrentPlayerName: function(){
-            return _iterator.getCurrent().playerName.slice(0);
-        },
-        getFieldCells: function(){
-            return _field.fieldCells.slice(0);
-        }
-    };
-
-    this.getState = function(){
-        return _state;
-    };
+    this.state = getFreshState();
 
     this.startTurn = function(){
         _iterator.getCurrent().startMove(_self);
     };
 
     this.finishTurn = function(row, col){
-        if (_self.getState().currentStatus === _gameStatusList[0] && _iterator.getCurrent().finishMove(row, col)) {
+        if (_currentStatus === _gameStatusList[0] && _iterator.getCurrent().finishMove(row, col)) {
             if (_winnerChecker.isWinnerFound(row, col, _iterator.getCurrent().playerSymbol)) {
-                _self.getState().currentStatus = _gameStatusList[1];
+                _currentStatus = _gameStatusList[1];
             } else if (!_field.areCellsAvailable()) {
-                _self.getState().currentStatus = _gameStatusList[2];
+                _currentStatus = _gameStatusList[2];
             } else {
                 _iterator.moveNext();
                 _self.startTurn();
             }
+            _self.state = getFreshState();
         }
     };
 
@@ -377,5 +374,12 @@ function Game(){
             array.push(new window[playerTypes[item.type]](item.name, item.symbol));
         });
         return array;
+    }
+
+    function getFreshState(){
+        let currentStatus = _currentStatus;
+        let currentPlayerName = _iterator.getCurrent().playerName;
+        let fieldCells = _field.fieldCells.slice(0);
+        return new State(currentStatus, currentPlayerName, fieldCells);
     }
 }

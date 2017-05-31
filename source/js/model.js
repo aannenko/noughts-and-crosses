@@ -5,15 +5,14 @@
 /********************** Model **********************/
 "use strict";
 let playerTypes = {
-    'human' : 'Player',
-    'computer' : 'ComputerPlayer'
+    'human': 'Player',
+    'computer': 'ComputerPlayer'
 };
 
-let gameDataManagerSingleton;
-gameDataManagerSingleton = (function(){
+let gameDataManagerSingleton = (function() {
     let instance;
 
-    function GameDataManager(){
+    function GameDataManager() {
         let _symbolCollection = [
             'X', 'O', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
             'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z'
@@ -28,7 +27,7 @@ gameDataManagerSingleton = (function(){
         let _columns = 3;
         let _winLength = 3;
 
-        let _availableSymbolsList = (function(){
+        let _availableSymbolsList = (function() {
             let collection = _symbolCollection.slice(0);
             for (let j = 0; j < _playerList.length; j++) {
                 collection.splice(collection.indexOf(_playerList[j].symbol), 1);
@@ -36,48 +35,48 @@ gameDataManagerSingleton = (function(){
             return collection;
         })();
 
-        this.getRows = function(){
+        this.getRows = function() {
             return _rows;
         };
 
-        this.getColumns = function(){
+        this.getColumns = function() {
             return _columns;
         };
 
-        this.getWinLength = function(){
+        this.getWinLength = function() {
             return _winLength;
         };
 
-        this.setRows = function(rows){
+        this.setRows = function(rows) {
             if (Number.isInteger(rows) && rows > 2 && rows <= 10) {
                 _rows = rows;
                 validateWinLength(rows);
             }
         };
 
-        this.setColumns = function(columns){
+        this.setColumns = function(columns) {
             if (Number.isInteger(columns) && columns > 2 && columns <= 10) {
                 _columns = columns;
                 validateWinLength(columns);
             }
         };
 
-        this.setWinLength = function(winLength){
+        this.setWinLength = function(winLength) {
             if (Number.isInteger(winLength) && winLength > 2 && winLength <= getDiagonal()) {
                 _winLength = winLength;
             }
         };
 
-        this.getPlayerList = function(){
+        this.getPlayerList = function() {
             return _playerList.slice(0);
         };
 
-        this.updatePlayer = function(name, prop, value){
+        this.updatePlayer = function(name, prop, value) {
             let oldPlayerSymbol;
             prop = prop.toLowerCase();
 
             if (prop !== 'type') {
-                let player = _playerList.find(function(item){
+                let player = _playerList.find(function(item) {
                     return item.name === name;
                 });
                 if (player === undefined) {
@@ -92,7 +91,7 @@ gameDataManagerSingleton = (function(){
             }
         };
 
-        this.addPlayer = function(type, name, symbol){
+        this.addPlayer = function(type, name, symbol) {
             let tempName = name;
             let index = 1;
             type = type.toLowerCase();
@@ -112,7 +111,7 @@ gameDataManagerSingleton = (function(){
             }
         };
 
-        this.removePlayer = function(name){
+        this.removePlayer = function(name) {
             if (canRemovePlayer()) {
                 for (let i = 0; i < _playerList.length; i++) {
                     if (_playerList[i].name === name) {
@@ -123,31 +122,31 @@ gameDataManagerSingleton = (function(){
             }
         };
 
-        function getAvailableSymbols(){
+        function getAvailableSymbols() {
             return _availableSymbolsList.slice(0);
         }
 
-        function validateWinLength(x){
+        function validateWinLength(x) {
             if (x < _winLength) {
                 _winLength = x;
             }
         }
 
-        function getDiagonal(){
+        function getDiagonal() {
             return (_columns - _rows) < 0 ? _columns : _rows;
         }
 
-        function canAddPlayer(){
+        function canAddPlayer() {
             return _playerList.length < getDiagonal() - 1;
         }
 
-        function canRemovePlayer(){
+        function canRemovePlayer() {
             return _playerList.length > 2;
         }
     }
 
     return {
-        getInstance: function(){
+        getInstance: function() {
             if (!instance) {
                 instance = new GameDataManager();
             }
@@ -156,16 +155,16 @@ gameDataManagerSingleton = (function(){
     };
 })();
 
-let fieldSingleton = (function(){
+let fieldSingleton = (function() {
     let instance;
 
-    function Field(rows, columns){
+    function Field(rows, columns) {
         let _self = this;
         let _fieldCells = createFieldCells();
 
         this.fieldCells = getFieldCellsCopy();
 
-        this.updateCell = function(row, col, obj){
+        this.updateCell = function(row, col, obj) {
             if (_fieldCells[row][col] === undefined) {
                 _fieldCells[row][col] = obj;
                 _self.fieldCells = getFieldCellsCopy();
@@ -176,32 +175,32 @@ let fieldSingleton = (function(){
             }
         };
 
-        this.getEmptyCells = function(){
+        this.getEmptyCells = function() {
             let emptyCells = [];
 
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < columns; c++) {
                     if (_fieldCells[r][c] === undefined) {
-                        emptyCells.push({ row : r, col : c});
+                        emptyCells.push({row: r, col: c});
                     }
                 }
             }
             return emptyCells;
         };
 
-        this.areCellsAvailable = function(){
+        this.areCellsAvailable = function() {
             return _self.getEmptyCells().length > 0;
         };
 
-        function createFieldCells(){
+        function createFieldCells() {
             let cells = new Array(rows);
-            for (let i = 0; i < rows; i++){
+            for (let i = 0; i < rows; i++) {
                 cells[i] = new Array(columns);
             }
             return cells;
         }
 
-        function getFieldCellsCopy(){
+        function getFieldCellsCopy() {
             return _fieldCells.map(function(arr) {
                 return arr.slice();
             });
@@ -209,10 +208,10 @@ let fieldSingleton = (function(){
     }
 
     return {
-        getInstance: function(){
+        getInstance: function() {
             let rows = gameDataManagerSingleton.getInstance().getRows();
             let columns = gameDataManagerSingleton.getInstance().getColumns();
-            if(!instance){
+            if (!instance) {
                 instance = new Field(rows, columns);
             }
             return instance;
@@ -220,14 +219,14 @@ let fieldSingleton = (function(){
     };
 })();
 
-function WinnerChecker(){
+function WinnerChecker() {
     let _field = fieldSingleton.getInstance();
     let _winningLength = gameDataManagerSingleton.getInstance().getWinLength();
     let _directionPairsList = [
         [0, 4], [1, 5], [2, 6], [3, 7]
     ];
 
-    this.isWinnerFound = function(row, col, obj){
+    this.isWinnerFound = function(row, col, obj) {
         for (let i = 0; i < _directionPairsList.length; i++) {
             let winArray = [];
             let currentCell = [{row: row, col: col, obj: obj}];
@@ -237,7 +236,7 @@ function WinnerChecker(){
                 let nextCell = getNextCell(currentCell, _directionPairsList[i][j]);
                 while (nextCell !== null) {
                     winArray.push(nextCell);
-                    if (winArray.length === _winningLength){
+                    if (winArray.length === _winningLength) {
                         return true;
                     }
                     nextCell = getNextCell(nextCell, _directionPairsList[i][j]);
@@ -247,32 +246,32 @@ function WinnerChecker(){
         return false;
     };
 
-    function getNextCell(currentCell, direction){
+    function getNextCell(currentCell, direction) {
         let next;
-        switch(direction){
+        switch (direction) {
             case 0: /*up*/
-                next = [{row: currentCell[0].row-1, col: currentCell[0].col, obj: currentCell[0].obj}];
+                next = [{row: currentCell[0].row - 1, col: currentCell[0].col, obj: currentCell[0].obj}];
                 break;
             case 1: /*top right*/
-                next = [{row: currentCell[0].row-1, col: currentCell[0].col+1, obj: currentCell[0].obj}];
+                next = [{row: currentCell[0].row - 1, col: currentCell[0].col + 1, obj: currentCell[0].obj}];
                 break;
             case 2: /*right*/
-                next = [{row: currentCell[0].row, col: currentCell[0].col+1, obj: currentCell[0].obj}];
+                next = [{row: currentCell[0].row, col: currentCell[0].col + 1, obj: currentCell[0].obj}];
                 break;
             case 3: /*down right*/
-                next = [{row: currentCell[0].row+1, col: currentCell[0].col+1, obj: currentCell[0].obj}];
+                next = [{row: currentCell[0].row + 1, col: currentCell[0].col + 1, obj: currentCell[0].obj}];
                 break;
             case 4: /*down*/
-                next = [{row: currentCell[0].row+1, col: currentCell[0].col, obj: currentCell[0].obj}];
+                next = [{row: currentCell[0].row + 1, col: currentCell[0].col, obj: currentCell[0].obj}];
                 break;
             case 5: /*down left*/
-                next = [{row: currentCell[0].row+1, col: currentCell[0].col-1, obj: currentCell[0].obj}];
+                next = [{row: currentCell[0].row + 1, col: currentCell[0].col - 1, obj: currentCell[0].obj}];
                 break;
             case 6: /*left*/
-                next = [{row: currentCell[0].row, col: currentCell[0].col-1, obj: currentCell[0].obj}];
+                next = [{row: currentCell[0].row, col: currentCell[0].col - 1, obj: currentCell[0].obj}];
                 break;
             case 7: /*top left*/
-                next = [{row: currentCell[0].row-1, col: currentCell[0].col-1, obj: currentCell[0].obj}];
+                next = [{row: currentCell[0].row - 1, col: currentCell[0].col - 1, obj: currentCell[0].obj}];
                 break;
             default:
                 next = null;
@@ -288,7 +287,7 @@ function WinnerChecker(){
         }
     }
 
-    function isCellInField(cellObject){
+    function isCellInField(cellObject) {
         let row = cellObject[0].row;
         let col = cellObject[0].col;
         return row >= 0
@@ -298,25 +297,26 @@ function WinnerChecker(){
     }
 }
 
-function Player(name, symbol){
+function Player(name, symbol) {
     this.playerName = name;
     this.playerSymbol = symbol;
 
-    this.startMove = function(game){ };
-    this.finishMove = function(row, col){
+    this.startMove = function(game) {
+    };
+    this.finishMove = function(row, col) {
         return fieldSingleton.getInstance().updateCell(row, col, this.playerSymbol);
     };
 }
 
-function ComputerPlayer(name, symbol){
+function ComputerPlayer(name, symbol) {
     Player.apply(this, arguments);
 
-    this.startMove = function(game){
+    this.startMove = function(game) {
         let randomCell = findRandomCell();
         game.finishTurn(randomCell.row, randomCell.col);
     };
 
-    function findRandomCell(){
+    function findRandomCell() {
         let emptyCellsArr = fieldSingleton.getInstance().getEmptyCells();
         let min = 0;
         let max = emptyCellsArr.length > 0 ? emptyCellsArr.length - 1 : 0;
@@ -331,22 +331,22 @@ ComputerPlayer.prototype.constructor = ComputerPlayer;
 function Iterator(array) {
     let _index = 0;
 
-    this.getCurrent = function(){
+    this.getCurrent = function() {
         return array[_index];
     };
 
-    this.moveNext = function(){
+    this.moveNext = function() {
         _index = _index === array.length - 1 ? 0 : ++_index;
     };
 }
 
-function State(status, player, field){
+function State(status, player, field) {
     this.currentStatus = status;
     this.currentPlayerName = player;
     this.fieldCells = field;
 }
 
-function Game(){
+function Game() {
     let _self = this;
     let _gameStatusList = ['Playing', 'Winner', 'Tie'];
     let _currentStatus = _gameStatusList[0];
@@ -356,11 +356,11 @@ function Game(){
 
     this.state = getFreshState();
 
-    this.startTurn = function(){
+    this.startTurn = function() {
         _iterator.getCurrent().startMove(_self);
     };
 
-    this.finishTurn = function(row, col){
+    this.finishTurn = function(row, col) {
         if (_currentStatus === _gameStatusList[0] && _iterator.getCurrent().finishMove(row, col)) {
             if (_winnerChecker.isWinnerFound(row, col, _iterator.getCurrent().playerSymbol)) {
                 _currentStatus = _gameStatusList[1];
@@ -374,17 +374,17 @@ function Game(){
         }
     };
 
-    function getPlayersArray(){
+    function getPlayersArray() {
         let array = [];
         let players = gameDataManagerSingleton.getInstance().getPlayerList();
 
-        players.forEach(function(item){
+        players.forEach(function(item) {
             array.push(new window[playerTypes[item.type]](item.name, item.symbol));
         });
         return array;
     }
 
-    function getFreshState(){
+    function getFreshState() {
         let currentPlayerName = _iterator.getCurrent().playerName;
         return new State(_currentStatus, currentPlayerName, _field.fieldCells);
     }

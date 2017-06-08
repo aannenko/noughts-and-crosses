@@ -47,11 +47,7 @@ table {
 }
 
 /************* Main styles *************/
-.wrap {
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
-}
+
 #play_field {
     width: 400px;
     height: 400px;
@@ -65,19 +61,19 @@ table {
     min-width: 50px;
     max-height: 30%;
     min-height: 50px;
-    border: 1px solid #000;
+    /*border: 1px solid #000;*/
     text-align: center;
     vertical-align: middle;
     font-size: 3em;
     /*line-height: 0em;*/
     cursor: pointer;
 }
-#start_button {
-    display: block;
-    width: 30%;
-    height: 80px;
+#start_button, #start_game {
+    display: inline-block;
+    /*width: 30%;*/
+    /*height: 80px;*/
     margin: 50px auto 0;
-    font-size: 20px;
+    /*font-size: 20px;*/
 }
 .cell.cross{
     /*background: url("../img/cross_s.png") no-repeat center;*/
@@ -92,9 +88,19 @@ table {
     font-size: 30px;
     /*line-height: 80px;*/
 }
-.crossWin {
+.winner {
     background-color: green;
 }
-.noughtWin {
-    background-color: red;
+.form-inline .form-control.cell_count {
+    width: 50px;
+    text-align: center;
 }
+.field_settings_group {}
+.field_settings{}
+.players_set {
+    margin-top: 50px;
+}
+.form-control.symbol {
+
+}
+

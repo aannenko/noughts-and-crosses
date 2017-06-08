@@ -14,17 +14,143 @@
     <script src="js/view-model.js" type="text/javascript"></script>
     <script src="js/view.js" type="text/javascript"></script>
 </head>
+
+<script>
+    let view = new View();
+</script>
+
 <body>
-    <!--<div class="wrap">-->
-    <div class="container">
-        <p class="status">Game status:  <span id="gameStatus"></span></p>
-        <div id="play_field"></div>
-        <input id="start_button" type="button" value="Reload" onClick="window.location.reload()" />
+    <div class="container-fluid">
+        <div class="container-fluid col-md-7">
+            <p class="status">Players creation</p>
+            <div class="col-md-12 field_settings_group">
+                <form class="form-inline">
+                    <div class="form-group field_settings rows">
+                        <label for="rowsInput">Rows</label>
+                        <button type="button" class="inc button" onclick="increase('rows')">+</button>
+                        <input type="text" class="form-control cell_count" id="rowsInput" value="" readonly>
+                        <button type="button" class="dec button" onclick="decrease('rows')">-</button>
+                    </div>
+                    <div class="form-group field_settings columns">
+                        <label for="columnsInput">Columns</label>
+                        <button type="button" class="inc button" onclick="increase('columns')">+</button>
+                        <input type="text" class="form-control cell_count" id="columnsInput" value="" readonly>
+                        <button type="button" class="dec button" onclick="decrease('columns')">-</button>
+                    </div>
+                    <div class="form-group field_settings winLength">
+                        <label for="winLengthInput">Winning length</label>
+                        <button type="button" class="inc button" onclick="increase('winLength')">+</button>
+                        <input type="text" class="form-control cell_count" id="winLengthInput" value="" readonly>
+                        <button type="button" class="dec button" onclick="decrease('winLength')">-</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="players_set col-md-12">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Player">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control symbol" placeholder="X">
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> Is computer?
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-default">Delete</button>
+                </form>
+                <br>
+                <form class="form-inline">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Player">
+                    </div>
+                    <div class="form-group">
+                        <!--<input type="text" class="form-control symbol" placeholder="X">-->
+                        <label for="symbol">Symbol</label>
+                        <select class="form-control symbol" id="symbol">
+                            <option value="symbol" selected>Symbol</option>
+                            <option value="X" selected>X</option>
+                        </select>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> Is computer?
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-default">Delete</button>
+                </form>
+                <br>
+                <button type="submit" class="btn btn-default">Add</button>
+            </div>
+            <div>
+                <button type="button" id="start_game" class="btn btn-success"
+                        onclick="startGame()">Start game!</button>
+                <button type="button" id="start_button" class="btn btn-primary"
+                        onclick="window.location.reload()">Reload</button>
+            </div>
+        </div>
+
+
+        <div class="container-fluid col-md-5">
+            <p class="status">Game status:  <span id="gameStatus"></span></p>
+            <table id="play_field" class="table table-bordered"></table>
+        </div>
     </div>
 
-    <script>
-        let view = new View();
-        view.init();
-    </script>
 </body>
+<script>
+    window.onload = function() {};
+
+    let rowsInput = document.getElementById('rowsInput');
+    let columnsInput = document.getElementById('columnsInput');
+    let winLengthInput = document.getElementById('winLengthInput');
+    let inc = document.getElementsByClassName('inc');
+    let dec = document.getElementsByClassName('dec');
+
+    rowsInput.value = view.getRows();
+    columnsInput.value = view.getColumns();
+    winLengthInput.value = view.getWinLength();
+
+    function increase(x) {
+        switch (x){
+            case 'rows':
+                rowsInput.value = view.setRows(+rowsInput.value + 1);
+                break;
+            case 'columns':
+                columnsInput.value = view.setColumns(+columnsInput.value + 1);
+                break;
+            case 'winLength':
+                winLengthInput.value = view.setWinLength(+winLengthInput.value + 1);
+                break;
+            default:
+                return;
+        }
+    }
+
+    function decrease(x) {
+        switch (x) {
+            case 'rows':
+                rowsInput.value = view.setRows(+rowsInput.value - 1);
+                break;
+            case 'columns':
+                columnsInput.value = view.setColumns(+columnsInput.value - 1);
+                break;
+            case 'winLength':
+                winLengthInput.value = view.setWinLength(+winLengthInput.value - 1);
+                break;
+            default:
+                return;
+        }
+    }
+
+    function startGame() {
+        if (document.getElementById('play_field').hasChildNodes()) {
+            window.location.reload();
+        }
+        view.init(view.getRows(rowsInput.value), view.getColumns(columnsInput.value));
+    }
+
+</script>
 </html>

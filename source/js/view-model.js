@@ -7,9 +7,6 @@
 function ViewModel() {
     let _game = null;
 
-    this.rowsPreset = gameDataManagerSingleton.getInstance().getRows();
-    this.columnsPreset = gameDataManagerSingleton.getInstance().getColumns();
-
     this.init = function() {
         _game = new Game();
         _game.startTurn();
@@ -34,43 +31,43 @@ function ViewModel() {
     };
 
     this.getRows = function() {
-        return _game.getRows();
+        return gameDataManagerSingleton.getInstance().getRows();
     };
 
     this.getColumns = function() {
-        return _game.getColumns();
+        return gameDataManagerSingleton.getInstance().getColumns();
     };
 
     this.getWinLength = function() {
-        return _game.getWinLength();
+        return gameDataManagerSingleton.getInstance().getWinLength();
     };
 
     this.setRows = function(rows) {
-        return _game.setRows(rows);
+        return gameDataManagerSingleton.getInstance().setRows(rows);
     };
 
     this.setColumns = function(cols) {
-        return _game.setColumns(cols);
+        return gameDataManagerSingleton.getInstance().setColumns(cols);
     };
 
     this.setWinLength = function(len) {
-        return _game.setWinLength(len);
+        return gameDataManagerSingleton.getInstance().setWinLength(len);
     };
 
     this.getPlayerList = function() {
-        return _game.getPlayerList();
+        return gameDataManagerSingleton.getInstance().getPlayerList();
     };
 
     this.updatePlayer = function(name, prop, value) {
-        return _game.updatePlayer(name, prop, value);
+        return gameDataManagerSingleton.getInstance().updatePlayer(name, prop, value);
     };
 
     this.addPlayer = function(type, name, symbol) {
-        return _game.addPlayer(type, name, symbol);
+        return gameDataManagerSingleton.getInstance().addPlayer(type, name, symbol);
     };
 
     this.removePlayer = function(name) {
-        return _game.removePlayer(name);
+        return gameDataManagerSingleton.getInstance().removePlayer(name);
     };
 
     function getGameState() {
@@ -78,15 +75,4 @@ function ViewModel() {
     }
 }
 
-// let a = new singletonGameDataManager.getInstance();
-// a.getRows();
-// a.getColumns();
-// a.getWinLength();
-// a.setRows(6);
-// a.setColumns(2);
-// a.setWinLength(4);
-// a.getPlayerList();
-// a.addPlayer('computer', 'Test', 'T');
-// a.removePlayer('Levi');
-// a.updatePlayer('Levi', name, 'New');
 

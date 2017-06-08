@@ -9,9 +9,50 @@ function View() {
     let _cells = document.getElementsByClassName("cell");
     let _occupiedCells;
 
-    this.init = function() {
-        let rowsUserSet = _viewModel.rowsPreset;
-        let columnsUserSet = _viewModel.columnsPreset;
+    this.getRows = function() {
+        return _viewModel.getRows();
+    };
+
+    this.getColumns = function() {
+        return _viewModel.getColumns();
+    };
+
+    this.getWinLength = function() {
+        return _viewModel.getWinLength();
+    };
+
+    this.setRows = function(rows) {
+        return _viewModel.setRows(rows);
+    };
+
+    this.setColumns = function(cols) {
+        return _viewModel.setColumns(cols);
+    };
+
+    this.setWinLength = function(len) {
+        return _viewModel.setWinLength(len);
+    };
+
+    this.getPlayerList = function() {
+        return _viewModel.getPlayerList();
+    };
+
+    this.updatePlayer = function(name, prop, value) {
+        return _viewModel.updatePlayer(name, prop, value);
+    };
+
+    this.addPlayer = function(type, name, symbol) {
+        return _viewModel.addPlayer(type, name, symbol);
+    };
+
+    this.removePlayer = function(name) {
+        return _viewModel.removePlayer(name);
+    };
+
+
+    this.init = function(rows, columns) {
+        let rowsUserSet = rows;
+        let columnsUserSet = columns;
 
         _viewModel.init();
         createPlayField(rowsUserSet, columnsUserSet);
@@ -22,9 +63,7 @@ function View() {
 
     function createPlayField(rows, columns) {
         let playField = document.getElementById('play_field');
-        let fieldTbl = document.createElement('table');
-
-        playField.appendChild(fieldTbl);
+        let fieldTbl = playField.appendChild(document.createElement('tbody'));
 
         for (let r = 0; r < rows; r++) {
             let rowField = document.createElement('tr');

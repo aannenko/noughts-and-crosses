@@ -10,7 +10,7 @@ let playerTypes = {
 };
 
 let gameDataManagerSingleton = (function() {
-    let instance;
+    let _instance;
 
     function GameDataManager() {
         let _symbolCollection = [
@@ -48,23 +48,32 @@ let gameDataManagerSingleton = (function() {
         };
 
         this.setRows = function(rows) {
-            if (Number.isInteger(rows) && rows > 2 && rows <= 10) {
-                _rows = rows;
-                validateWinLength(rows);
+            if (Number.isInteger(rows)
+                && rows > 2
+                && rows <= 10) {
+                    _rows = rows;
+                    validateWinLength(rows);
             }
+            return _rows;
         };
 
         this.setColumns = function(columns) {
-            if (Number.isInteger(columns) && columns > 2 && columns <= 10) {
-                _columns = columns;
-                validateWinLength(columns);
+            if (Number.isInteger(columns)
+                && columns > 2
+                && columns <= 10) {
+                    _columns = columns;
+                    validateWinLength(columns);
             }
+            return _columns;
         };
 
         this.setWinLength = function(winLength) {
-            if (Number.isInteger(winLength) && winLength > 2 && winLength <= getDiagonal()) {
-                _winLength = winLength;
+            if (Number.isInteger(winLength)
+                && winLength > 2
+                && winLength <= getDiagonal()) {
+                    _winLength = winLength;
             }
+            return _winLength;
         };
 
         this.getPlayerList = function() {
@@ -147,16 +156,16 @@ let gameDataManagerSingleton = (function() {
 
     return {
         getInstance: function() {
-            if (!instance) {
-                instance = new GameDataManager();
+            if (!_instance) {
+                _instance = new GameDataManager();
             }
-            return instance;
+            return _instance;
         }
     };
 })();
 
 let fieldSingleton = (function() {
-    let instance;
+    let _instance;
 
     function Field(rows, columns) {
         let _self = this;
@@ -211,10 +220,10 @@ let fieldSingleton = (function() {
         getInstance: function() {
             let rows = gameDataManagerSingleton.getInstance().getRows();
             let columns = gameDataManagerSingleton.getInstance().getColumns();
-            if (!instance) {
-                instance = new Field(rows, columns);
+            if (!_instance) {
+                _instance = new Field(rows, columns);
             }
-            return instance;
+            return _instance;
         }
     };
 })();

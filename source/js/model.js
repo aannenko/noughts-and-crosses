@@ -15,19 +15,19 @@ let gameDataManagerSingleton = (function() {
     function GameDataManager() {
         let _symbolCollection = [
             'X', 'O', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
-            'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z'
+            //'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z'
         ];
 
         let _playerList = [
-            {type: 'human', name: 'Player', symbol: _symbolCollection[0]},
-            {type: 'computer', name: 'Computer', symbol: _symbolCollection[1]}
+            {id: 0, type: 'human', name: 'Player', symbol: _symbolCollection[0]},
+            {id: 1, type: 'computer', name: 'Computer', symbol: _symbolCollection[1]}
         ];
 
         let _rows = 3;
         let _columns = 3;
         let _winLength = 3;
 
-        let _availableSymbolsList = (function() {
+        let _availableSymbolList = (function() {
             let collection = _symbolCollection.slice(0);
             for (let j = 0; j < _playerList.length; j++) {
                 collection.splice(collection.indexOf(_playerList[j].symbol), 1);
@@ -47,12 +47,16 @@ let gameDataManagerSingleton = (function() {
             return _winLength;
         };
 
+        this.getAvailableSymbolList = function() {
+            return _availableSymbolList;
+        };
+
         this.setRows = function(rows) {
             if (Number.isInteger(rows)
                 && rows > 2
                 && rows <= 10) {
-                    _rows = rows;
-                    validateWinLength(rows);
+                _rows = rows;
+                validateWinLength(rows);
             }
             return _rows;
         };
@@ -61,8 +65,8 @@ let gameDataManagerSingleton = (function() {
             if (Number.isInteger(columns)
                 && columns > 2
                 && columns <= 10) {
-                    _columns = columns;
-                    validateWinLength(columns);
+                _columns = columns;
+                validateWinLength(columns);
             }
             return _columns;
         };
@@ -71,7 +75,7 @@ let gameDataManagerSingleton = (function() {
             if (Number.isInteger(winLength)
                 && winLength > 2
                 && winLength <= getDiagonal()) {
-                    _winLength = winLength;
+                _winLength = winLength;
             }
             return _winLength;
         };
@@ -80,29 +84,37 @@ let gameDataManagerSingleton = (function() {
             return _playerList.slice(0);
         };
 
-        this.updatePlayer = function(name, prop, value) {
-            let oldPlayerSymbol;
-            prop = prop.toLowerCase();
+        this.updatePlayer = function(id, prop, value) {
+            let player = _playerList.find(function(item) {
+                id = parseInt(id, 10);
+                return item.id === id;
+            });
 
-            if (prop !== 'type') {
-                let player = _playerList.find(function(item) {
-                    return item.name === name;
-                });
-                if (player === undefined) {
-                    return;
+            if (!(player === undefined || prop === 'id')) {
+                let oldPlayerSymbol = player.symbol;
+                prop = prop.toLowerCase();
+
+                if (prop === 'type') {
+                    for (let key in playerTypes) {
+                        if (key === value) {
+                            player.type = value;
+                        }
+                    }
                 }
-                oldPlayerSymbol = player.symbol;
-                player[prop] = value;
-            }
-            if (prop === 'symbol') {
-                _availableSymbolsList.splice(_availableSymbolsList.indexOf(value), 1);
-                _availableSymbolsList.push(oldPlayerSymbol);
+                else {
+                    player[prop] = value;
+                }
+                if (prop === 'symbol') {
+                    _availableSymbolList.splice(_availableSymbolList.indexOf(value), 1);
+                    _availableSymbolList.push(oldPlayerSymbol);
+                }
             }
         };
 
         this.addPlayer = function(type, name, symbol) {
             let tempName = name;
             let index = 1;
+            //let id;
             type = type.toLowerCase();
             if (canAddPlayer()
                 && playerTypes[type]
@@ -116,7 +128,7 @@ let gameDataManagerSingleton = (function() {
                 }
                 let newPlayer = {type: type, name: tempName, symbol: symbol};
                 _playerList.splice(_playerList.length, 0, newPlayer);
-                _availableSymbolsList.splice(_availableSymbolsList.indexOf(symbol), 1);
+                _availableSymbolList.splice(_availableSymbolList.indexOf(symbol), 1);
             }
         };
 
@@ -124,7 +136,7 @@ let gameDataManagerSingleton = (function() {
             if (canRemovePlayer()) {
                 for (let i = 0; i < _playerList.length; i++) {
                     if (_playerList[i].name === name) {
-                        _availableSymbolsList.push(_playerList[i].symbol);
+                        _availableSymbolList.push(_playerList[i].symbol);
                         _playerList.splice(i, 1);
                     }
                 }
@@ -132,7 +144,7 @@ let gameDataManagerSingleton = (function() {
         };
 
         function getAvailableSymbols() {
-            return _availableSymbolsList.slice(0);
+            return _availableSymbolList.slice(0);
         }
 
         function validateWinLength(x) {

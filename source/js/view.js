@@ -37,8 +37,12 @@ function View() {
         return _viewModel.getPlayerList();
     };
 
-    this.updatePlayer = function(name, prop, value) {
-        return _viewModel.updatePlayer(name, prop, value);
+    this.getAvailableSymbolList = function() {
+        return _viewModel.getAvailableSymbolList();
+    };
+
+    this.updatePlayer = function(id, prop, value) {
+        return _viewModel.updatePlayer(id, prop, value);
     };
 
     this.addPlayer = function(type, name, symbol) {

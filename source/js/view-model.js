@@ -58,8 +58,12 @@ function ViewModel() {
         return gameDataManagerSingleton.getInstance().getPlayerList();
     };
 
-    this.updatePlayer = function(name, prop, value) {
-        return gameDataManagerSingleton.getInstance().updatePlayer(name, prop, value);
+    this.getAvailableSymbolList = function() {
+        return gameDataManagerSingleton.getInstance().getAvailableSymbolList();
+    };
+
+    this.updatePlayer = function(id, prop, value) {
+        return gameDataManagerSingleton.getInstance().updatePlayer(id, prop, value);
     };
 
     this.addPlayer = function(type, name, symbol) {

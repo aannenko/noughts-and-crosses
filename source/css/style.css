@@ -2,51 +2,10 @@
  * Created by Ksenia Annenko on 24.02.2017.
  */
 
-/************* Reset css rules *************/
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    vertical-align: baseline;
-    box-sizing: border-box;
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, menu, nav, section {
-    display: block;
-}
-body {
-    line-height: 1;
-}
-ol, ul {
-    list-style: none;
-}
-blockquote, q {
-    quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-    content: none;
-}
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-
 /************* Main styles *************/
+header, footer {
+    background: gray;
+}
 
 #play_field {
     width: 400px;
@@ -69,11 +28,7 @@ table {
     cursor: pointer;
 }
 #start_button, #start_game {
-    display: inline-block;
-    /*width: 30%;*/
-    /*height: 80px;*/
-    margin: 50px auto 0;
-    /*font-size: 20px;*/
+    margin: 10px 0;
 }
 .cell.cross{
     /*background: url("../img/cross_s.png") no-repeat center;*/
@@ -95,7 +50,10 @@ table {
     width: 50px;
     text-align: center;
 }
-.field_settings_group {}
+.field_settings_group {
+    margin: 20px 0;
+    text-align: center;
+}
 .field_settings{}
 .players_set {
     margin-top: 50px;
@@ -103,4 +61,6 @@ table {
 .form-control.symbol {
 
 }
-
+.players_settings {
+    text-align: center;
+}

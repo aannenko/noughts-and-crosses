@@ -74,6 +74,10 @@ function ViewModel() {
         return gameDataManagerSingleton.getInstance().removePlayer(name);
     };
 
+    this.getPlayerTypeList = function() {
+        return playerTypes;
+    };
+
     function getGameState() {
         return _game.state;
     }

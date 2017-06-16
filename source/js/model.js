@@ -13,6 +13,7 @@ let gameDataManagerSingleton = (function() {
     let _instance;
 
     function GameDataManager() {
+        let playerId = 2;
         let _symbolCollection = [
             'X', 'O', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
             //'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z'
@@ -91,9 +92,7 @@ let gameDataManagerSingleton = (function() {
             });
 
             if (!(player === undefined || prop === 'id')) {
-                let oldPlayerSymbol = player.symbol;
                 prop = prop.toLowerCase();
-
                 if (prop === 'type') {
                     for (let key in playerTypes) {
                         if (key === value) {
@@ -101,46 +100,52 @@ let gameDataManagerSingleton = (function() {
                         }
                     }
                 }
-                else {
-                    player[prop] = value;
+                else if (prop === 'name' && !isPlayerNameOccupied(value)) {
+                    player.name = value;
                 }
-                if (prop === 'symbol') {
+                else if (prop === 'symbol' && getAvailableSymbols().includes(value)) {
+                    let oldPlayerSymbol = player.symbol;
+                    player.symbol = value;
                     _availableSymbolList.splice(_availableSymbolList.indexOf(value), 1);
                     _availableSymbolList.push(oldPlayerSymbol);
                 }
             }
+            return player[prop];
         };
 
         this.addPlayer = function(type, name, symbol) {
-            let tempName = name;
-            let index = 1;
-            //let id;
             type = type.toLowerCase();
             if (canAddPlayer()
                 && playerTypes[type]
                 && playerTypes[type] !== undefined
                 && getAvailableSymbols().includes(symbol)) {
-                for (let i = 0; i < _playerList.length; i++) {
-                    if (_playerList[i].name === tempName) {
-                        tempName = name + '' + index;
-                        index++;
-                    }
+
+                let tempName = name;
+                let index = 1;
+                while (isPlayerNameOccupied(tempName)) {
+                    tempName = name + '' + index;
+                    index++;
                 }
-                let newPlayer = {type: type, name: tempName, symbol: symbol};
+                let newPlayer = {id: playerId, type: type, name: tempName, symbol: symbol};
+                playerId++;
                 _playerList.splice(_playerList.length, 0, newPlayer);
                 _availableSymbolList.splice(_availableSymbolList.indexOf(symbol), 1);
+                return true;
             }
+            return false;
         };
 
-        this.removePlayer = function(name) {
+        this.removePlayer = function(id) {
             if (canRemovePlayer()) {
                 for (let i = 0; i < _playerList.length; i++) {
-                    if (_playerList[i].name === name) {
+                    if (_playerList[i].id === id) {
                         _availableSymbolList.push(_playerList[i].symbol);
                         _playerList.splice(i, 1);
                     }
                 }
+                return true;
             }
+            return false;
         };
 
         function getAvailableSymbols() {
@@ -163,6 +168,13 @@ let gameDataManagerSingleton = (function() {
 
         function canRemovePlayer() {
             return _playerList.length > 2;
+        }
+
+        function isPlayerNameOccupied(name) {
+            for (let i = 0; i < _playerList.length; i++) {
+                if (_playerList[i].name === name) return true;
+            }
+            return false;
         }
     }
 

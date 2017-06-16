@@ -4,6 +4,132 @@
 
 /********************** View **********************/
 "use strict";
+
+let view = new View();
+let playerInstanceBlock = document.getElementById('player_instance_block');
+let playerInstanceList = document.getElementsByClassName('player_instance');
+let playerSymbolList = document.getElementsByClassName('player_symbol');
+let availableSymbolList = view.getAvailableSymbolList();
+let playerTypeList = view.getPlayerTypeList();
+
+let rowsInput = document.getElementById('rowsInput');
+let columnsInput = document.getElementById('columnsInput');
+let winLengthInput = document.getElementById('winLengthInput');
+
+/************ Building rows and columns ************/
+rowsInput.value = view.getRows();
+columnsInput.value = view.getColumns();
+winLengthInput.value = view.getWinLength();
+
+function increaseRows() {
+    rowsInput.value = view.setRows(+rowsInput.value + 1);
+}
+
+function increaseColumns() {
+    columnsInput.value = view.setColumns(+columnsInput.value + 1);
+}
+
+function increaseWinLength() {
+    winLengthInput.value = view.setWinLength(+winLengthInput.value + 1);
+}
+
+function decreaseRows() {
+    rowsInput.value = view.setRows(+rowsInput.value - 1);
+}
+
+function decreaseColumns() {
+    columnsInput.value = view.setColumns(+columnsInput.value - 1);
+}
+
+function decreaseWinLength() {
+    winLengthInput.value = view.setWinLength(+winLengthInput.value - 1);
+}
+
+/************ Building players ************/
+let tmpl = document.getElementById('player_instance_template');
+
+function getPlayerInstanceTemplate(player) {
+    if ('content' in document.createElement('template')) {
+        playerInstanceBlock.appendChild(tmpl.content.cloneNode(true));
+
+        let playerElem = playerInstanceList[playerInstanceList.length-1];
+        let option = new Option(player.symbol, player.symbol);
+        playerElem.setAttribute('id', player.id);
+        playerElem.querySelector('.form-group .player_name').value = player.name;
+        playerElem.querySelector('.form-group .player_symbol').appendChild(option);
+        createSymbolList(playerElem.querySelector('.form-group .player_symbol'));
+        createTypeList(playerElem.querySelector('.form-group .player_type'));
+    }
+}
+
+function addPlayer() {
+    let defaultType = 'human';
+    let defaultName = 'Player';
+    let defaultSymbol = availableSymbolList[0];
+    if (view.addPlayer(defaultType, defaultName, defaultSymbol)) {
+        let list = view.getPlayerList();
+        let newPlayer = list[list.length - 1];//we need to get fresh playerList
+        getPlayerInstanceTemplate(newPlayer);
+        updateSymbolList();
+    }
+}
+
+function removePlayer(element) {
+    let playerToRemove = element.parentNode.parentNode;
+    let id = parseInt(playerToRemove.id, 10);
+
+    if (view.removePlayer(id)) {
+        playerInstanceBlock.removeChild(playerToRemove);
+    }
+}
+
+function createSymbolList(element) {
+    let selectedSymbol = element.options[element.selectedIndex];
+    if (element.options.length > 1) {
+        element.options.length = 0;
+    }
+    if (selectedSymbol) element.appendChild(selectedSymbol);
+    for (let k = 0; k < availableSymbolList.length; k++) {
+        let option = new Option(availableSymbolList[k], availableSymbolList[k]);
+        element.appendChild(option);
+    }
+}
+
+function createTypeList(element) {
+    let playerId = element.parentNode.parentNode.id;
+    for (let k in playerTypeList) {
+        if (playerTypeList.hasOwnProperty(k)) {
+            let selectedType = view.getPlayerList()[playerId].type === k;
+            let option = new Option(k, k, selectedType, selectedType);
+            element.appendChild(option);
+        }
+
+    }
+}
+
+function updateSymbolList() {
+    for (let i = 0; i < playerSymbolList.length; i++) {
+        createSymbolList(playerSymbolList[i]);
+    }
+}
+
+function updatePlayer(element, prop) {
+    let playerInstance = element.parentNode.parentNode;
+    let newVal = view.updatePlayer(playerInstance.id, prop, element.value);
+    if (prop === 'name') {
+        playerInstance.querySelector('.form-group .player_name').value = newVal;
+    }
+    if (prop === 'symbol') {
+        updateSymbolList();
+    }
+}
+
+
+
+
+
+
+/************ View ************///???????!!!!!!
 function View() {
     let _viewModel = new ViewModel();
     let _cells = document.getElementsByClassName("cell");
@@ -51,6 +177,10 @@ function View() {
 
     this.removePlayer = function(name) {
         return _viewModel.removePlayer(name);
+    };
+
+    this.getPlayerTypeList = function() {
+        return _viewModel.getPlayerTypeList();
     };
 
 
@@ -124,3 +254,17 @@ function View() {
         statusField.innerHTML = _viewModel.getPlayerName() + ' is ' + _viewModel.getCurrentStatus();
     }
 }
+
+/************ Starting game ************/
+function startGame() {
+    view.init(view.getRows(rowsInput.value), view.getColumns(columnsInput.value));
+}
+
+window.onload = function() {
+    let list = view.getPlayerList();
+    for (let i = 0; i < list.length; i++) {
+        getPlayerInstanceTemplate(list[i]);
+    }
+};
+
+

@@ -4,7 +4,7 @@
 
 /********************** Model **********************/
 "use strict";
-let playerTypes = {
+let playerTypeList = {
     'human': 'Player',
     'computer': 'ComputerPlayer'
 };
@@ -15,8 +15,7 @@ let gameDataManagerSingleton = (function() {
     function GameDataManager() {
         let playerId = 2;
         let _symbolCollection = [
-            'X', 'O', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
-            //'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z'
+            'X', 'O', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'
         ];
 
         let _playerList = [
@@ -94,7 +93,7 @@ let gameDataManagerSingleton = (function() {
             if (!(player === undefined || prop === 'id')) {
                 prop = prop.toLowerCase();
                 if (prop === 'type') {
-                    for (let key in playerTypes) {
+                    for (let key in playerTypeList) {
                         if (key === value) {
                             player.type = value;
                         }
@@ -103,7 +102,7 @@ let gameDataManagerSingleton = (function() {
                 else if (prop === 'name' && !isPlayerNameOccupied(value)) {
                     player.name = value;
                 }
-                else if (prop === 'symbol' && getAvailableSymbols().includes(value)) {
+                else if (prop === 'symbol' && getAvailableSymbolList().includes(value)) {
                     let oldPlayerSymbol = player.symbol;
                     player.symbol = value;
                     _availableSymbolList.splice(_availableSymbolList.indexOf(value), 1);
@@ -116,9 +115,9 @@ let gameDataManagerSingleton = (function() {
         this.addPlayer = function(type, name, symbol) {
             type = type.toLowerCase();
             if (canAddPlayer()
-                && playerTypes[type]
-                && playerTypes[type] !== undefined
-                && getAvailableSymbols().includes(symbol)) {
+                && playerTypeList[type]
+                && playerTypeList[type] !== undefined
+                && getAvailableSymbolList().includes(symbol)) {
 
                 let tempName = name;
                 let index = 1;
@@ -148,7 +147,7 @@ let gameDataManagerSingleton = (function() {
             return false;
         };
 
-        function getAvailableSymbols() {
+        function getAvailableSymbolList() {
             return _availableSymbolList.slice(0);
         }
 
@@ -196,6 +195,10 @@ let fieldSingleton = (function() {
         let _fieldCells = createFieldCells();
 
         this.fieldCells = getFieldCellsCopy();
+
+        this.refreshFieldCells = function() {
+            _fieldCells = createFieldCells();
+        };
 
         this.updateCell = function(row, col, obj) {
             if (_fieldCells[row][col] === undefined) {
@@ -407,12 +410,16 @@ function Game() {
         }
     };
 
+    this.refreshFieldCells = function() {
+        return _field.refreshFieldCells();
+    };
+
     function getPlayersArray() {
         let array = [];
         let players = gameDataManagerSingleton.getInstance().getPlayerList();
 
         players.forEach(function(item) {
-            array.push(new window[playerTypes[item.type]](item.name, item.symbol));
+            array.push(new window[playerTypeList[item.type]](item.name, item.symbol));
         });
         return array;
     }

@@ -22,35 +22,53 @@
 <header class="container-fluid col-md-12">
     <div class="text-center">
         <h2>Tic-Tac-Toe</h2>
-        <button type="button" id="start_game" class="btn btn-success"
-                onclick="startGame()">Start game!
+        <button type="button" id="start_game" class="btn btn-info"
+                onclick="startGame()">Start / Restart game
         </button>
-        <button type="button" id="start_button" class="btn btn-primary"
-                onclick="window.location.reload()">Reload
+        <button type="button" id="reload_game" class="btn btn-danger"
+                onclick="reloadGame()">Reload
         </button>
     </div>
 </header>
 
 <section class="container-fluid col-md-12 settings">
-    <div class="col-md-12 field_settings_group center-block">
+    <div class="col-md-12 field_settings_group">
         <form class="form-inline">
             <div class="form-group field_settings rows">
                 <label for="rowsInput">Rows</label>
-                <button type="button" class="inc button" onclick="increaseRows()">+</button>
-                <input type="text" class="form-control cell_count" id="rowsInput" value="" readonly>
-                <button type="button" class="dec button" onclick="decreaseRows()">-</button>
+                <div class="row">
+                    <button type="button" class="inc button" onclick="increaseRows()">+</button>
+                </div>
+                <div class="row">
+                    <input type="text" class="form-control cell_count" id="rowsInput" value="" readonly>
+                </div>
+                <div class="row">
+                    <button type="button" class="dec button" onclick="decreaseRows()">-</button>
+                </div>
             </div>
             <div class="form-group field_settings columns">
                 <label for="columnsInput">Columns</label>
-                <button type="button" class="inc button" onclick="increaseColumns()">+</button>
-                <input type="text" class="form-control cell_count" id="columnsInput" value="" readonly>
-                <button type="button" class="dec button" onclick="decreaseColumns()">-</button>
+                <div class="row">
+                    <button type="button" class="inc button" onclick="increaseColumns()">+</button>
+                </div>
+                <div class="row">
+                    <input type="text" class="form-control cell_count" id="columnsInput" value="" readonly>
+                </div>
+                <div class="row">
+                    <button type="button" class="dec button" onclick="decreaseColumns()">-</button>
+                </div>
             </div>
             <div class="form-group field_settings winLength">
                 <label for="winLengthInput">Winning length</label>
-                <button type="button" class="inc button" onclick="increaseWinLength()">+</button>
-                <input type="text" class="form-control cell_count" id="winLengthInput" value="" readonly>
-                <button type="button" class="dec button" onclick="decreaseWinLength()">-</button>
+                <div class="row">
+                    <button type="button" class="inc button" onclick="increaseWinLength()">+</button>
+                </div>
+                <div class="row">
+                    <input type="text" class="form-control cell_count" id="winLengthInput" value="" readonly>
+                </div>
+                <div class="row">
+                    <button type="button" class="dec button" onclick="decreaseWinLength()">-</button>
+                </div>
             </div>
         </form>
     </div>
@@ -65,7 +83,6 @@
                             onchange="updatePlayer(this, 'symbol')"></select>
                     <select title="Is computer" class="form-control player_type"
                             onchange="updatePlayer(this, 'type')"></select>
-
                     <button title="Delete player" type="button" class="btn btn-default"
                             onclick="removePlayer(this)">Delete</button>
                 </div>
@@ -76,7 +93,7 @@
     </div>
 </section>
 
-<section class="container-fluid col-md-12 center-block game_field">
+<section class="container-fluid col-md-12 game_field">
     <div class="center-block">
         <table id="play_field" class="table table-bordered"></table>
     </div>

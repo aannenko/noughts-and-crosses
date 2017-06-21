@@ -10,6 +10,7 @@ header, footer {
 #play_field {
     width: 400px;
     height: 400px;
+    margin: 0 auto;
 }
 #play_field table {
     width: 100%;
@@ -20,7 +21,6 @@ header, footer {
     min-width: 50px;
     max-height: 30%;
     min-height: 50px;
-    /*border: 1px solid #000;*/
     text-align: center;
     vertical-align: middle;
     font-size: 3em;
@@ -38,8 +38,7 @@ header, footer {
 }
 .status {
     display: block;
-    text-align: left;
-    height: 80px;
+    /*height: 80px;*/
     font-size: 30px;
     /*line-height: 80px;*/
 }
@@ -54,13 +53,21 @@ header, footer {
     margin: 20px 0;
     text-align: center;
 }
-.field_settings{}
+.field_settings{
+    width: 12%;
+}
 .players_set {
     margin-top: 50px;
 }
 .form-control.symbol {
 
 }
-.player_settings {
+#player_settings {
     text-align: center;
+}
+.game_field {
+    margin: 20px 0;
+}
+.player_instance {
+    margin: 10px 0;
 }

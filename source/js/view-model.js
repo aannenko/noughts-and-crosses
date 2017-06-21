@@ -75,7 +75,11 @@ function ViewModel() {
     };
 
     this.getPlayerTypeList = function() {
-        return playerTypes;
+        return playerTypeList;
+    };
+
+    this.refreshFieldCells = function() {
+        return _game.refreshFieldCells();
     };
 
     function getGameState() {

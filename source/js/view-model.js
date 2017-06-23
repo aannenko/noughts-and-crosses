@@ -7,7 +7,7 @@
 function ViewModel() {
     let _game = null;
 
-    this.init = function() {
+    this.startGame = function() {
         _game = new Game();
         _game.startTurn();
     };
@@ -54,12 +54,12 @@ function ViewModel() {
         return gameDataManagerSingleton.getInstance().setWinLength(len);
     };
 
-    this.getPlayerList = function() {
-        return gameDataManagerSingleton.getInstance().getPlayerList();
+    this.getPlayersCollection = function() {
+        return gameDataManagerSingleton.getInstance().getPlayersCollection();
     };
 
-    this.getAvailableSymbolList = function() {
-        return gameDataManagerSingleton.getInstance().getAvailableSymbolList();
+    this.getAvailableSymbolsList = function() {
+        return gameDataManagerSingleton.getInstance().getAvailableSymbolsList();
     };
 
     this.updatePlayer = function(id, prop, value) {
@@ -76,10 +76,6 @@ function ViewModel() {
 
     this.getPlayerTypeList = function() {
         return playerTypeList;
-    };
-
-    this.refreshFieldCells = function() {
-        return _game.refreshFieldCells();
     };
 
     function getGameState() {

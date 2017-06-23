@@ -11,87 +11,82 @@ let playField = document.getElementById('play_field');
 let rowsInput = document.getElementById('rowsInput');
 let columnsInput = document.getElementById('columnsInput');
 let winLengthInput = document.getElementById('winLengthInput');
-let playerInstanceBlock = document.getElementById('player_instance_block');
-let cells = document.getElementsByClassName("cell");
-let availableSymbolList = viewModel.getAvailableSymbolList();
+let playerInstancesCollection = document.getElementById('player_instances_collection');
+let cellsCollection = document.getElementsByClassName("cell");
+
+function getAvailableSymbolsList() {
+    return viewModel.getAvailableSymbolsList();
+}
 
 /************ Starting game ************/
 window.onload = function() {
-    let list = viewModel.getPlayerList();
+    let list = viewModel.getPlayersCollection();
     rowsInput.value = viewModel.getRows();
     columnsInput.value = viewModel.getColumns();
     winLengthInput.value = viewModel.getWinLength();
 
     for (let i = 0; i < list.length; i++) {
-        getPlayerInstanceTemplate(list[i]);
+        addPlayerInstance(list[i]);
+        updateSymbolsList();
     }
 };
 
-function getPlayerInstanceTemplate(player) {
+function addPlayerInstance(player) {
     let template = document.getElementById('player_instance_template');
-    let playerInstanceList = document.getElementsByClassName('player_instance');
 
     if ('content' in document.createElement('template')) {
-        playerInstanceBlock.appendChild(template.content.cloneNode(true));
+        playerInstancesCollection.appendChild(template.content.cloneNode(true));
 
-        let playerElem = playerInstanceList[playerInstanceList.length - 1];
-        let optionSymbol = new Option(player.symbol, player.symbol);
+        let playerInstancesList = document.getElementsByClassName('player_instance');
+        let playerInstance = playerInstancesList[playerInstancesList.length - 1];
+        let nameField = playerInstance.querySelector('.form-group .player_name');
+        let symbolField = playerInstance.querySelector('.form-group .player_symbol');
+        let symbolOption = new Option(player.symbol, player.symbol, true, true);
+        let typeField = playerInstance.querySelector('.form-group .player_type');
 
-        playerElem.setAttribute('id', player.id);
-        playerElem.querySelector('.form-group .player_name').value = player.name;
-        playerElem.querySelector('.form-group .player_symbol').appendChild(optionSymbol);
-        createSymbolList(playerElem.querySelector('.form-group .player_symbol'));
-        createTypeList(player, playerElem.querySelector('.form-group .player_type'));
+        playerInstance.setAttribute('id', player.id);
+        nameField.value = player.name;
+        symbolField.appendChild(symbolOption);
+        createTypeList(player.type, typeField);
     }
 }
 
-function createSymbolList(element) {
-    let selectedSymbol = element.options[element.selectedIndex];
+function updateSymbolsList() {
+    let symbolsCollection = document.getElementsByClassName('player_symbol');
+    let list = getAvailableSymbolsList();
 
-    if (element.options.length > 1) element.options.length = 0;
-    if (selectedSymbol) element.appendChild(selectedSymbol);
+    for (let k = 0; k < symbolsCollection.length; k++) {
+        let selectedSymbol = symbolsCollection[k].options[symbolsCollection[k].selectedIndex];
+        symbolsCollection[k].options.length = 0;
 
-    for (let i = 0; i < availableSymbolList.length; i++) {
-        let option = new Option(availableSymbolList[i], availableSymbolList[i]);
-        element.appendChild(option);
+        if (selectedSymbol) symbolsCollection[k].appendChild(selectedSymbol);
+        for (let i = 0; i < list.length; i++) {
+            let option = new Option(list[i], list[i]);
+            symbolsCollection[k].appendChild(option);
+        }
     }
 }
 
-function createTypeList(player, element) {
+function createTypeList(playerType, field) {
     let playerTypeList = viewModel.getPlayerTypeList();
 
-    for (let k in playerTypeList) {
-        if (playerTypeList.hasOwnProperty(k)) {
-            let selectedType = (player.type === k);
-            let option = new Option(k, k, selectedType, selectedType);
-            element.appendChild(option);
+    for (let type in playerTypeList) {
+        if (playerTypeList.hasOwnProperty(type)) {
+            let selectedType = (playerType === type);
+            let option = new Option(type, type, selectedType, selectedType);
+            field.appendChild(option);
         }
     }
 }
 
 function startGame() {
-    if (playField.hasChildNodes()) {
-        viewModel.refreshFieldCells();
-        updatePlayerField();
-    }
-    init(rowsInput.value, columnsInput.value);
-}
+    let rows = rowsInput.value;
+    let columns = columnsInput.value;
 
-function reloadGame() {
-    window.location.reload();
-}
-
-function updatePlayerField() {
-    let oldTbody = document.getElementById('fieldTbody');
-    if (oldTbody) {
-        playField.removeChild(oldTbody);
-    }
-}
-
-function init(rows, columns) {
-    viewModel.init();
+    playField.innerHTML = '';
+    viewModel.startGame();
     createPlayField(rows, columns);
-    createOccupiedCells(rows, columns);
+    buildOccupiedCellsArray(rows, columns);
     setListenerToCells();
     changeCurrentStatus();
 }
@@ -113,7 +108,7 @@ function createPlayField(rows, columns) {
     }
 }
 
-function createOccupiedCells(rows, columns) {
+function buildOccupiedCellsArray(rows, columns) {
     let arr = new Array(rows);
 
     for (let i = 0; i < rows; i++) {
@@ -123,28 +118,28 @@ function createOccupiedCells(rows, columns) {
 }
 
 function setListenerToCells() {
-    for (let i = 0; i < cells.length; i++) {
-        cells[i].addEventListener("click", function() {
-            let cellsRow = cells[i].id.split('-')[0];
-            let cellsCol = cells[i].id.split('-')[1];
+    for (let i = 0; i < cellsCollection.length; i++) {
+        cellsCollection[i].addEventListener("click", function() {
+            let cellsRow = cellsCollection[i].id.split('-')[0];
+            let cellsCol = cellsCollection[i].id.split('-')[1];
 
             viewModel.finishTurn(+cellsRow, +cellsCol);
-            updateCellContent();
+            updateFieldCellsContent();
             changeCurrentStatus();
         });
     }
 }
 
-function updateCellContent() {
+function updateFieldCellsContent() {
     let fieldCellsArr = viewModel.getFieldCells();
 
     for (let r = 0; r < fieldCellsArr.length; r++) {
         for (let c = 0; c < fieldCellsArr[r].length; c++) {
             if (fieldCellsArr[r][c] !== undefined
-                && fieldCellsArr[r][c] !== occupiedCells[r][c]) {
-                cells[r + '-' + c].innerHTML = fieldCellsArr[r][c];
+                && occupiedCells[r][c] !== true) {
+                cellsCollection[r + '-' + c].innerHTML = fieldCellsArr[r][c];
+                occupiedCells[r][c] = true;
             }
-            occupiedCells[r][c] = fieldCellsArr[r][c];
         }
     }
 }
@@ -187,19 +182,19 @@ function updatePlayer(element, prop) {
         playerInstance.querySelector('.form-group .player_name').value = newVal;
     }
     if (prop === 'symbol') {
-        updateSymbolList();
+        updateSymbolsList();
     }
 }
 
 function addPlayer() {
     let defaultType = 'human';
     let defaultName = 'Player';
-    let defaultSymbol = availableSymbolList[0];
+    let defaultSymbol = getAvailableSymbolsList()[0];
     if (viewModel.addPlayer(defaultType, defaultName, defaultSymbol)) {
-        let list = viewModel.getPlayerList();
+        let list = viewModel.getPlayersCollection();
         let newPlayer = list[list.length - 1];
-        getPlayerInstanceTemplate(newPlayer);
-        updateSymbolList();
+        addPlayerInstance(newPlayer);
+        updateSymbolsList();
     }
 }
 
@@ -208,13 +203,7 @@ function removePlayer(element) {
     let id = parseInt(playerToRemove.id, 10);
 
     if (viewModel.removePlayer(id)) {
-        playerInstanceBlock.removeChild(playerToRemove);
-    }
-}
-
-function updateSymbolList() {
-    let playerSymbolList = document.getElementsByClassName('player_symbol');
-    for (let i = 0; i < playerSymbolList.length; i++) {
-        createSymbolList(playerSymbolList[i]);
+        playerInstancesCollection.removeChild(playerToRemove);
+        updateSymbolsList();
     }
 }

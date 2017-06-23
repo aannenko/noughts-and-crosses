@@ -18,7 +18,7 @@ let gameDataManagerSingleton = (function() {
             'X', 'O', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'
         ];
 
-        let _playerList = [
+        let _playersCollection = [
             {id: 0, type: 'human', name: 'Player', symbol: _symbolCollection[0]},
             {id: 1, type: 'computer', name: 'Computer', symbol: _symbolCollection[1]}
         ];
@@ -29,8 +29,8 @@ let gameDataManagerSingleton = (function() {
 
         let _availableSymbolList = (function() {
             let collection = _symbolCollection.slice(0);
-            for (let j = 0; j < _playerList.length; j++) {
-                collection.splice(collection.indexOf(_playerList[j].symbol), 1);
+            for (let j = 0; j < _playersCollection.length; j++) {
+                collection.splice(collection.indexOf(_playersCollection[j].symbol), 1);
             }
             return collection;
         })();
@@ -47,8 +47,8 @@ let gameDataManagerSingleton = (function() {
             return _winLength;
         };
 
-        this.getAvailableSymbolList = function() {
-            return _availableSymbolList;
+        this.getAvailableSymbolsList = function() {
+            return _availableSymbolList.slice(0);
         };
 
         this.setRows = function(rows) {
@@ -80,18 +80,18 @@ let gameDataManagerSingleton = (function() {
             return _winLength;
         };
 
-        this.getPlayerList = function() {
-            return _playerList.slice(0);
+        this.getPlayersCollection = function() {
+            return _playersCollection.slice(0);
         };
 
         this.updatePlayer = function(id, prop, value) {
-            let player = _playerList.find(function(item) {
+            let player = _playersCollection.find(function(item) {
                 id = parseInt(id, 10);
                 return item.id === id;
             });
+            prop = prop.toLowerCase();
 
             if (!(player === undefined || prop === 'id')) {
-                prop = prop.toLowerCase();
                 if (prop === 'type') {
                     for (let key in playerTypeList) {
                         if (key === value) {
@@ -102,7 +102,7 @@ let gameDataManagerSingleton = (function() {
                 else if (prop === 'name' && !isPlayerNameOccupied(value)) {
                     player.name = value;
                 }
-                else if (prop === 'symbol' && getAvailableSymbolList().includes(value)) {
+                else if (prop === 'symbol' && _availableSymbolList.includes(value)) {
                     let oldPlayerSymbol = player.symbol;
                     player.symbol = value;
                     _availableSymbolList.splice(_availableSymbolList.indexOf(value), 1);
@@ -117,7 +117,7 @@ let gameDataManagerSingleton = (function() {
             if (canAddPlayer()
                 && playerTypeList[type]
                 && playerTypeList[type] !== undefined
-                && getAvailableSymbolList().includes(symbol)) {
+                && _availableSymbolList.includes(symbol)) {
 
                 let tempName = name;
                 let index = 1;
@@ -127,7 +127,7 @@ let gameDataManagerSingleton = (function() {
                 }
                 let newPlayer = {id: playerId, type: type, name: tempName, symbol: symbol};
                 playerId++;
-                _playerList.splice(_playerList.length, 0, newPlayer);
+                _playersCollection.splice(_playersCollection.length, 0, newPlayer);
                 _availableSymbolList.splice(_availableSymbolList.indexOf(symbol), 1);
                 return true;
             }
@@ -136,20 +136,16 @@ let gameDataManagerSingleton = (function() {
 
         this.removePlayer = function(id) {
             if (canRemovePlayer()) {
-                for (let i = 0; i < _playerList.length; i++) {
-                    if (_playerList[i].id === id) {
-                        _availableSymbolList.push(_playerList[i].symbol);
-                        _playerList.splice(i, 1);
+                for (let i = 0; i < _playersCollection.length; i++) {
+                    if (_playersCollection[i].id === id) {
+                        _availableSymbolList.push(_playersCollection[i].symbol);
+                        _playersCollection.splice(i, 1);
                     }
                 }
                 return true;
             }
             return false;
         };
-
-        function getAvailableSymbolList() {
-            return _availableSymbolList.slice(0);
-        }
 
         function validateWinLength(x) {
             if (x < _winLength) {
@@ -162,16 +158,16 @@ let gameDataManagerSingleton = (function() {
         }
 
         function canAddPlayer() {
-            return _playerList.length < getDiagonal() - 1;
+            return _playersCollection.length < getDiagonal() - 1;
         }
 
         function canRemovePlayer() {
-            return _playerList.length > 2;
+            return _playersCollection.length > 2;
         }
 
         function isPlayerNameOccupied(name) {
-            for (let i = 0; i < _playerList.length; i++) {
-                if (_playerList[i].name === name) return true;
+            for (let i = 0; i < _playersCollection.length; i++) {
+                if (_playersCollection[i].name === name) return true;
             }
             return false;
         }
@@ -228,6 +224,13 @@ let fieldSingleton = (function() {
             return _self.getEmptyCells().length > 0;
         };
 
+        this.isCellInField = function(row, col) {
+            return row >= 0
+                && col >= 0
+                && row < _self.fieldCells.length
+                && col < _self.fieldCells[0].length;
+        };
+
         function createFieldCells() {
             let cells = new Array(rows);
             for (let i = 0; i < rows; i++) {
@@ -265,7 +268,7 @@ function WinnerChecker() {
     this.isWinnerFound = function(row, col, obj) {
         for (let i = 0; i < _directionPairsList.length; i++) {
             let winArray = [];
-            let currentCell = [{row: row, col: col, obj: obj}];
+            let currentCell = {row: row, col: col, obj: obj};
             winArray.push(currentCell);
 
             for (let j = 0; j < _directionPairsList[i].length; j++) {
@@ -286,28 +289,28 @@ function WinnerChecker() {
         let next;
         switch (direction) {
             case 0: /*up*/
-                next = [{row: currentCell[0].row - 1, col: currentCell[0].col, obj: currentCell[0].obj}];
+                next = {row: currentCell.row - 1, col: currentCell.col, obj: currentCell.obj};
                 break;
             case 1: /*top right*/
-                next = [{row: currentCell[0].row - 1, col: currentCell[0].col + 1, obj: currentCell[0].obj}];
+                next = {row: currentCell.row - 1, col: currentCell.col + 1, obj: currentCell.obj};
                 break;
             case 2: /*right*/
-                next = [{row: currentCell[0].row, col: currentCell[0].col + 1, obj: currentCell[0].obj}];
+                next = {row: currentCell.row, col: currentCell.col + 1, obj: currentCell.obj};
                 break;
             case 3: /*down right*/
-                next = [{row: currentCell[0].row + 1, col: currentCell[0].col + 1, obj: currentCell[0].obj}];
+                next = {row: currentCell.row + 1, col: currentCell.col + 1, obj: currentCell.obj};
                 break;
             case 4: /*down*/
-                next = [{row: currentCell[0].row + 1, col: currentCell[0].col, obj: currentCell[0].obj}];
+                next = {row: currentCell.row + 1, col: currentCell.col, obj: currentCell.obj};
                 break;
             case 5: /*down left*/
-                next = [{row: currentCell[0].row + 1, col: currentCell[0].col - 1, obj: currentCell[0].obj}];
+                next = {row: currentCell.row + 1, col: currentCell.col - 1, obj: currentCell.obj};
                 break;
             case 6: /*left*/
-                next = [{row: currentCell[0].row, col: currentCell[0].col - 1, obj: currentCell[0].obj}];
+                next = {row: currentCell.row, col: currentCell.col - 1, obj: currentCell.obj};
                 break;
             case 7: /*top left*/
-                next = [{row: currentCell[0].row - 1, col: currentCell[0].col - 1, obj: currentCell[0].obj}];
+                next = {row: currentCell.row - 1, col: currentCell.col - 1, obj: currentCell.obj};
                 break;
             default:
                 next = null;
@@ -315,21 +318,12 @@ function WinnerChecker() {
         }
 
         if (next !== null
-            && isCellInField(next)
-            && _field.fieldCells[next[0].row][next[0].col] === currentCell[0].obj) {
+            && _field.isCellInField(next.row, next.col)
+            && _field.fieldCells[next.row][next.col] === currentCell.obj) {
             return next;
         } else {
             return null;
         }
-    }
-
-    function isCellInField(cellObject) {
-        let row = cellObject[0].row;
-        let col = cellObject[0].col;
-        return row >= 0
-            && col >= 0
-            && row < _field.fieldCells.length
-            && col < _field.fieldCells[0].length;
     }
 }
 
@@ -339,6 +333,7 @@ function Player(name, symbol) {
 
     this.startMove = function(game) {
     };
+
     this.finishMove = function(row, col) {
         return fieldSingleton.getInstance().updateCell(row, col, this.playerSymbol);
     };
@@ -390,6 +385,8 @@ function Game() {
     let _winnerChecker = new WinnerChecker();
     let _iterator = new Iterator(getPlayersArray());
 
+    _field.refreshFieldCells();
+
     this.state = getFreshState();
 
     this.startTurn = function() {
@@ -410,13 +407,9 @@ function Game() {
         }
     };
 
-    this.refreshFieldCells = function() {
-        return _field.refreshFieldCells();
-    };
-
     function getPlayersArray() {
         let array = [];
-        let players = gameDataManagerSingleton.getInstance().getPlayerList();
+        let players = gameDataManagerSingleton.getInstance().getPlayersCollection();
 
         players.forEach(function(item) {
             array.push(new window[playerTypeList[item.type]](item.name, item.symbol));

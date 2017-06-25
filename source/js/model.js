@@ -248,9 +248,9 @@ let fieldSingleton = (function() {
 
     return {
         getInstance: function() {
-            let rows = gameDataManagerSingleton.getInstance().getRows();
-            let columns = gameDataManagerSingleton.getInstance().getColumns();
             if (!_instance) {
+                let rows = gameDataManagerSingleton.getInstance().getRows();
+                let columns = gameDataManagerSingleton.getInstance().getColumns();
                 _instance = new Field(rows, columns);
             }
             return _instance;

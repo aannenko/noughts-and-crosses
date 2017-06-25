@@ -20,11 +20,11 @@ function getAvailableSymbolsList() {
 
 /************ Starting game ************/
 window.onload = function() {
-    let list = viewModel.getPlayersCollection();
     rowsInput.value = viewModel.getRows();
     columnsInput.value = viewModel.getColumns();
     winLengthInput.value = viewModel.getWinLength();
 
+    let list = viewModel.getPlayersCollection();
     for (let i = 0; i < list.length; i++) {
         addPlayerInstance(list[i]);
         updateSymbolsList();
@@ -52,17 +52,17 @@ function addPlayerInstance(player) {
 }
 
 function updateSymbolsList() {
-    let symbolsCollection = document.getElementsByClassName('player_symbol');
-    let list = getAvailableSymbolsList();
+    let selectsCollection = document.getElementsByClassName('player_symbol');
+    let availableSymbols = getAvailableSymbolsList();
 
-    for (let k = 0; k < symbolsCollection.length; k++) {
-        let selectedSymbol = symbolsCollection[k].options[symbolsCollection[k].selectedIndex];
-        symbolsCollection[k].options.length = 0;
+    for (let k = 0; k < selectsCollection.length; k++) {
+        let selectedOption = selectsCollection[k].options[selectsCollection[k].selectedIndex];
+        selectsCollection[k].options.length = 0;
 
-        if (selectedSymbol) symbolsCollection[k].appendChild(selectedSymbol);
-        for (let i = 0; i < list.length; i++) {
-            let option = new Option(list[i], list[i]);
-            symbolsCollection[k].appendChild(option);
+        if (selectedOption) selectsCollection[k].appendChild(selectedOption);
+        for (let i = 0; i < availableSymbols.length; i++) {
+            let option = new Option(availableSymbols[i], availableSymbols[i]);
+            selectsCollection[k].appendChild(option);
         }
     }
 }
@@ -83,7 +83,6 @@ function startGame() {
     let rows = rowsInput.value;
     let columns = columnsInput.value;
 
-    playField.innerHTML = '';
     viewModel.startGame();
     createPlayField(rows, columns);
     buildOccupiedCellsArray(rows, columns);
@@ -92,6 +91,8 @@ function startGame() {
 }
 
 function createPlayField(rows, columns) {
+    playField.innerHTML = '';
+
     let fieldTbody = playField.appendChild(document.createElement('tbody'));
     fieldTbody.setAttribute('id', 'fieldTbody');
 
@@ -145,8 +146,7 @@ function updateFieldCellsContent() {
 }
 
 function changeCurrentStatus() {
-    let statusField = document.getElementById("gameStatus");
-    statusField.innerHTML = viewModel.getPlayerName() + ' is ' + viewModel.getCurrentStatus();
+    document.getElementById("gameStatus").innerHTML = viewModel.getPlayerName() + ' is ' + viewModel.getCurrentStatus();
 }
 
 /************ Building rows and columns ************/

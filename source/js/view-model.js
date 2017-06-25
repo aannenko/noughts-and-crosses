@@ -19,15 +19,15 @@ function ViewModel() {
     };
 
     this.getFieldCells = function() {
-        return getGameState().fieldCells;
+        return _game.state.fieldCells;
     };
 
     this.getCurrentStatus = function() {
-        return getGameState().currentStatus;
+        return _game.state.currentStatus;
     };
 
     this.getPlayerName = function() {
-        return this.getCurrentStatus() === 'Tie' ? 'It' : getGameState().currentPlayerName;
+        return this.getCurrentStatus() === 'Tie' ? 'It' : _game.state.currentPlayerName;
     };
 
     this.getRows = function() {
@@ -77,10 +77,6 @@ function ViewModel() {
     this.getPlayerTypeList = function() {
         return playerTypeList;
     };
-
-    function getGameState() {
-        return _game.state;
-    }
 }
 
 

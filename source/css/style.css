@@ -1,0 +1,73 @@
+/**
+ * Created by Ksenia Annenko on 24.02.2017.
+ */
+
+/************* Main styles *************/
+header, footer {
+    background: gray;
+}
+
+#play_field {
+    width: 400px;
+    height: 400px;
+    margin: 0 auto;
+}
+#play_field table {
+    width: 100%;
+    height: 100%;
+}
+#play_field td {
+    max-width: 30%;
+    min-width: 50px;
+    max-height: 30%;
+    min-height: 50px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 3em;
+    /*line-height: 0em;*/
+    cursor: pointer;
+}
+#start_button, #start_game {
+    margin: 10px 0;
+}
+.cell.cross{
+    /*background: url("../img/cross_s.png") no-repeat center;*/
+}
+.cell.nought{
+    /*background: url("../img/nought_s.png") no-repeat center;*/
+}
+.status {
+    display: block;
+    /*height: 80px;*/
+    font-size: 30px;
+    /*line-height: 80px;*/
+}
+.winner {
+    background-color: green;
+}
+.form-inline .form-control.cell_count {
+    width: 50px;
+    text-align: center;
+}
+.field_settings_group {
+    margin: 20px 0;
+    text-align: center;
+}
+.field_settings{
+    width: 12%;
+}
+.players_set {
+    margin-top: 50px;
+}
+.form-control.symbol {
+
+}
+#player_settings {
+    text-align: center;
+}
+.game_field {
+    margin: 20px 0;
+}
+.player_instance {
+    margin: 10px 0;
+}

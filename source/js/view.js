@@ -13,6 +13,7 @@ let columnsInput = document.getElementById('columnsInput');
 let winLengthInput = document.getElementById('winLengthInput');
 let playerInstancesCollection = document.getElementById('player_instances_collection');
 let cellsCollection = document.getElementsByClassName("cell");
+let template = document.getElementById('player_instance_template');
 
 function getAvailableSymbolsList() {
     return viewModel.getAvailableSymbolsList();
@@ -27,13 +28,11 @@ window.onload = function() {
     let list = viewModel.getPlayersCollection();
     for (let i = 0; i < list.length; i++) {
         addPlayerInstance(list[i]);
-        updateSymbolsList();
     }
+    updateSymbolsList();
 };
 
 function addPlayerInstance(player) {
-    let template = document.getElementById('player_instance_template');
-
     if ('content' in document.createElement('template')) {
         playerInstancesCollection.appendChild(template.content.cloneNode(true));
 
@@ -42,12 +41,12 @@ function addPlayerInstance(player) {
         let nameField = playerInstance.querySelector('.form-group .player_name');
         let symbolField = playerInstance.querySelector('.form-group .player_symbol');
         let symbolOption = new Option(player.symbol, player.symbol, true, true);
-        let typeField = playerInstance.querySelector('.form-group .player_type');
+        let typeSelect = playerInstance.querySelector('.form-group .player_type');
 
         playerInstance.setAttribute('id', player.id);
         nameField.value = player.name;
         symbolField.appendChild(symbolOption);
-        createTypeList(player.type, typeField);
+        createTypeList(player.type, typeSelect);
     }
 }
 
@@ -67,26 +66,25 @@ function updateSymbolsList() {
     }
 }
 
-function createTypeList(playerType, field) {
+function createTypeList(playerType, select) {
     let playerTypeList = viewModel.getPlayerTypeList();
 
     for (let type in playerTypeList) {
         if (playerTypeList.hasOwnProperty(type)) {
             let selectedType = (playerType === type);
             let option = new Option(type, type, selectedType, selectedType);
-            field.appendChild(option);
+            select.appendChild(option);
         }
     }
 }
 
 function startGame() {
-    let rows = rowsInput.value;
-    let columns = columnsInput.value;
+    let rows = viewModel.getRows();
+    let columns = viewModel.getColumns();
 
     viewModel.startGame();
     createPlayField(rows, columns);
     buildOccupiedCellsArray(rows, columns);
-    setListenerToCells();
     changeCurrentStatus();
 }
 
@@ -105,6 +103,7 @@ function createPlayField(rows, columns) {
             cellField.setAttribute('class', 'cell');
             cellField.setAttribute('id', r + '-' + c);
             rowField.appendChild(cellField);
+            setListenerToCell(cellField);
         }
     }
 }
@@ -118,17 +117,15 @@ function buildOccupiedCellsArray(rows, columns) {
     occupiedCells = arr;
 }
 
-function setListenerToCells() {
-    for (let i = 0; i < cellsCollection.length; i++) {
-        cellsCollection[i].addEventListener("click", function() {
-            let cellsRow = cellsCollection[i].id.split('-')[0];
-            let cellsCol = cellsCollection[i].id.split('-')[1];
+function setListenerToCell(cell) {
+    cell.addEventListener("click", function() {
+        let cellsRow = cell.id.split('-')[0];
+        let cellsCol = cell.id.split('-')[1];
 
-            viewModel.finishTurn(+cellsRow, +cellsCol);
-            updateFieldCellsContent();
-            changeCurrentStatus();
-        });
-    }
+        viewModel.finishTurn(+cellsRow, +cellsCol);
+        updateFieldCellsContent();
+        changeCurrentStatus();
+    });
 }
 
 function updateFieldCellsContent() {

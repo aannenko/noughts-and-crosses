@@ -24,23 +24,17 @@ header, footer {
     text-align: center;
     vertical-align: middle;
     font-size: 3em;
-    /*line-height: 0em;*/
+    line-height: 0em;
     cursor: pointer;
 }
 #start_button, #start_game {
     margin: 10px 0;
 }
-.cell.cross{
-    /*background: url("../img/cross_s.png") no-repeat center;*/
-}
-.cell.nought{
-    /*background: url("../img/nought_s.png") no-repeat center;*/
-}
+.cell.cross{}
+.cell.nought{}
 .status {
     display: block;
-    /*height: 80px;*/
     font-size: 30px;
-    /*line-height: 80px;*/
 }
 .winner {
     background-color: green;
@@ -48,13 +42,14 @@ header, footer {
 .form-inline .form-control.cell_count {
     width: 50px;
     text-align: center;
+    margin: 0 auto;
 }
 .field_settings_group {
     margin: 20px 0;
     text-align: center;
 }
 .field_settings{
-    width: 12%;
+    width: 15%;
 }
 .players_set {
     margin-top: 50px;
@@ -64,10 +59,20 @@ header, footer {
 }
 #player_settings {
     text-align: center;
+    margin: 0 auto;
 }
 .game_field {
     margin: 20px 0;
 }
 .player_instance {
     margin: 10px 0;
+}
+
+@media (max-width: 768px) {
+    .field_settings{
+        width: 100%;
+    }
+    #player_settings {
+        width: 60%;
+    }
 }

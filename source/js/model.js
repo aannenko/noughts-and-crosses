@@ -54,7 +54,8 @@ let gameDataManagerSingleton = (function() {
         this.setRows = function(rows) {
             if (Number.isInteger(rows)
                 && rows > 2
-                && rows <= 10) {
+                && rows <= 10
+                && rows >= _playersCollection.length + 1) {
                 _rows = rows;
                 validateWinLength(rows);
             }
@@ -64,7 +65,8 @@ let gameDataManagerSingleton = (function() {
         this.setColumns = function(columns) {
             if (Number.isInteger(columns)
                 && columns > 2
-                && columns <= 10) {
+                && columns <= 10
+                && columns >= _playersCollection.length + 1) {
                 _columns = columns;
                 validateWinLength(columns);
             }
@@ -232,6 +234,8 @@ let fieldSingleton = (function() {
         };
 
         function createFieldCells() {
+            rows = gameDataManagerSingleton.getInstance().getRows();
+            columns = gameDataManagerSingleton.getInstance().getColumns();
             let cells = new Array(rows);
             for (let i = 0; i < rows; i++) {
                 cells[i] = new Array(columns);

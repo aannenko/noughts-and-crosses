@@ -135,12 +135,7 @@ function updateFieldCellsContent() {
             if (fieldCellsArr[r][c] !== undefined
                 && occupiedCells[r][c] !== true) {
 
-                let cellId = r + '-' + c;
-                for (let i = 0; i < cellsCollection.length; i++) {
-                    if (cellsCollection[i].id === cellId) {
-                        cellsCollection[i].innerHTML = fieldCellsArr[r][c];
-                    }
-                }
+                document.getElementById(r + '-' + c).innerHTML = fieldCellsArr[r][c];
                 occupiedCells[r][c] = true;
             }
         }

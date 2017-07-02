@@ -33,21 +33,19 @@ window.onload = function() {
 };
 
 function addPlayerInstance(player) {
-    if ('content' in document.createElement('template')) {
-        playerInstancesCollection.appendChild(template.content.cloneNode(true));
+    playerInstancesCollection.appendChild(template.content.cloneNode(true));
 
-        let playerInstancesList = document.getElementsByClassName('player_instance');
-        let playerInstance = playerInstancesList[playerInstancesList.length - 1];
-        let nameField = playerInstance.querySelector('.form-group .player_name');
-        let symbolField = playerInstance.querySelector('.form-group .player_symbol');
-        let symbolOption = new Option(player.symbol, player.symbol, true, true);
-        let typeSelect = playerInstance.querySelector('.form-group .player_type');
+    let playerInstancesList = document.getElementsByClassName('player_instance');
+    let playerInstance = playerInstancesList[playerInstancesList.length - 1];
+    let nameField = playerInstance.querySelector('.form-group .player_name');
+    let symbolField = playerInstance.querySelector('.form-group .player_symbol');
+    let symbolOption = new Option(player.symbol, player.symbol, true, true);
+    let typeSelect = playerInstance.querySelector('.form-group .player_type');
 
-        playerInstance.setAttribute('id', player.id);
-        nameField.value = player.name;
-        symbolField.appendChild(symbolOption);
-        createTypeList(player.type, typeSelect);
-    }
+    playerInstance.setAttribute('id', player.id);
+    nameField.value = player.name;
+    symbolField.appendChild(symbolOption);
+    createTypeList(player.type, typeSelect);
 }
 
 function updateSymbolsList() {
@@ -85,6 +83,7 @@ function startGame() {
     viewModel.startGame();
     createPlayField(rows, columns);
     buildOccupiedCellsArray(rows, columns);
+    updateFieldCellsContent();
     changeCurrentStatus();
 }
 
@@ -135,7 +134,8 @@ function updateFieldCellsContent() {
         for (let c = 0; c < fieldCellsArr[r].length; c++) {
             if (fieldCellsArr[r][c] !== undefined
                 && occupiedCells[r][c] !== true) {
-                cellsCollection[r + '-' + c].innerHTML = fieldCellsArr[r][c];
+
+                document.getElementById(r + '-' + c).innerHTML = fieldCellsArr[r][c];
                 occupiedCells[r][c] = true;
             }
         }
@@ -145,6 +145,29 @@ function updateFieldCellsContent() {
 function changeCurrentStatus() {
     document.getElementById("gameStatus").innerHTML = viewModel.getPlayerName() + ' is ' + viewModel.getCurrentStatus();
 }
+
+(function templatePolyfill(d) {
+    if ('content' in d.createElement('template')) {
+        return false;
+    }
+
+    let templ = d.getElementsByTagName('template'),
+        elementTempl,
+        templContent,
+        documentContent;
+
+    for (let x = 0; x < templ.length; ++x) {
+        elementTempl = templ[x];
+        templContent = elementTempl.childNodes;
+        documentContent = d.createDocumentFragment();
+
+        while (templContent[0]) {
+            documentContent.appendChild(templContent[0]);
+        }
+
+        elementTempl.content = documentContent;
+    }
+})(document);
 
 /************ Building rows and columns ************/
 function increaseRows() {

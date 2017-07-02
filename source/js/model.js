@@ -35,6 +35,12 @@ let gameDataManagerSingleton = (function() {
             return collection;
         })();
 
+        let isInteger = Number.isInteger || function(value) {
+                return typeof value === 'number'
+                    && isFinite(value)
+                    && !(value % 1);
+            };
+
         this.getRows = function() {
             return _rows;
         };
@@ -52,7 +58,7 @@ let gameDataManagerSingleton = (function() {
         };
 
         this.setRows = function(rows) {
-            if (Number.isInteger(rows)
+            if (isInteger(rows)
                 && rows > 2
                 && rows <= 10
                 && rows >= _playersCollection.length + 1) {
@@ -63,7 +69,7 @@ let gameDataManagerSingleton = (function() {
         };
 
         this.setColumns = function(columns) {
-            if (Number.isInteger(columns)
+            if (isInteger(columns)
                 && columns > 2
                 && columns <= 10
                 && columns >= _playersCollection.length + 1) {
@@ -74,7 +80,7 @@ let gameDataManagerSingleton = (function() {
         };
 
         this.setWinLength = function(winLength) {
-            if (Number.isInteger(winLength)
+            if (isInteger(winLength)
                 && winLength > 2
                 && winLength <= getDiagonal()) {
                 _winLength = winLength;
@@ -104,7 +110,7 @@ let gameDataManagerSingleton = (function() {
                 else if (prop === 'name' && !isPlayerNameOccupied(value)) {
                     player.name = value;
                 }
-                else if (prop === 'symbol' && _availableSymbolList.includes(value)) {
+                else if (prop === 'symbol' && _availableSymbolList.indexOf(value) >= 0) {
                     let oldPlayerSymbol = player.symbol;
                     player.symbol = value;
                     _availableSymbolList.splice(_availableSymbolList.indexOf(value), 1);
@@ -119,7 +125,7 @@ let gameDataManagerSingleton = (function() {
             if (canAddPlayer()
                 && playerTypeList[type]
                 && playerTypeList[type] !== undefined
-                && _availableSymbolList.includes(symbol)) {
+                && _availableSymbolList.indexOf(symbol) >= 0) {
 
                 let tempName = name;
                 let index = 1;
@@ -192,7 +198,11 @@ let fieldSingleton = (function() {
         let _self = this;
         let _fieldCells = createFieldCells();
 
-        this.fieldCells = getFieldCellsCopy();
+        this.getFieldCells = function() {
+            return _fieldCells.map(function(arr) {
+                return arr.slice();
+            });
+        };
 
         this.refreshFieldCells = function() {
             _fieldCells = createFieldCells();
@@ -201,7 +211,6 @@ let fieldSingleton = (function() {
         this.updateCell = function(row, col, obj) {
             if (_fieldCells[row][col] === undefined) {
                 _fieldCells[row][col] = obj;
-                _self.fieldCells = getFieldCellsCopy();
                 return true;
             }
             else {
@@ -229,8 +238,8 @@ let fieldSingleton = (function() {
         this.isCellInField = function(row, col) {
             return row >= 0
                 && col >= 0
-                && row < _self.fieldCells.length
-                && col < _self.fieldCells[0].length;
+                && row < _fieldCells.length
+                && col < _fieldCells[0].length;
         };
 
         function createFieldCells() {
@@ -241,12 +250,6 @@ let fieldSingleton = (function() {
                 cells[i] = new Array(columns);
             }
             return cells;
-        }
-
-        function getFieldCellsCopy() {
-            return _fieldCells.map(function(arr) {
-                return arr.slice();
-            });
         }
     }
 
@@ -323,7 +326,7 @@ function WinnerChecker() {
 
         if (next !== null
             && _field.isCellInField(next.row, next.col)
-            && _field.fieldCells[next.row][next.col] === currentCell.obj) {
+            && _field.getFieldCells()[next.row][next.col] === currentCell.obj) {
             return next;
         } else {
             return null;
@@ -335,8 +338,7 @@ function Player(name, symbol) {
     this.playerName = name;
     this.playerSymbol = symbol;
 
-    this.startMove = function(game) {
-    };
+    this.startMove = function(game) {};
 
     this.finishMove = function(row, col) {
         return fieldSingleton.getInstance().updateCell(row, col, this.playerSymbol);
@@ -423,6 +425,6 @@ function Game() {
 
     function getFreshState() {
         let currentPlayerName = _iterator.getCurrent().playerName;
-        return new State(_currentStatus, currentPlayerName, _field.fieldCells);
+        return new State(_currentStatus, currentPlayerName, _field.getFieldCells());
     }
 }

@@ -38,7 +38,7 @@ cursor: pointer;
 /************* Main styles *************/
 
 * {
-    /*outline: 1px solid red;*/
+    outline: 1px solid red;
 }
 
 html {
@@ -50,7 +50,7 @@ html {
 }
 
 html {
-    font-size: 10px;
+    font-size: 8px;
 }
 
 body {
@@ -71,6 +71,9 @@ body {
 .collapsed {
     display: none;
 }
+button:hover {
+    cursor: pointer;
+}
 button:focus {
     outline: none !important;
 }
@@ -81,8 +84,8 @@ header, footer {
     background-color: rgb(52, 52, 52);
 }
 header {
-    height: 11vh;
-    margin-bottom: 3rem;
+    min-height: 11vh;
+    margin-bottom: 2vh;
     line-height: 11vh;
     font-size: 1vh;
     -webkit-box-shadow: 0 1rem 6rem rgba(0,0,0,0.5);
@@ -110,10 +113,10 @@ header {
 #start_game > button,
 #settings_btn > button {
     display: inline-block;
-    width: 7em;
-    height: 7em;
+    /*width: 7em;*/
+    /*height: 7em;*/
     /*margin-top: 3vh;*/
-    vertical-align: middle;
+    /*vertical-align: middle;*/
     border: none;
     /*-webkit-border-radius: 50%;*/
     /*-moz-border-radius: 50%;*/
@@ -130,12 +133,17 @@ header {
 #start_game .glyphicon-play,
 #start_game .glyphicon-refresh,
 #settings_btn .glyphicon-cog {
+    position: relative;
+    top: 0;
+    /*width: 5rem;*/
+    /*height: 5rem;*/
     padding: 0.6rem;
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     border-radius: 50%;
     background-color: rgb(112, 112, 112);
     font-size: 3rem;
+    vertical-align: middle;
 }
 #start_game .glyphicon-play {
     /*position: relative;*/
@@ -161,7 +169,7 @@ header {
 
 /* SETTINGS: ROWS, COLUMNS, WINLENGTH */
 #settings_container {
-    min-height: 78vh;
+    min-height: 74vh;
 }
 .settings {}
 .field_settings_group {
@@ -208,8 +216,8 @@ header {
     top: -5px;
 }
 .cell_count {
-    height: 14rem;
     width: 100%;
+    height: 14rem;
     margin: 1rem 0;
     color: rgb(81, 168, 255);
     font-size: 3rem;
@@ -311,6 +319,12 @@ header {
     transform: scale(1.2);
 
 }
+.active_symbol img {
+    /*position: relative;*/
+    /*right: 13px;*/
+    /*top: -13px;*/
+    max-width: 3rem;
+}
 .active_type img {
     width: 2.2rem;
 }
@@ -365,51 +379,74 @@ header {
 
 /* PLAY FIELD */
 #game_field_container {
-    /*min-height: 78vh;*/
+    /*position: relative;*/
+    /*width: 100vw;*/
+    /*height: 74vh;*/
+    overflow: hidden;
 }
-.game_field {
-    font-size: 10px;
-}
-#play_field {
+#play_field { /*wrapper*/
+    position: relative;
     display: block;
-    width: 100%;
+    margin: auto;
+    font-size: 10px;
+    resize: both;
+    height: 74vh;
 }
-.field_body {}
-.flex_container_column {
+#play_field_body { /*transform*/
+    position: relative;
+    width: 300em;
+    height: 300em;
+    margin: 0 auto;
+    text-align: center;
+    /*-webkit-transform-origin: center left;*/
+    /*-moz-transform-origin: center left;*/
+    /*-ms-transform-origin: center left;*/
+    /*-o-transform-origin: center left;*/
+    transform-origin: top left;
+
+}
+.flex_column {
+    position: absolute;
+    top: 0;
+    left: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /*align-items: center;*/
-    align-items: stretch; /*!!!*/
-    /*min-height: 70vh;*/
+    align-items: center;
+    /*width: 1000px;*/
+    /*height: 600px;*/
+    margin-left: -3em;
+    margin-right: -3em;
 }
-.flex_container_row {
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
+.flex_column_item {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+}
+.flex_row {
+    display: -webkit-flex; /* Safari */
     display: flex;
-    -webkit-flex-flow: row;
     flex-direction: row;
     justify-content: center;
-    width: 100%;
-
-    flex-grow: 0;
-    flex-shrink: 0;
-    align-self: center;
+    height: auto;
 }
-.field_row {}
-.flex_block {
-    flex-grow: 1;
-    flex-shrink: 0;
+.flex_column_item:first-child .flex_row{
+    margin-top: -3em;
+}
+.flex_column_item:last-child .flex_row{
+    margin-bottom: -3em;
+}
+.flex_row_item {
     flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: auto;
 }
 .field_cell {
     position: relative;
-    /*min-width: 30px;*/
-    max-width: 150px; /*20vmin*/
-    height: auto;
-    margin: 0.8em;
+    width: 97em;
+    padding-bottom: 97em;
+    margin: 3em;
     border: none;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -419,11 +456,6 @@ header {
     -moz-box-shadow: 0 0 22px rgba(0,0,0,0.5);
     box-shadow: 0 0 22px rgba(0,0,0,0.5);
     cursor: pointer;
-}
-.field_cell:before {
-    content: '';
-    float: left;
-    padding-top: 100%;
 }
 .field_cell:hover {
     -webkit-box-shadow: none;
@@ -445,7 +477,7 @@ header {
 /* FOOTER */
 footer {
     height: 11vh;
-    margin-top: 3rem;
+    margin-top: 2vh;
     line-height: 11vh;
     -webkit-box-shadow: 0 -1rem 6rem rgba(0,0,0,0.5);
     -moz-box-shadow: 0 -1rem 6rem rgba(0,0,0,0.5);
@@ -470,43 +502,45 @@ footer {
 
 /* MEDIA QUERIES */
 
-/* Large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {
-
-}
-
-/* Medium devices (desktops, 992px and up) */
-@media (min-width: 992px) {
-
-}
-
-/* Small devices (tablets, 768px and up) */
-@media (min-width: 768px) {
-
-}
-
-/* Small devices (tablets, 767px and less) */
-@media (max-width: 767px) {
-    html {
-        font-size: 8px;
-    }
-    .settings_buttons {
-        margin-left: 0;
-    }
-    .settings_buttons .form-group {
-        text-align: center;
-    }
-    .game_title h2 {
-        font-size: 4rem;
-    }
-}
-
-/* Mobile devices (479px and less) */
-@media (max-width: 479px) {
+/* Extra small devices (portrait phones, less than 576px)*/
+@media (max-width: 575px) {
     .game_title h2 {
         font-size: 3.5rem;
     }
     .cell_count label {
         font-size: 2rem;
     }
+    .settings_buttons {
+        margin-left: -16px;
+    }
+    .field_cell {
+        /*margin: 0.3rem;*/
+    }
+}
+
+/* Small devices (landscape phones, 576px and up)*/
+@media (min-width: 576px) {
+    .settings_buttons .form-group {
+        /*text-align: center;*/
+    }
+    .game_title h2 {
+        font-size: 4rem;
+    }
+}
+
+/* Medium devices (tablets, 768px and up)*/
+@media (min-width: 768px) {
+    html {
+        font-size: 10px;
+    }
+}
+
+/* Large devices (desktops, 992px and up)*/
+@media (min-width: 992px) {
+
+}
+
+/* Extra large devices (large desktops, 1200px and up)*/
+@media (min-width: 1200px) {
+
 }

@@ -20,7 +20,7 @@
 <body>
 <header class="container-fluid">
     <div class="row text-center">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 container centered game">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 container centered">
             <div class="row">
                 <div class="col-xs-6 col-sm-8 col-md-8 col-lg-8 centered game_title">
                     <h2>Tic-Tac-Toe</h2>
@@ -89,13 +89,13 @@
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 container centered" id="player_settings">
             <template id="player_instance_template">
                 <form class="row form-inline player_instance">
-                    <div class="form-group col-xs-6 col-sm-8 col-md-8 col-lg-8">
+                    <div class="col-xs-7 col-sm-8 col-md-8 col-lg-8 form-group">
                         <input title="Player name" type="text" class="form-control player_name" value=""
                                onchange="updatePlayer(this, 'name')">
                     </div>
                     <div class="col-xs-5 col-sm-4 col-md-4 col-lg-4 settings_buttons">
                         <div class="row">
-                            <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 form-group">
                                 <div class="dropdown ">
                                     <button class="dropdown-toggle symbol_selected" aria-expanded="false" aria-haspopup="true" role="button" data-toggle="dropdown">
                                         <span class="active_symbol"></span>
@@ -104,7 +104,7 @@
                                         onclick="updatePlayer(this, 'symbol')"></ul>
                                 </div>
                             </div>
-                            <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 form-group">
                                 <div class="dropdown ">
                                     <button class="dropdown-toggle type_selected" aria-expanded="false" aria-haspopup="true" role="button" data-toggle="dropdown">
                                         <span class="active_type"></span>
@@ -113,7 +113,7 @@
                                         onclick="updatePlayer(this, 'type')"></ul>
                                 </div>
                             </div>
-                            <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 form-group">
                                 <button title="Delete player" type="button" class="btn remove_player"
                                         onclick="removePlayer(this)">
                                     <span class="glyphicon glyphicon-minus"></span>
@@ -136,9 +136,11 @@
 </section><!--end #settings_container-->
 
 <section class="container-fluid" id="game_field_container">
-    <div class="row game_field">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 container-fluid centered game">
-            <div id="play_field"></div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 container-fluid centered">
+            <div id="play_field">
+                <div id="play_field_body"></div>
+            </div>
         </div>
     </div>
 </section><!--end #game_field_container-->

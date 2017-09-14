@@ -8,6 +8,7 @@
 let viewModel = new ViewModel();
 let occupiedCells;
 let playField = document.querySelector('#play_field');
+let playFieldBody = document.querySelector("#play_field_body");
 let rowsInput = document.querySelector('#rowsInput');
 let columnsInput = document.querySelector('#columnsInput');
 let winLengthInput = document.querySelector('#winLengthInput');
@@ -19,6 +20,8 @@ let refreshBtn = document.querySelector('.glyphicon-refresh');
 let playBtn = document.querySelector('.glyphicon-play');
 let settingsBtn = document.querySelector('.glyphicon-cog');
 let gameTitle = document.querySelector('.game_title');
+let elWidth = playFieldBody.offsetWidth;
+let elHeight = playFieldBody.offsetHeight;
 
 let symbolsImageArray = {
     'X': 'cross_green',
@@ -44,6 +47,26 @@ let playerTypesImageArray = {
     'computer': 'computer'
 };
 
+// (function resize() {
+// let elWidth = playFieldBody.offsetWidth;
+// let elHeight = playFieldBody.offsetHeight;
+
+// function doResize() {
+//     let scale = Math.min(
+//         playField.offsetWidth / elWidth,
+//         playField.offsetHeight / elHeight
+//     );
+//     console.log('width: ' + playField.offsetWidth, elWidth);
+//     console.log('height: ' + playField.offsetHeight, elHeight);
+//     console.log(scale);
+//     playFieldBody.style.transform = "scale(" + scale + ")";
+// }
+
+// })();
+
+window.addEventListener("resize", doResize);
+// window.addEventListener("load", doResize);
+
 function getAvailableSymbolsList() {
     return viewModel.getAvailableSymbolsList();
 }
@@ -53,7 +76,7 @@ window.onload = function() {
     rowsInput.value = viewModel.getRows();
     columnsInput.value = viewModel.getColumns();
     winLengthInput.value = viewModel.getWinLength();
-
+    doResize();
     let playersList = viewModel.getPlayersCollection();
     for (let i = 0; i < playersList.length; i++) {
         addPlayerInstance(playersList[i]);
@@ -150,6 +173,7 @@ function startGame() {
     updateFieldCellsContent();
     changeCurrentStatus();
     gameFieldShow();
+    doResize();
 }
 
 function addToggleClass() {
@@ -184,25 +208,53 @@ function gameFieldShow() {
 }
 
 function createPlayFieldDiv(rows, columns) {
-    playField.innerHTML = '';
+    playFieldBody.innerHTML = '';
 
-    let fieldBody = playField.appendChild(document.createElement('div'));
-    fieldBody.setAttribute('class', 'field_body flex_container_column');
+
+    // let fieldBody = playField.appendChild(document.createElement('div'));
+    // fieldBody.setAttribute('class', 'field_body');
+
+    let flexColumn = playFieldBody.appendChild(document.createElement('div'));
+    // flexColumn.setAttribute('id', 'play_field_body');
+    flexColumn.setAttribute('class', 'flex_column');
 
     for (let r = 0; r < rows; r++) {
-        let fieldRow = document.createElement('div');
-        fieldRow.setAttribute('class', 'field_row flex_container_row');
-        fieldBody.appendChild(fieldRow);
+        let flexColumnItem = flexColumn.appendChild(document.createElement('div'));
+        flexColumnItem.setAttribute('class', 'flex_column_item');
+
+        let flexRow = flexColumnItem.appendChild(document.createElement('div'));
+        flexRow.setAttribute('class', 'flex_row');
 
         for (let c = 0; c < columns; c++) {
-            let fieldCell = document.createElement('div');
-            fieldCell.setAttribute('class', 'field_cell flex_block');
+            let fieldCell = flexRow.appendChild(document.createElement('div'));
+            fieldCell.setAttribute('class', 'field_cell flex_row_item');
             fieldCell.setAttribute('id', r + '-' + c);
-            fieldRow.appendChild(fieldCell);
+            flexRow.appendChild(fieldCell);
             setListenerToCell(fieldCell);
         }
     }
 
+
+    playFieldBody.style.width = 100 * columns + 'em';
+    playFieldBody.style.height = 100 * rows + 'em';
+
+
+    // let el = document.querySelector('#play_field_body');
+    // let cellArray = document.querySelectorAll('.field_cell');
+    // let elHeight = window.getComputedStyle(el).getPropertyValue('height');
+    // let elWidth = window.getComputedStyle(el).getPropertyValue('width');
+    // let cellWidth, h, w;
+    // h = parseInt(elHeight) / rows;
+    // w = (parseInt(elWidth) / columns);
+    // cellWidth = (h - w) > 0 ? w : h;
+    // if (cellWidth > 150) cellWidth = 150;
+    // cellArray.forEach(function(item, i, cellArray) {
+    //     cellArray[i].style.width = cellWidth + 'px';
+    //     cellArray[i].style.paddingBottom = cellWidth + 'px';
+    // });
+
+
+    /*
     if ((columns > 3) && (columns <= 5 )) {
         document.querySelector('.game_field').style.fontSize = '8px';
     }
@@ -212,6 +264,7 @@ function createPlayFieldDiv(rows, columns) {
     else if (columns > 7) {
         document.querySelector('.game_field').style.fontSize = '4px';
     }
+    */
 }
 
 
@@ -314,6 +367,16 @@ function changeCurrentStatus() {
         }
 })(Element.prototype);
 
+(function matchesPolyfill(e) {
+    e.matches || (e.matches = e.matchesSelector || function(selector) {
+            let matches = document.querySelectorAll(selector), th = this;
+            return Array.prototype.some.call(matches, function(e) {
+                return e === th;
+            });
+        });
+
+})(Element.prototype);
+
 /************ Building rows and columns ************/
 function increaseRows() {
     rowsInput.value = viewModel.setRows(+rowsInput.value + 1);
@@ -375,4 +438,17 @@ function removePlayer(element) {
         playerInstancesCollection.removeChild(playerToRemove);
         updateSymbolsList();
     }
+}
+
+function doResize() {
+    elWidth = playFieldBody.offsetWidth;
+    elHeight = playFieldBody.offsetHeight;
+    let scale = Math.min(
+        playField.offsetWidth / elWidth,
+        playField.offsetHeight / elHeight
+    );
+    console.log('width: ' + playField.offsetWidth, elWidth);
+    console.log('height: ' + playField.offsetHeight, elHeight);
+    console.log(scale);
+    playFieldBody.style.transform = "scale(" + scale + ")";
 }

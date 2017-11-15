@@ -88,7 +88,7 @@ footer, header, menu, nav, section {
 /************* Main styles *************/
 
 * {
-    outline: 1px solid red;
+    /*outline: 1px solid red;*/
 }
 
 /*html {*/
@@ -106,7 +106,7 @@ html {
 }
 body {
     width: 100%;
-    min-width: 320px;
+    /*min-width: 300px;*/
     height: 100%;
     background-color: rgb(240, 240, 240);
     font-family: "Myriad Pro", Calibri, sans-serif;
@@ -119,7 +119,8 @@ ol, ul {
     width: 100%;
 }
 .container {
-    max-width: 50rem;
+    /*max-width: 50rem;*/
+    max-width: 80vmin;/*!!!*/
 }
 .centered {
     margin-right: auto;
@@ -159,14 +160,18 @@ header, footer {
     background-color: rgb(52, 52, 52);
 }
 header {
-    height: 10%;
-    font-size: 1%;
-    -webkit-box-shadow: 0 1rem 6rem rgba(0,0,0,0.5);
-    -moz-box-shadow: 0 1rem 6rem rgba(0,0,0,0.5);
-    box-shadow: 0 1rem 6rem rgba(0,0,0,0.5);
+    position: fixed;
+    top: 0;
+    /*height: 5rem;*/
+    height: 10vh;
+    /*font-size: 1%;*/
+    -webkit-box-shadow: 0 1vh 6vh rgba(0,0,0,0.5);
+    -moz-box-shadow: 0 1vh 6vh rgba(0,0,0,0.5);
+    box-shadow: 0 1vh 6vh rgba(0,0,0,0.5);
 }
 header > .container {
     display: flex;
+    /*max-width: 50rem;*/ /*!!!*/
     height: 100%;
     flex-direction: row;
     justify-content: space-between;
@@ -180,10 +185,10 @@ header > .container {
 }
 .game_title h2 {
     margin: 0;
-    font-size: 5rem;
+    font-size: 5vh;
     font-weight: bold;
     text-align: center;
-    line-height: 10%;
+    line-height: 10vh;
 }
 #start_game {
     order: 1;
@@ -198,9 +203,14 @@ header > .container {
 }
 #start_game > button,
 #settings_btn > button {
+    width: 7vh;
+    height: 7vh;
     padding: 0;
     border: none;
-    background-color: transparent;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    background-color: rgb(112, 112, 112);
     vertical-align: middle;
 }
 #start_game .fa-play:hover,
@@ -213,25 +223,11 @@ header > .container {
 #start_game .fa-play,
 #start_game .fa-refresh,
 #settings_btn .fa-cog {
-    width: 3rem;
-    height: 3rem;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    border-radius: 50%;
-    background-color: rgb(112, 112, 112);
-    font-size: 3.1rem;
+    font-size: 5vh;
     vertical-align: middle;
 }
 #start_game .fa-play {
-    padding: 7px 5px 9px 11px;
     color: rgb(255, 255, 255);
-}
-#start_game .fa-refresh {
-    padding: 8px;
-    /*font-weight: bold;*/
-}
-#settings_btn .fa-cog {
-    padding: 8px;
 }
 .blue {
     color: rgb(81, 168, 255);
@@ -248,6 +244,16 @@ header > .container {
 /*** SETTINGS: ROWS, COLUMNS, WINLENGTH ***/
 #settings_container {
     /*min-height: 80%;*/
+
+}
+#settings_container > .container {
+    /*margin-bottom: 5rem;*/
+    outline: 1px solid red;
+    height: 80vh;
+    overflow-y: scroll;
+}
+#settings_container > .transformer {
+    /*height: 300rem;*//*!!!*/
 }
 .field_settings_group {
     display: flex;
@@ -517,7 +523,9 @@ header > .container {
 #play_field {
     font-size: 10px;
     /*height: 80%;*/
-    height: 80vh;
+    height: 76vh;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
 }
 #play_field_body {
     /*top: 2rem;*/
@@ -600,11 +608,14 @@ header > .container {
 
 /* FOOTER */
 footer {
-    height: 10%;
+    position: fixed !important;
+    bottom: 0;
+    /*height: 5rem;*/
+    height: 10vh;
     /*line-height: 10%;*/
-    -webkit-box-shadow: 0 -1rem 6rem rgba(0,0,0,0.5);
-    -moz-box-shadow: 0 -1rem 6rem rgba(0,0,0,0.5);
-    box-shadow: 0 -1rem 6rem rgba(0,0,0,0.5);
+    -webkit-box-shadow: 0 -1vh 6vh rgba(0,0,0,0.5);
+    -moz-box-shadow: 0 -1vh 6vh rgba(0,0,0,0.5);
+    box-shadow: 0 -1vh 6vh rgba(0,0,0,0.5);
 }
 footer > .container {
     height: 100%;
@@ -612,18 +623,18 @@ footer > .container {
 .status {
     display: block;
     color: rgb(255, 255, 255);
-    font-size: 3rem;
+    font-size: 5vh;
+    line-height: 10vh;
     font-weight: bold;
     text-align: center;
 }
 #gameStatus {
+    /*height: 3.5vh;*/
     vertical-align: middle;
+    word-break: break-all;
 }
 #gameStatus img {
-    position: relative;
-    top: 5px;
-    width: 3rem;
-    height: 3rem;
+    height: 3.5vh;
 }
 
 

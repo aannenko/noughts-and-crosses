@@ -16,11 +16,9 @@ let playerInstancesCollection = document.querySelector('#player_instances_collec
 let template = document.querySelector('#player_instance_template');
 let settingsContainer = document.querySelector('#settings_container');
 let gameFieldContainer = document.querySelector('#game_field_container');
-let gameStatus = document.querySelector('#gameStatus');
-let defaultStatus = document.querySelector('#defaultStatus');
-let refreshBtn = document.querySelector('.fa-refresh');
-let playBtn = document.querySelector('.fa-play');
-let settingsBtn = document.querySelector('.fa-cog');
+let refreshBtn = document.querySelector('.glyphicon-refresh');
+let playBtn = document.querySelector('.glyphicon-play');
+let settingsBtn = document.querySelector('.glyphicon-cog');
 let gameTitle = document.querySelector('.game_title');
 let elWidth = playFieldBody.offsetWidth;
 let elHeight = playFieldBody.offsetHeight;
@@ -84,16 +82,15 @@ window.onload = function() {
         addPlayerInstance(playersList[i]);
     }
     updateSymbolsList();
-    addCollapsedClass();
-    dropdownShow();
+    addToggleClass();
 };
 
 function addPlayerInstance(player) {
     playerInstancesCollection.appendChild(template.content.cloneNode(true));
 
-    let playerInstancesList = document.querySelectorAll('.player_instance');
+    let playerInstancesList = document.getElementsByClassName('player_instance');
     let playerInstance = playerInstancesList[playerInstancesList.length - 1];
-    let nameField = playerInstance.querySelector('.player_name input');
+    let nameField = playerInstance.querySelector('.form-group .player_name');
     let typeUlContainer = playerInstance.querySelector('.dropdown-menu.player_type');
     let symbolLi = document.createElement('li');
     let symbolImg = document.createElement('img');
@@ -131,7 +128,6 @@ function updateSymbolsList() {
                 activeSymbol[k].appendChild(symbolImg.cloneNode(true));
                 playerSymbolUList[k].querySelector('li').removeAttribute('class');
                 this.closest('li').setAttribute('class', 'active');
-                playerSymbolUList[k].classList.remove('show');
             });
             playerSymbolUList[k].appendChild(symbolLi);
         }
@@ -156,11 +152,11 @@ function createTypeList(playerType, container) {
             }
 
             typeImg.addEventListener('click', function() {
+                typeLi.removeAttribute('class');
                 activeType.innerHTML = '';
                 activeType.appendChild(typeImg.cloneNode(true));
                 container.querySelector('li.active').removeAttribute('class');
                 this.closest('li').setAttribute('class', 'active');
-                container.classList.remove('show');
             });
             container.appendChild(typeLi);
         }
@@ -180,7 +176,7 @@ function startGame() {
     doResize();
 }
 
-function addCollapsedClass() {
+function addToggleClass() {
     gameFieldContainer.classList.add('collapsed');
     // refreshBtn.classList.add('collapsed');
 }
@@ -195,8 +191,6 @@ function settingsShow() {
         playBtn.classList.toggle('collapsed');
         settingsBtn.classList.toggle('white');
         gameTitle.classList.toggle('orange');
-        gameStatus.classList.toggle('collapsed');
-        defaultStatus.classList.toggle('collapsed');
     }
 }
 
@@ -210,8 +204,6 @@ function gameFieldShow() {
         playBtn.classList.toggle('collapsed');
         settingsBtn.classList.toggle('white');
         gameTitle.classList.toggle('orange');
-        gameStatus.classList.toggle('collapsed');
-        defaultStatus.classList.toggle('collapsed');
     }
 }
 
@@ -314,8 +306,8 @@ function updateFieldCellsContent() {
 }
 
 function changeCurrentStatus() {
-    let playerNamesArr = document.querySelectorAll('.player_name input');
-    // let statusDiv = document.querySelector('#gameStatus');
+    let playerNamesArr = document.querySelectorAll('.form-group .player_name');
+    let statusDiv = document.querySelector('#gameStatus');
     let status = viewModel.getCurrentStatus();
     let move = 'Turn ' + viewModel.getCurrentMove();
     let name = viewModel.getPlayerName();
@@ -336,7 +328,7 @@ function changeCurrentStatus() {
     else if (status === 'Winner') {
         statusLine = [status, symbol, name, ' on ', move];
     }
-    gameStatus.innerHTML = statusLine.join(' ');
+    statusDiv.innerHTML = statusLine.join(' ');
 }
 
 (function templatePolyfill(d) {
@@ -419,7 +411,7 @@ function updatePlayer(element, prop) {
     let newVal = viewModel.updatePlayer(playerInstance.id, prop, elementVal);
 
     if (prop === 'name') {
-        playerInstance.querySelector('.player_name').value = newVal;
+        playerInstance.querySelector('.form-group .player_name').value = newVal;
     }
     if (prop === 'symbol') {
         updateSymbolsList();
@@ -449,63 +441,14 @@ function removePlayer(element) {
 }
 
 function doResize() {
-
-    // elWidth = playFieldBody.offsetWidth;
-    // elHeight = playFieldBody.offsetHeight;
-    // let scale = Math.min(
-    //     playField.offsetWidth / elWidth,
-    //     playField.offsetHeight / elHeight
-    // );
-    // playFieldBody.style.transform = "scale(" + scale + ")";
-
-
-    //playField = wrapper;
-    //playFieldBody = transformer
-    let wrapper = document.querySelectorAll('.wrapper');
-    let transformer = document.querySelectorAll('.transformer');
-    // console.log(wrapper, transformer);
-
-    wrapper.forEach(function(item, i, wrapper){
-        elWidth = transformer[i].offsetWidth;
-        elHeight = transformer[i].offsetHeight;
-        let scale = Math.min(
-            wrapper[i].offsetWidth / elWidth,
-            wrapper[i].offsetHeight / elHeight
-        );
-        // console.log(wrapper[i]);
-        // console.log('Width', i, wrapper[i].offsetWidth, elWidth);
-        console.log('------------------------');
-        console.log('Height', i, wrapper[i].offsetHeight, elHeight, wrapper[i]);
-        // console.log(scale);
-
-
-        transformer[i].style.transform = "scale(" + scale + ")";
-
-        let a = document.querySelector('#play_field_body.transformer');
-        if (transformer[i] === a) {
-            playFieldBody.style.left = (playField.offsetWidth - (a.offsetWidth * scale)) / 2 + 'px';
-            playFieldBody.style.top = (playField.offsetHeight - (a.offsetHeight * scale)) / 2 + 'px';
-        }
-    });
-
-
-    // console.log('_______________________________');
-
-
-}
-
-function dropdownShow() {
-    let dropdownList = document.querySelectorAll('.dropdown-toggle');
-    for (let i = 0; i < dropdownList.length; i++) {
-        dropdownList[i].addEventListener('click', function() {
-            this.nextElementSibling.classList.toggle('show');
-        });
-        dropdownList[i].addEventListener('blur', function(event) {
-            if (!event.target.matches(this.classList[0])
-                // || event.target.matches(this.nextElementSibling.classList[0]))
-                && this.nextElementSibling.classList.contains('show')) {
-                this.nextElementSibling.classList.remove('show');
-            }
-        })
-    }
+    elWidth = playFieldBody.offsetWidth;
+    elHeight = playFieldBody.offsetHeight;
+    let scale = Math.min(
+        playField.offsetWidth / elWidth,
+        playField.offsetHeight / elHeight
+    );
+    console.log('width: ' + playField.offsetWidth, elWidth);
+    console.log('height: ' + playField.offsetHeight, elHeight);
+    console.log(scale);
+    playFieldBody.style.transform = "scale(" + scale + ")";
 }

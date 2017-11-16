@@ -22,8 +22,6 @@ let refreshBtn = document.querySelector('.fa-refresh');
 let playBtn = document.querySelector('.fa-play');
 let settingsBtn = document.querySelector('.fa-cog');
 let gameTitle = document.querySelector('.game_title');
-let transfWidth = playFieldBody.offsetWidth;
-let transfHeight = playFieldBody.offsetHeight;
 
 let symbolsImageArray = {
     'X': 'cross_green',
@@ -48,23 +46,6 @@ let playerTypesImageArray = {
     'human': 'player',
     'computer': 'computer'
 };
-
-// (function resize() {
-// let transfWidth = playFieldBody.offsetWidth;
-// let transfHeight = playFieldBody.offsetHeight;
-
-// function doResize() {
-//     let scale = Math.min(
-//         playField.offsetWidth / transfWidth,
-//         playField.offsetHeight / transfHeight
-//     );
-//     console.log('width: ' + playField.offsetWidth, transfWidth);
-//     console.log('height: ' + playField.offsetHeight, transfHeight);
-//     console.log(scale);
-//     playFieldBody.style.transform = "scale(" + scale + ")";
-// }
-
-// })();
 
 window.addEventListener("resize", doResize);
 // window.addEventListener("load", doResize);
@@ -423,6 +404,15 @@ function doResize() {
     let wrapper = document.querySelectorAll('.wrapper');
     let transformer = document.querySelectorAll('.transformer');
 
+    // let transfWidth = playFieldBody.offsetWidth;
+    // let transfHeight = playFieldBody.offsetHeight;
+
+    // let transfWidth = transformer.offsetWidth;
+    // let transfHeight = transformer.offsetHeight;
+
+    let transfWidth;
+    let transfHeight;
+
     wrapper.forEach(function(item, i, wrapper){
         transfWidth = transformer[i].offsetWidth;
         transfHeight = transformer[i].offsetHeight;
@@ -430,8 +420,9 @@ function doResize() {
             wrapper[i].offsetWidth / transfWidth,
             wrapper[i].offsetHeight / transfHeight
         );
-        console.log('width: ', wrapper[1].offsetWidth, transformer[1].offsetWidth);
-        console.log('height: ', wrapper[1].offsetHeight, transformer[1].offsetHeight);
+        // console.log(':', wrapper[i], transformer[i]);
+        // console.log('width: ', wrapper[1].offsetWidth, transformer[1].offsetWidth);
+        // console.log('height: ', wrapper[1].offsetHeight, transformer[1].offsetHeight);
         transformer[i].style.transform = "scale(" + scale + ")";
 
         let a = document.querySelector('#play_field_body.transformer');

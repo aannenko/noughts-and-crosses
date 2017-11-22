@@ -14,32 +14,29 @@
 </head>
 
 <body>
-<header class="full_width wrapper">
-    <div class="container centered transformer">
-        <div class="game_title">
-            <h2>Tic-Tac-Toe</h2>
-        </div>
-        <div id="start_game">
-             <button type="button" title="Start game" onclick="startGame()">
-                 <span class="fa fa-play"></span>
-                 <span class="fa fa-refresh orange collapsed"></span>
-             </button>
-        </div>
-        <div id="settings_btn">
-            <button type="button" title="Settings" onclick="settingsShow()">
-                <span class="fa fa-cog blue"></span></button>
+<header class="full_width">
+    <div class="container centered">
+        <div class="wrapper">
+            <div class="transformer">
+                <div class="header_block">
+                    <div class="game_title">
+                        <h2>Tic-Tac-Toe</h2>
+                    </div>
+                    <div id="start_game">
+                         <button type="button" title="Start game" onclick="startGame()">
+                             <span class="fa fa-play"></span>
+                             <span class="fa fa-refresh orange collapsed"></span>
+                         </button>
+                    </div>
+                    <div id="settings_btn">
+                        <button type="button" title="Settings" onclick="settingsShow()">
+                            <span class="fa fa-cog blue"></span></button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </header>
-
-<!--<section class="full_width" id="game_field_container">-->
-    <!--<div class="container centered">-->
-        <!--<div id="play_field" class="wrapper">-->
-            <!--<div id="play_field_body" class="transformer"></div>-->
-        <!--</div>-->
-    <!--</div>-->
-<!--</section>&lt;!&ndash;end #game_field_container&ndash;&gt;-->
-
 
 <section class="full_width" id="settings_container">
     <div class="container centered">
@@ -87,20 +84,6 @@
                             </div>
                         </div>
                     </div><!--end .field_settings_group-->
-
-
-                    <!--<div class="flex_column_item player_instance">-->
-                        <!--<div class="flex_row">-->
-                            <!--<div class="flex_row_item player_name">-->
-                                <!--<input title="Player name" type="text" class="settings-control" value=""-->
-                                       <!--onchange="updatePlayer(this, 'name')">-->
-                            <!--</div><div class="flex_row_item player_name">-->
-                                <!--<input title="Player name" type="text" class="settings-control" value=""-->
-                                       <!--onchange="updatePlayer(this, 'name')">-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-
 
                     <div class="" id="player_settings">
                         <template id="player_instance_template">

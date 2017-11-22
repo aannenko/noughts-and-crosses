@@ -163,7 +163,6 @@ function startGame() {
 
 function addCollapsedClass() {
     gameFieldContainer.classList.add('collapsed');
-    // refreshBtn.classList.add('collapsed');
 }
 
 function settingsShow() {
@@ -178,6 +177,7 @@ function settingsShow() {
         gameTitle.classList.toggle('orange');
         gameStatus.classList.toggle('collapsed');
         defaultStatus.classList.toggle('collapsed');
+        doResize();
     }
 }
 
@@ -198,13 +198,7 @@ function gameFieldShow() {
 
 function createPlayFieldDiv(rows, columns) {
     playFieldBody.innerHTML = '';
-
-
-    // let fieldBody = playField.appendChild(document.createElement('div'));
-    // fieldBody.setAttribute('class', 'field_body');
-
     let flexColumn = playFieldBody.appendChild(document.createElement('div'));
-    // flexColumn.setAttribute('id', 'play_field_body');
     flexColumn.setAttribute('class', 'flex_column');
 
     for (let r = 0; r < rows; r++) {
@@ -267,7 +261,6 @@ function updateFieldCellsContent() {
 
 function changeCurrentStatus() {
     let playerNamesArr = document.querySelectorAll('.player_name input');
-    // let statusDiv = document.querySelector('#gameStatus');
     let status = viewModel.getCurrentStatus();
     let move = 'Turn ' + viewModel.getCurrentMove();
     let name = viewModel.getPlayerName();
@@ -403,34 +396,26 @@ function removePlayer(element) {
 function doResize() {
     let wrapper = document.querySelectorAll('.wrapper');
     let transformer = document.querySelectorAll('.transformer');
+    let transformerWidth;
+    let transformerHeight;
+    let el = document.querySelector('#settings_container');
+    document.querySelector('header .container').style.paddingRight = el.offsetWidth - el.clientWidth + 'px';
 
-    // let transfWidth = playFieldBody.offsetWidth;
-    // let transfHeight = playFieldBody.offsetHeight;
-
-    // let transfWidth = transformer.offsetWidth;
-    // let transfHeight = transformer.offsetHeight;
-
-    let transfWidth;
-    let transfHeight;
-
-    wrapper.forEach(function(item, i, wrapper){
-        transfWidth = transformer[i].offsetWidth;
-        transfHeight = transformer[i].offsetHeight;
+    for(let i = 0; i < wrapper.length; i++){
+        transformerWidth = transformer[i].offsetWidth;
+        transformerHeight = transformer[i].offsetHeight;
         let scale = Math.min(
-            wrapper[i].offsetWidth / transfWidth,
-            wrapper[i].offsetHeight / transfHeight
+            wrapper[i].offsetWidth / transformerWidth,
+            wrapper[i].offsetHeight / transformerHeight
         );
-        // console.log(':', wrapper[i], transformer[i]);
-        // console.log('width: ', wrapper[1].offsetWidth, transformer[1].offsetWidth);
-        // console.log('height: ', wrapper[1].offsetHeight, transformer[1].offsetHeight);
         transformer[i].style.transform = "scale(" + scale + ")";
 
-        let a = document.querySelector('#play_field_body.transformer');
-        if (transformer[i] === a) {
-            playFieldBody.style.left = (playField.offsetWidth - (a.offsetWidth * scale)) / 2 + 'px';
-            playFieldBody.style.top = (playField.offsetHeight - (a.offsetHeight * scale)) / 2 + 'px';
+        let plField = document.querySelector('#play_field_body.transformer');
+        if (transformer[i] === plField) {
+            playFieldBody.style.left = (playField.offsetWidth - (plField.offsetWidth * scale)) / 2 + 'px';
+            playFieldBody.style.top = (playField.offsetHeight - (plField.offsetHeight * scale)) / 2 + 'px';
         }
-    });
+    }
 }
 
 function dropdownShow() {

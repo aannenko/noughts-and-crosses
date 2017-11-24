@@ -66,7 +66,7 @@ window.onload = function() {
     }
     updateSymbolsList();
     addCollapsedClass();
-    dropdownShow();
+    dropdownToggle();
 };
 
 function addPlayerInstance(player) {
@@ -380,6 +380,7 @@ function addPlayer() {
         let newPlayer = list[list.length - 1];
         addPlayerInstance(newPlayer);
         updateSymbolsList();
+        dropdownToggle();
     }
 }
 
@@ -418,18 +419,25 @@ function doResize() {
     }
 }
 
-function dropdownShow() {
-    let dropdownList = document.querySelectorAll('.dropdown-toggle');
-    for (let i = 0; i < dropdownList.length; i++) {
-        dropdownList[i].addEventListener('click', function() {
-            this.nextElementSibling.classList.toggle('show');
-        });
-        dropdownList[i].addEventListener('blur', function(event) {
-            if (!event.target.matches(this.classList[0])
-                // || event.target.matches(this.nextElementSibling.classList[0]))
-                && this.nextElementSibling.classList.contains('show')) {
-                this.nextElementSibling.classList.remove('show');
+function dropdownToggle() {
+    let dropBtnList = document.querySelectorAll('.dropdown-toggle');
+    for (let i = 0; i < dropBtnList.length; i++) {
+        dropBtnList[i].addEventListener('click', function() {
+            for (let k = 0; k < dropBtnList.length; k++) {
+                dropBtnList[k].parentElement.querySelector('.dropdown-menu').classList.remove('show');
             }
-        })
+            this.parentElement.querySelector('.dropdown-menu').classList.toggle('show');
+        });
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropdown button') && !event.target.matches('.dropdown img')) {
+                let dropdowns = document.querySelectorAll('.dropdown-menu');
+                for (let i = 0; i < dropdowns.length; i++) {
+                    if (dropdowns[i].classList.contains('show')) {
+                        dropdowns[i].classList.remove('show');
+                    }
+                }
+            }
+        }
     }
 }
+

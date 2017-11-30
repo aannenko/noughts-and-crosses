@@ -48,7 +48,6 @@ let playerTypesImageArray = {
 };
 
 window.addEventListener("resize", doResize);
-// window.addEventListener("load", doResize);
 
 function getAvailableSymbolsList() {
     return viewModel.getAvailableSymbolsList();
@@ -56,10 +55,10 @@ function getAvailableSymbolsList() {
 
 /************ Starting game ************/
 window.onload = function() {
+    doResize();
     rowsInput.value = viewModel.getRows();
     columnsInput.value = viewModel.getColumns();
     winLengthInput.value = viewModel.getWinLength();
-    doResize();
     let playersList = viewModel.getPlayersCollection();
     for (let i = 0; i < playersList.length; i++) {
         addPlayerInstance(playersList[i]);

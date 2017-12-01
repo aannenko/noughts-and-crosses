@@ -42,103 +42,93 @@
     <div class="container centered">
         <div class="wrapper">
             <div class="transformer">
-                <div class="flex_column">
-                    <div class="flex_column_item field_settings_group">
-                        <div class="flex_row">
-                            <div class="flex_row_item rows">
-                                <button type="button" title="Increase rows" class="inc button" onclick="increaseRows()">
-                                    <span class="fa fa-caret-up"></span>
-                                </button>
-                                <div class="cell_count">
-                                    <label for="rowsInput">Rows</label>
-                                    <input type="text" class="settings-control" id="rowsInput" value="" readonly>
-                                </div>
-                                <button type="button" title="Decrease rows" class="dec button" onclick="decreaseRows()">
-                                    <span class="fa fa-caret-down"></span>
-                                </button>
+                <div class="field_settings_group">
+                    <div class="flex_row">
+                        <div class="flex_row_item rows">
+                            <button type="button" title="Increase rows" class="inc button" onclick="increaseRows()">
+                                <span class="fa fa-caret-up"></span>
+                            </button>
+                            <div class="cell_count">
+                                <label for="rowsInput">Rows</label>
+                                <input type="text" class="settings-control" id="rowsInput" value="" readonly>
                             </div>
-                            <div class="flex_row_item columns">
-
-                                <button type="button" title="Increase columns" class="inc button" onclick="increaseColumns()">
-                                    <span class="fa fa-caret-up"></span>
-                                </button>
-                                <div class="cell_count">
-                                    <label for="columnsInput">Columns</label>
-                                    <input type="text" class="settings-control" id="columnsInput" value="" readonly>
-                                </div>
-                                <button type="button" title="Decrease columns" class="dec button" onclick="decreaseColumns()">
-                                    <span class="fa fa-caret-down"></span>
-                                </button>
-                            </div>
-                            <div class="flex_row_item winLength">
-                                <button type="button" title="Increase win length" class="inc button" onclick="increaseWinLength()">
-                                    <span class="fa fa-caret-up"></span>
-                                </button>
-                                <div class="cell_count">
-                                    <label for="winLengthInput">Win&nbsp;length</label>
-                                    <input type="text" class="settings-control" id="winLengthInput" value="" readonly>
-                                </div>
-                                <button type="button" title="Decrease win length" class="dec button" onclick="decreaseWinLength()">
-                                    <span class="fa fa-caret-down"></span>
-                                </button>
-                            </div>
+                            <button type="button" title="Decrease rows" class="dec button" onclick="decreaseRows()">
+                                <span class="fa fa-caret-down"></span>
+                            </button>
                         </div>
-                    </div><!--end .field_settings_group-->
+                        <div class="flex_row_item columns">
+                            <button type="button" title="Increase columns" class="inc button" onclick="increaseColumns()">
+                                <span class="fa fa-caret-up"></span>
+                            </button>
+                            <div class="cell_count">
+                                <label for="columnsInput">Columns</label>
+                                <input type="text" class="settings-control" id="columnsInput" value="" readonly>
+                            </div>
+                            <button type="button" title="Decrease columns" class="dec button" onclick="decreaseColumns()">
+                                <span class="fa fa-caret-down"></span>
+                            </button>
+                        </div>
+                        <div class="flex_row_item winLength">
+                            <button type="button" title="Increase win length" class="inc button" onclick="increaseWinLength()">
+                                <span class="fa fa-caret-up"></span>
+                            </button>
+                            <div class="cell_count">
+                                <label for="winLengthInput">Win&nbsp;length</label>
+                                <input type="text" class="settings-control" id="winLengthInput" value="" readonly>
+                            </div>
+                            <button type="button" title="Decrease win length" class="dec button" onclick="decreaseWinLength()">
+                                <span class="fa fa-caret-down"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div><!--end .field_settings_group-->
 
-                    <div class="" id="player_settings">
-                        <template id="player_instance_template">
-                            <div class="flex_column_item player_instance">
-                                <div class="flex_row">
-                                    <div class="flex_row_item player_name">
-                                        <input title="Player name" type="text" class="settings-control" value=""
-                                               onchange="updatePlayer(this, 'name')">
-                                    </div>
-                                    <div class="flex_row_item settings_block">
-                                        <div class="settings_buttons">
-                                            <div class="symbol_btn">
-                                                <div class="dropdown">
-                                                    <button type="button" title="Change player symbol" class="dropdown-toggle symbol_selected">
-                                                        <span class="active_symbol"></span>
-                                                    </button>
-                                                    <ul class="dropdown-menu player_symbol"
-                                                        onclick="updatePlayer(this, 'symbol')"></ul>
-                                                </div>
-                                            </div>
-                                            <div class="type_btn">
-                                                <div class="dropdown">
-                                                    <button type="button" title="Change player type" class="dropdown-toggle type_selected">
-                                                        <span class="active_type"></span>
-                                                    </button>
-                                                    <ul class="dropdown-menu player_type"
-                                                        onclick="updatePlayer(this, 'type')"></ul>
-                                                </div>
-                                            </div>
-                                            <div class="remove_btn">
-                                                <button type="button" title="Delete player" class="btn remove_player" onclick="removePlayer(this)">
-                                                    <span class="fa fa-minus"></span>
+                <div id="player_settings">
+                    <template id="player_instance_template">
+                        <div class="player_instance">
+                            <div class="flex_row">
+                                <div class="flex_row_item player_name">
+                                    <input title="Player name" type="text" class="settings-control" value=""
+                                           onchange="updatePlayer(this, 'name')">
+                                </div>
+                                <div class="flex_row_item settings_block">
+                                    <div class="settings_buttons">
+                                        <div class="symbol_btn">
+                                            <div class="dropdown">
+                                                <button type="button" title="Change player symbol" class="dropdown-toggle symbol_selected">
+                                                    <span class="active_symbol"></span>
                                                 </button>
+                                                <ul class="dropdown-menu player_symbol"
+                                                    onclick="updatePlayer(this, 'symbol')"></ul>
                                             </div>
+                                        </div>
+                                        <div class="type_btn">
+                                            <div class="dropdown">
+                                                <button type="button" title="Change player type" class="dropdown-toggle type_selected">
+                                                    <span class="active_type"></span>
+                                                </button>
+                                                <ul class="dropdown-menu player_type"
+                                                    onclick="updatePlayer(this, 'type')"></ul>
+                                            </div>
+                                        </div>
+                                        <div class="remove_btn">
+                                            <button type="button" title="Delete player" class="btn remove_player" onclick="removePlayer(this)">
+                                                <span class="fa fa-minus"></span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </template>
-                        <div id="player_instances_collection"></div>
-
-                        <div class="flex_column_item">
-                            <div class="flex_row">
-                                <div class="flex_row_item">
-                                    <button type="button" title="Add player" class="btn add_player" onclick="addPlayer()">
-                                        <span class="fa fa-plus"></span>
-                                    </button>
-                                </div>
-                            </div>
                         </div>
-                    </div><!--end #player_settings-->
-                </div><!-- end .flex_column-->
+                    </template>
+                    <div id="player_instances_collection"></div>
+                    <button type="button" title="Add player" class="btn add_player" onclick="addPlayer()">
+                        <span class="fa fa-plus"></span>
+                    </button>
+                </div><!--end #player_settings-->
             </div><!--end .transformer-->
-        </div>
-    </div>
+        </div><!--end .wrapper-->
+    </div><!--end .container.centered-->
 </section><!--end #settings_container-->
 
 <section class="full_width" id="game_field_container">
@@ -149,8 +139,8 @@
     </div>
 </section><!--end #game_field_container-->
 
-<footer class="full_width wrapper">
-    <div class="container centered transformer">
+<footer class="full_width">
+    <div class="container centered">
         <div class="status">
             <h2 id="gameStatus" class="collapsed"></h2>
             <h2 id="defaultStatus" class="">Game status</h2>

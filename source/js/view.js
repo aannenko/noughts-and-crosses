@@ -398,8 +398,9 @@ function doResize() {
     let transformer = document.querySelectorAll('.transformer');
     let transformerWidth;
     let transformerHeight;
-    let el = document.querySelector('#settings_container');
-    document.querySelector('header .container').style.paddingRight = el.offsetWidth - el.clientWidth + 'px';
+    let elSetCont = document.querySelector('#settings_container');
+
+    document.querySelector('header .container').style.paddingRight = elSetCont.offsetWidth - elSetCont.clientWidth + 'px';
 
     for(let i = 0; i < wrapper.length; i++){
         transformerWidth = transformer[i].offsetWidth;

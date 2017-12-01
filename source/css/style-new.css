@@ -146,13 +146,15 @@ header {
 header .wrapper {
     height: 10vh;
 }
+header .transformer {
+    top: calc(100% / 7);
+
+}
 header .header_block {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    height: 100%;
-    padding-top: 2%;
 }
 .game_title {
     order: 2;
@@ -562,4 +564,11 @@ footer > .container {
 }
 #gameStatus img {
     height: 3.5vmin;
+}
+
+
+@media (max-width: 600px) {
+    header .transformer {
+        top: calc(100% / 5);
+    }
 }

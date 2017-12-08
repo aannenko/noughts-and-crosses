@@ -36,10 +36,10 @@ let gameDataManagerSingleton = (function() {
         })();
 
         let isInteger = Number.isInteger || function(value) {
-                return typeof value === 'number'
-                    && isFinite(value)
-                    && !(value % 1);
-            };
+            return typeof value === 'number'
+                && isFinite(value)
+                && !(value % 1);
+        };
 
         this.getRows = function() {
             return _rows;
@@ -391,7 +391,7 @@ function Game() {
     let _field = fieldSingleton.getInstance();
     let _winnerChecker = new WinnerChecker();
     let _iterator = new Iterator(getPlayersArray());
-    let movesCounter = 1;
+    let _movesCounter = 1;
 
     _field.refreshFieldCells();
 
@@ -410,7 +410,7 @@ function Game() {
             } else {
                 _iterator.moveNext();
                 _self.startTurn();
-                movesCounter++;
+                _movesCounter++;
             }
             _self.state = getFreshState();
         }
@@ -428,6 +428,6 @@ function Game() {
 
     function getFreshState() {
         let currentPlayerName = _iterator.getCurrent().playerName;
-        return new State(_currentStatus, currentPlayerName, movesCounter, _field.getFieldCells());
+        return new State(_currentStatus, currentPlayerName, _movesCounter, _field.getFieldCells());
     }
 }

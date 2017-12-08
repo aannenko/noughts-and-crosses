@@ -220,7 +220,6 @@ function createPlayFieldDiv(rows, columns) {
     playFieldBody.style.height = 100 * rows + 'rem';
 }
 
-
 function buildOccupiedCellsArray(rows, columns) {
     let arr = new Array(rows);
 
@@ -306,26 +305,25 @@ function changeCurrentStatus() {
     }
 })(document);
 
+(function closestPolyfill(e) {
+    e.closest = e.closest || function(css) {
+        let node = this;
 
-(function closestPolyfill(e){
-    e.closest = e.closest || function(css){
-            let node = this;
-
-            while (node) {
-                if (node.matches(css)) return node;
-                else node = node.parentElement;
-            }
-            return null;
+        while (node) {
+            if (node.matches(css)) return node;
+            else node = node.parentElement;
         }
+        return null;
+    }
 })(Element.prototype);
 
 (function matchesPolyfill(e) {
     e.matches || (e.matches = e.matchesSelector || function(selector) {
-            let matches = document.querySelectorAll(selector), th = this;
-            return Array.prototype.some.call(matches, function(e) {
-                return e === th;
-            });
+        let matches = document.querySelectorAll(selector), th = this;
+        return Array.prototype.some.call(matches, function(e) {
+            return e === th;
         });
+    });
 
 })(Element.prototype);
 
@@ -396,25 +394,32 @@ function removePlayer(element) {
 function doResize() {
     let wrapper = document.querySelectorAll('.wrapper');
     let transformer = document.querySelectorAll('.transformer');
+    let plFieldTransformer = document.querySelector('#play_field_body.transformer');
+    let settingsTransformer = document.querySelector('#settings_container .transformer');
     let transformerWidth;
     let transformerHeight;
-    let elSetCont = document.querySelector('#settings_container');
 
-    document.querySelector('header .container').style.paddingRight = elSetCont.offsetWidth - elSetCont.clientWidth + 'px';
+    settingsTransformer.style.height = '3400px';
+    settingsTransformer.style.paddingRight = settingsTransformer.offsetWidth - settingsTransformer.clientWidth + 'px';
+    document.querySelector('header .transformer').style.paddingRight = settingsTransformer.style.paddingRight;
 
-    for(let i = 0; i < wrapper.length; i++){
+    for (let i = 0; i < wrapper.length; i++) {
         transformerWidth = transformer[i].offsetWidth;
         transformerHeight = transformer[i].offsetHeight;
         let scale = Math.min(
             wrapper[i].offsetWidth / transformerWidth,
             wrapper[i].offsetHeight / transformerHeight
         );
+
         transformer[i].style.transform = "scale(" + scale + ")";
 
-        let plField = document.querySelector('#play_field_body.transformer');
-        if (transformer[i] === plField) {
-            playFieldBody.style.left = (playField.offsetWidth - (plField.offsetWidth * scale)) / 2 + 'px';
-            playFieldBody.style.top = (playField.offsetHeight - (plField.offsetHeight * scale)) / 2 + 'px';
+        if (transformer[i] === plFieldTransformer) {
+            playFieldBody.style.left = (playField.offsetWidth - (plFieldTransformer.offsetWidth * scale)) / 2 + 'px';
+            playFieldBody.style.top = (playField.offsetHeight - (plFieldTransformer.offsetHeight * scale)) / 2 + 'px';
+        }
+
+        if (transformer[i] === settingsTransformer) {
+            settingsTransformer.style.height = (window.innerHeight * 0.8) / scale + 'px';
         }
     }
 }

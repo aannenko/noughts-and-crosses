@@ -4,6 +4,7 @@
 
 /*********************** View-Model **********************/
 "use strict";
+
 function ViewModel() {
     let _game = null;
 
@@ -27,7 +28,11 @@ function ViewModel() {
     };
 
     this.getPlayerName = function() {
-        return this.getCurrentStatus() === 'Tie' ? 'It' : _game.state.currentPlayerName;
+        return _game.state.currentPlayerName;
+    };
+
+    this.getCurrentMove = function() {
+        return _game.state.currentMove;
     };
 
     this.getRows = function() {

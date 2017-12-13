@@ -15,7 +15,7 @@ let gameDataManagerSingleton = (function() {
     function GameDataManager() {
         let playerId = 2;
         let _symbolCollection = [
-            'X', 'O', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'
+            'X', 'O', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'
         ];
 
         let _playersCollection = [
@@ -36,10 +36,10 @@ let gameDataManagerSingleton = (function() {
         })();
 
         let isInteger = Number.isInteger || function(value) {
-                return typeof value === 'number'
-                    && isFinite(value)
-                    && !(value % 1);
-            };
+            return typeof value === 'number'
+                && isFinite(value)
+                && !(value % 1);
+        };
 
         this.getRows = function() {
             return _rows;
@@ -107,7 +107,10 @@ let gameDataManagerSingleton = (function() {
                         }
                     }
                 }
-                else if (prop === 'name' && !isPlayerNameOccupied(value)) {
+                else if (prop === 'name'
+                    && value !== null
+                    && value.match(/^ *$/) === null
+                    && !isPlayerNameOccupied(value)) {
                     player.name = value;
                 }
                 else if (prop === 'symbol' && _availableSymbolList.indexOf(value) >= 0) {
@@ -126,7 +129,6 @@ let gameDataManagerSingleton = (function() {
                 && playerTypeList[type]
                 && playerTypeList[type] !== undefined
                 && _availableSymbolList.indexOf(symbol) >= 0) {
-
                 let tempName = name;
                 let index = 1;
                 while (isPlayerNameOccupied(tempName)) {
@@ -377,9 +379,10 @@ function Iterator(array) {
     };
 }
 
-function State(status, player, field) {
+function State(status, player, move, field) {
     this.currentStatus = status;
     this.currentPlayerName = player;
+    this.currentMove = move;
     this.fieldCells = field;
 }
 
@@ -390,6 +393,7 @@ function Game() {
     let _field = fieldSingleton.getInstance();
     let _winnerChecker = new WinnerChecker();
     let _iterator = new Iterator(getPlayersArray());
+    let _movesCounter = 1;
 
     _field.refreshFieldCells();
 
@@ -408,6 +412,7 @@ function Game() {
             } else {
                 _iterator.moveNext();
                 _self.startTurn();
+                _movesCounter++;
             }
             _self.state = getFreshState();
         }
@@ -425,6 +430,6 @@ function Game() {
 
     function getFreshState() {
         let currentPlayerName = _iterator.getCurrent().playerName;
-        return new State(_currentStatus, currentPlayerName, _field.getFieldCells());
+        return new State(_currentStatus, currentPlayerName, _movesCounter, _field.getFieldCells());
     }
 }

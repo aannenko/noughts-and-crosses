@@ -3,17 +3,52 @@
  */
 
 /********************** View **********************/
-"use strict";
+'use strict';
 
 let viewModel = new ViewModel();
 let occupiedCells;
-let playField = document.getElementById('play_field');
-let rowsInput = document.getElementById('rowsInput');
-let columnsInput = document.getElementById('columnsInput');
-let winLengthInput = document.getElementById('winLengthInput');
-let playerInstancesCollection = document.getElementById('player_instances_collection');
-let cellsCollection = document.getElementsByClassName("cell");
-let template = document.getElementById('player_instance_template');
+let transformer = document.querySelectorAll('.transformer');
+let playField = document.querySelector('#play_field');
+let playFieldBody = document.querySelector('#play_field_body');
+let rowsInput = document.querySelector('#rowsInput');
+let columnsInput = document.querySelector('#columnsInput');
+let winLengthInput = document.querySelector('#winLengthInput');
+let playerInstancesCollection = document.querySelector('#player_instances_collection');
+let template = document.querySelector('#player_instance_template');
+let settingsContainer = document.querySelector('#settings_container');
+let gameFieldContainer = document.querySelector('#game_field_container');
+let gameStatus = document.querySelector('#gameStatus');
+let defaultStatus = document.querySelector('#defaultStatus');
+let refreshBtn = document.querySelector('.fa-refresh');
+let playBtn = document.querySelector('.fa-play');
+let settingsBtn = document.querySelector('.fa-cog');
+let gameTitle = document.querySelector('.game_title');
+
+let symbolsImageArray = {
+    'X': 'cross_green',
+    'O': 'nought_blue',
+    'A': 'square_orange',
+    'B': 'triangle_purple',
+    'C': 'cross_blue',
+    'D': 'nought_orange',
+    'E': 'square_purple',
+    'F': 'triangle_green',
+    'G': 'cross_orange',
+    'H': 'nought_purple',
+    'I': 'square_green',
+    'J': 'triangle_blue',
+    'K': 'cross_purple',
+    'L': 'nought_green',
+    'M': 'square_blue',
+    'N': 'triangle_orange'
+};
+
+let playerTypesImageArray = {
+    'human': 'player',
+    'computer': 'computer'
+};
+
+window.addEventListener('resize', doResize);
 
 function getAvailableSymbolsList() {
     return viewModel.getAvailableSymbolsList();
@@ -21,57 +56,95 @@ function getAvailableSymbolsList() {
 
 /************ Starting game ************/
 window.onload = function() {
+    getPadding();
+    doResize();
     rowsInput.value = viewModel.getRows();
     columnsInput.value = viewModel.getColumns();
     winLengthInput.value = viewModel.getWinLength();
-
-    let list = viewModel.getPlayersCollection();
-    for (let i = 0; i < list.length; i++) {
-        addPlayerInstance(list[i]);
+    let playersList = viewModel.getPlayersCollection();
+    for (let i = 0; i < playersList.length; i++) {
+        addPlayerInstance(playersList[i]);
     }
     updateSymbolsList();
+    addCollapsedClass();
+    dropdownToggle();
 };
 
 function addPlayerInstance(player) {
     playerInstancesCollection.appendChild(template.content.cloneNode(true));
 
-    let playerInstancesList = document.getElementsByClassName('player_instance');
+    let playerInstancesList = document.querySelectorAll('.player_instance');
     let playerInstance = playerInstancesList[playerInstancesList.length - 1];
-    let nameField = playerInstance.querySelector('.form-group .player_name');
-    let symbolField = playerInstance.querySelector('.form-group .player_symbol');
-    let symbolOption = new Option(player.symbol, player.symbol, true, true);
-    let typeSelect = playerInstance.querySelector('.form-group .player_type');
+    let nameField = playerInstance.querySelector('.player_name input');
+    let typeUlContainer = playerInstance.querySelector('.dropdown-menu.player_type');
+    let symbolLi = document.createElement('li');
+    let symbolImg = document.createElement('img');
 
     playerInstance.setAttribute('id', player.id);
     nameField.value = player.name;
-    symbolField.appendChild(symbolOption);
-    createTypeList(player.type, typeSelect);
+    symbolImg.setAttribute('src', 'images/' + symbolsImageArray[player.symbol] + '.png');
+    symbolImg.setAttribute('alt', symbolsImageArray[player.symbol]);
+    symbolLi.setAttribute('class', 'active');
+    symbolLi.appendChild(symbolImg);
+    playerInstance.querySelector('.dropdown-menu.player_symbol').appendChild(symbolLi);
+    playerInstance.querySelector('.active_symbol').appendChild(symbolImg.cloneNode(true));
+    createTypeList(player.type, typeUlContainer);
 }
 
 function updateSymbolsList() {
-    let selectsCollection = document.getElementsByClassName('player_symbol');
+    let playerSymbolUList = document.querySelectorAll('.dropdown-menu.player_symbol');
     let availableSymbols = getAvailableSymbolsList();
+    let activeSymbol = document.querySelectorAll('.active_symbol');
 
-    for (let k = 0; k < selectsCollection.length; k++) {
-        let selectedOption = selectsCollection[k].options[selectsCollection[k].selectedIndex];
-        selectsCollection[k].options.length = 0;
+    for (let k = 0; k < playerSymbolUList.length; k++) {
+        let activeLi = playerSymbolUList[k].querySelector('.active');
+        playerSymbolUList[k].innerHTML = '';
+        if (activeLi) playerSymbolUList[k].appendChild(activeLi);
 
-        if (selectedOption) selectsCollection[k].appendChild(selectedOption);
         for (let i = 0; i < availableSymbols.length; i++) {
-            let option = new Option(availableSymbols[i], availableSymbols[i]);
-            selectsCollection[k].appendChild(option);
+            let symbolLi = document.createElement('li');
+            let symbolImg = document.createElement('img');
+
+            symbolLi.appendChild(symbolImg);
+            symbolImg.setAttribute('src', 'images/' + symbolsImageArray[availableSymbols[i]] + '.png');
+            symbolImg.setAttribute('alt', availableSymbols[i]);
+            symbolImg.addEventListener('click', function() {
+                activeSymbol[k].removeChild(activeSymbol[k].firstChild);
+                activeSymbol[k].appendChild(symbolImg.cloneNode(true));
+                playerSymbolUList[k].querySelector('li').removeAttribute('class');
+                this.closest('li').setAttribute('class', 'active');
+                playerSymbolUList[k].classList.remove('show');
+            });
+            playerSymbolUList[k].appendChild(symbolLi);
         }
     }
 }
 
-function createTypeList(playerType, select) {
+function createTypeList(playerType, container) {
     let playerTypeList = viewModel.getPlayerTypeList();
+    let activeType = container.closest('.player_instance').querySelector('.active_type');
 
     for (let type in playerTypeList) {
         if (playerTypeList.hasOwnProperty(type)) {
-            let selectedType = (playerType === type);
-            let option = new Option(type, type, selectedType, selectedType);
-            select.appendChild(option);
+            let typeLi = document.createElement('li');
+            let typeImg = document.createElement('img');
+            typeImg.setAttribute('src', 'images/' + playerTypesImageArray[type] + '.png');
+            typeImg.setAttribute('alt', type);
+            typeLi.appendChild(typeImg);
+
+            if (playerType === type) {
+                typeLi.setAttribute('class', 'active');
+                activeType.appendChild(typeImg.cloneNode(true));
+            }
+
+            typeImg.addEventListener('click', function() {
+                activeType.innerHTML = '';
+                activeType.appendChild(typeImg.cloneNode(true));
+                container.querySelector('li.active').removeAttribute('class');
+                this.closest('li').setAttribute('class', 'active');
+                container.classList.remove('show');
+            });
+            container.appendChild(typeLi);
         }
     }
 }
@@ -81,30 +154,72 @@ function startGame() {
     let columns = viewModel.getColumns();
 
     viewModel.startGame();
-    createPlayField(rows, columns);
+    createPlayFieldDiv(rows, columns);
     buildOccupiedCellsArray(rows, columns);
     updateFieldCellsContent();
     changeCurrentStatus();
+    gameFieldShow();
+    doResize();
 }
 
-function createPlayField(rows, columns) {
-    playField.innerHTML = '';
+function addCollapsedClass() {
+    gameFieldContainer.classList.add('collapsed');
+}
 
-    let fieldTbody = playField.appendChild(document.createElement('tbody'));
-    fieldTbody.setAttribute('id', 'fieldTbody');
+function settingsShow() {
+    if (!gameFieldContainer.classList.contains('collapsed')
+        && settingsContainer.classList.contains('collapsed')) {
+
+        settingsContainer.classList.toggle('collapsed');
+        gameFieldContainer.classList.toggle('collapsed');
+        refreshBtn.classList.toggle('collapsed');
+        playBtn.classList.toggle('collapsed');
+        settingsBtn.classList.toggle('white');
+        gameTitle.classList.toggle('orange');
+        gameStatus.classList.toggle('collapsed');
+        defaultStatus.classList.toggle('collapsed');
+        doResize();
+    }
+}
+
+function gameFieldShow() {
+    if (gameFieldContainer.classList.contains('collapsed')
+        && !settingsContainer.classList.contains('collapsed')) {
+
+        settingsContainer.classList.toggle('collapsed');
+        gameFieldContainer.classList.toggle('collapsed');
+        refreshBtn.classList.toggle('collapsed');
+        playBtn.classList.toggle('collapsed');
+        settingsBtn.classList.toggle('white');
+        gameTitle.classList.toggle('orange');
+        gameStatus.classList.toggle('collapsed');
+        defaultStatus.classList.toggle('collapsed');
+    }
+}
+
+function createPlayFieldDiv(rows, columns) {
+    playFieldBody.innerHTML = '';
+    let flexColumn = playFieldBody.appendChild(document.createElement('div'));
+    flexColumn.setAttribute('class', 'flex_column');
 
     for (let r = 0; r < rows; r++) {
-        let rowField = document.createElement('tr');
-        fieldTbody.appendChild(rowField);
+        let flexColumnItem = flexColumn.appendChild(document.createElement('div'));
+        flexColumnItem.setAttribute('class', 'flex_column_item');
+
+        let flexRow = flexColumnItem.appendChild(document.createElement('div'));
+        flexRow.setAttribute('class', 'flex_row');
 
         for (let c = 0; c < columns; c++) {
-            let cellField = document.createElement('td');
-            cellField.setAttribute('class', 'cell');
-            cellField.setAttribute('id', r + '-' + c);
-            rowField.appendChild(cellField);
-            setListenerToCell(cellField);
+            let fieldCell = flexRow.appendChild(document.createElement('div'));
+            fieldCell.setAttribute('class', 'field_cell flex_row_item');
+            fieldCell.setAttribute('id', r + '-' + c);
+            flexRow.appendChild(fieldCell);
+            setListenerToCell(fieldCell);
         }
     }
+
+    playFieldBody.style.width = 100 * columns + 'rem';
+    playFieldBody.style.height = 100 * rows + 'rem';
 }
 
 function buildOccupiedCellsArray(rows, columns) {
@@ -117,7 +232,7 @@ function buildOccupiedCellsArray(rows, columns) {
 }
 
 function setListenerToCell(cell) {
-    cell.addEventListener("click", function() {
+    cell.addEventListener('click', function() {
         let cellsRow = cell.id.split('-')[0];
         let cellsCol = cell.id.split('-')[1];
 
@@ -135,7 +250,9 @@ function updateFieldCellsContent() {
             if (fieldCellsArr[r][c] !== undefined
                 && occupiedCells[r][c] !== true) {
 
-                document.getElementById(r + '-' + c).innerHTML = fieldCellsArr[r][c];
+                let fieldCellImg = document.createElement('img');
+                fieldCellImg.setAttribute('src', 'images/' + symbolsImageArray[fieldCellsArr[r][c]] + '.png');
+                document.getElementById(r + '-' + c).appendChild(fieldCellImg);
                 occupiedCells[r][c] = true;
             }
         }
@@ -143,7 +260,28 @@ function updateFieldCellsContent() {
 }
 
 function changeCurrentStatus() {
-    document.getElementById("gameStatus").innerHTML = viewModel.getPlayerName() + ' is ' + viewModel.getCurrentStatus();
+    let playerNamesArr = document.querySelectorAll('.player_name input');
+    let status = viewModel.getCurrentStatus();
+    let move = 'Turn ' + viewModel.getCurrentMove();
+    let name = viewModel.getPlayerName();
+    let symbol;
+    let statusLine;
+
+    for (let i = 0; i < playerNamesArr.length; i++) {
+        if (playerNamesArr[i].value === name) {
+            symbol = playerNamesArr[i].closest('.player_instance').querySelector('.active_symbol').innerHTML;
+        }
+    }
+
+    statusLine = [move, ' - ', name, symbol];
+
+    if (status === 'Tie') {
+        statusLine = ['It is a ', status.toLowerCase()];
+    }
+    else if (status === 'Winner') {
+        statusLine = [name, symbol, ' wins on ', move.toLowerCase()];
+    }
+    gameStatus.innerHTML = statusLine.join(' ');
 }
 
 (function templatePolyfill(d) {
@@ -169,25 +307,49 @@ function changeCurrentStatus() {
     }
 })(document);
 
+(function closestPolyfill(e) {
+    e.closest = e.closest || function(css) {
+        let node = this;
+
+        while (node) {
+            if (node.matches(css)) return node;
+            else node = node.parentElement;
+        }
+        return null;
+    }
+})(Element.prototype);
+
+(function matchesPolyfill(e) {
+    e.matches || (e.matches = e.matchesSelector || function(selector) {
+        let matches = document.querySelectorAll(selector), th = this;
+        return Array.prototype.some.call(matches, function(e) {
+            return e === th;
+        });
+    });
+
+})(Element.prototype);
+
 /************ Building rows and columns ************/
 function increaseRows() {
     rowsInput.value = viewModel.setRows(+rowsInput.value + 1);
+}
+
+function decreaseRows() {
+    rowsInput.value = viewModel.setRows(+rowsInput.value - 1);
+    winLengthInput.value = viewModel.getWinLength();
 }
 
 function increaseColumns() {
     columnsInput.value = viewModel.setColumns(+columnsInput.value + 1);
 }
 
-function increaseWinLength() {
-    winLengthInput.value = viewModel.setWinLength(+winLengthInput.value + 1);
-}
-
-function decreaseRows() {
-    rowsInput.value = viewModel.setRows(+rowsInput.value - 1);
-}
-
 function decreaseColumns() {
     columnsInput.value = viewModel.setColumns(+columnsInput.value - 1);
+    winLengthInput.value = viewModel.getWinLength();
+}
+
+function increaseWinLength() {
+    winLengthInput.value = viewModel.setWinLength(+winLengthInput.value + 1);
 }
 
 function decreaseWinLength() {
@@ -196,10 +358,15 @@ function decreaseWinLength() {
 
 /************ Building players ************/
 function updatePlayer(element, prop) {
-    let playerInstance = element.parentNode.parentNode;
-    let newVal = viewModel.updatePlayer(playerInstance.id, prop, element.value);
+    let playerInstance = element.closest('.player_instance');
+    let elementVal = (element.tagName.toUpperCase() === 'INPUT')
+        ? element.value
+        : element.querySelector('li.active > img').getAttribute('alt');
+
+    let newVal = viewModel.updatePlayer(playerInstance.id, prop, elementVal);
+
     if (prop === 'name') {
-        playerInstance.querySelector('.form-group .player_name').value = newVal;
+        element.value = newVal;
     }
     if (prop === 'symbol') {
         updateSymbolsList();
@@ -215,11 +382,12 @@ function addPlayer() {
         let newPlayer = list[list.length - 1];
         addPlayerInstance(newPlayer);
         updateSymbolsList();
+        dropdownToggle();
     }
 }
 
 function removePlayer(element) {
-    let playerToRemove = element.parentNode.parentNode;
+    let playerToRemove = element.closest('.player_instance');
     let id = parseInt(playerToRemove.id, 10);
 
     if (viewModel.removePlayer(id)) {
@@ -227,3 +395,80 @@ function removePlayer(element) {
         updateSymbolsList();
     }
 }
+
+function getPadding() {
+    let fieldSettingsGroup = document.querySelector('#settings_container .field_settings_group');
+    let headerFlexCol = document.querySelector('header .flex_column_item');
+    let width = window.innerHeight - window.innerWidth;
+    let padding;
+
+    if (width > window.innerHeight * 0.1) {
+        padding = Math.ceil(window.innerHeight * 0.1 * 40 / width) + 'rem';
+    }
+    else {
+        padding = '40rem';
+    }
+    for (let i = 0; i < transformer.length; i++) {
+        transformer[i].style.paddingLeft = padding;
+        transformer[i].style.paddingRight = padding;
+    }
+    fieldSettingsGroup.style.paddingLeft = padding;
+    fieldSettingsGroup.style.paddingRight = padding;
+    headerFlexCol.style.paddingLeft = padding;
+    headerFlexCol.style.paddingRight = padding;
+}
+
+function doResize() {
+    let wrapper = document.querySelectorAll('.wrapper');
+    let plFieldTransformer = document.querySelector('#play_field_body.transformer');
+    let settingsTransformer = document.querySelector('#settings_container .transformer');
+    let transformerWidth;
+    let transformerHeight;
+
+    settingsTransformer.style.height = '3400px';
+
+    getPadding();
+
+    for (let i = 0; i < wrapper.length; i++) {
+        transformerWidth = transformer[i].offsetWidth;
+        transformerHeight = transformer[i].offsetHeight;
+        let scale = Math.min(
+            wrapper[i].offsetWidth / transformerWidth,
+            wrapper[i].offsetHeight / transformerHeight
+        );
+
+        transformer[i].style.transform = 'scale(' + scale + ')';
+
+        if (transformer[i] === plFieldTransformer) {
+            playFieldBody.style.left = (playField.offsetWidth - (plFieldTransformer.offsetWidth * scale)) / 2 + 'px';
+            playFieldBody.style.top = (playField.offsetHeight - (plFieldTransformer.offsetHeight * scale)) / 2 + 'px';
+        }
+
+        if (transformer[i] === settingsTransformer) {
+            settingsTransformer.style.height = (window.innerHeight * 0.8) / scale + 'px';
+        }
+    }
+}
+
+function dropdownToggle() {
+    let dropBtnList = document.querySelectorAll('.dropdown-toggle');
+    for (let i = 0; i < dropBtnList.length; i++) {
+        dropBtnList[i].addEventListener('click', function() {
+            for (let k = 0; k < dropBtnList.length; k++) {
+                dropBtnList[k].parentElement.querySelector('.dropdown-menu').classList.remove('show');
+            }
+            this.parentElement.querySelector('.dropdown-menu').classList.toggle('show');
+        });
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropdown button') && !event.target.matches('.dropdown img')) {
+                let dropdowns = document.querySelectorAll('.dropdown-menu');
+                for (let i = 0; i < dropdowns.length; i++) {
+                    if (dropdowns[i].classList.contains('show')) {
+                        dropdowns[i].classList.remove('show');
+                    }
+                }
+            }
+        }
+    }
+}
+

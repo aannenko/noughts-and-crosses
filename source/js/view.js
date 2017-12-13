@@ -3,12 +3,13 @@
  */
 
 /********************** View **********************/
-"use strict";
+'use strict';
 
 let viewModel = new ViewModel();
 let occupiedCells;
+let transformer = document.querySelectorAll('.transformer');
 let playField = document.querySelector('#play_field');
-let playFieldBody = document.querySelector("#play_field_body");
+let playFieldBody = document.querySelector('#play_field_body');
 let rowsInput = document.querySelector('#rowsInput');
 let columnsInput = document.querySelector('#columnsInput');
 let winLengthInput = document.querySelector('#winLengthInput');
@@ -47,7 +48,7 @@ let playerTypesImageArray = {
     'computer': 'computer'
 };
 
-window.addEventListener("resize", doResize);
+window.addEventListener('resize', doResize);
 
 function getAvailableSymbolsList() {
     return viewModel.getAvailableSymbolsList();
@@ -55,6 +56,7 @@ function getAvailableSymbolsList() {
 
 /************ Starting game ************/
 window.onload = function() {
+    getPadding();
     doResize();
     rowsInput.value = viewModel.getRows();
     columnsInput.value = viewModel.getColumns();
@@ -230,7 +232,7 @@ function buildOccupiedCellsArray(rows, columns) {
 }
 
 function setListenerToCell(cell) {
-    cell.addEventListener("click", function() {
+    cell.addEventListener('click', function() {
         let cellsRow = cell.id.split('-')[0];
         let cellsCol = cell.id.split('-')[1];
 
@@ -271,13 +273,13 @@ function changeCurrentStatus() {
         }
     }
 
-    statusLine = [move, symbol, name];
+    statusLine = [move, ' - ', name, symbol];
 
     if (status === 'Tie') {
-        statusLine = ['It is ', status];
+        statusLine = ['It is a ', status.toLowerCase()];
     }
     else if (status === 'Winner') {
-        statusLine = [status, symbol, name, ' on ', move];
+        statusLine = [name, symbol, ' wins on ', move.toLowerCase()];
     }
     gameStatus.innerHTML = statusLine.join(' ');
 }
@@ -357,11 +359,14 @@ function decreaseWinLength() {
 /************ Building players ************/
 function updatePlayer(element, prop) {
     let playerInstance = element.closest('.player_instance');
-    let elementVal = element.value || element.querySelector('li.active > img').getAttribute('alt');
+    let elementVal = (element.tagName.toUpperCase() === 'INPUT')
+        ? element.value
+        : element.querySelector('li.active > img').getAttribute('alt');
+
     let newVal = viewModel.updatePlayer(playerInstance.id, prop, elementVal);
 
     if (prop === 'name') {
-        playerInstance.querySelector('.player_name').value = newVal;
+        element.value = newVal;
     }
     if (prop === 'symbol') {
         updateSymbolsList();
@@ -391,17 +396,38 @@ function removePlayer(element) {
     }
 }
 
+function getPadding() {
+    let fieldSettingsGroup = document.querySelector('#settings_container .field_settings_group');
+    let headerFlexCol = document.querySelector('header .flex_column_item');
+    let width = window.innerHeight - window.innerWidth;
+    let padding;
+
+    if (width > window.innerHeight * 0.1) {
+        padding = Math.ceil(window.innerHeight * 0.1 * 40 / width) + 'rem';
+    }
+    else {
+        padding = '40rem';
+    }
+    for (let i = 0; i < transformer.length; i++) {
+        transformer[i].style.paddingLeft = padding;
+        transformer[i].style.paddingRight = padding;
+    }
+    fieldSettingsGroup.style.paddingLeft = padding;
+    fieldSettingsGroup.style.paddingRight = padding;
+    headerFlexCol.style.paddingLeft = padding;
+    headerFlexCol.style.paddingRight = padding;
+}
+
 function doResize() {
     let wrapper = document.querySelectorAll('.wrapper');
-    let transformer = document.querySelectorAll('.transformer');
     let plFieldTransformer = document.querySelector('#play_field_body.transformer');
     let settingsTransformer = document.querySelector('#settings_container .transformer');
     let transformerWidth;
     let transformerHeight;
 
     settingsTransformer.style.height = '3400px';
-    settingsTransformer.style.paddingRight = settingsTransformer.offsetWidth - settingsTransformer.clientWidth + 'px';
-    document.querySelector('header .transformer').style.paddingRight = settingsTransformer.style.paddingRight;
+
+    getPadding();
 
     for (let i = 0; i < wrapper.length; i++) {
         transformerWidth = transformer[i].offsetWidth;
@@ -411,7 +437,7 @@ function doResize() {
             wrapper[i].offsetHeight / transformerHeight
         );
 
-        transformer[i].style.transform = "scale(" + scale + ")";
+        transformer[i].style.transform = 'scale(' + scale + ')';
 
         if (transformer[i] === plFieldTransformer) {
             playFieldBody.style.left = (playField.offsetWidth - (plFieldTransformer.offsetWidth * scale)) / 2 + 'px';

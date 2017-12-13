@@ -46,7 +46,7 @@ ol, ul {
     width: 100%;
 }
 .container {
-    max-width: 70vmin;
+    max-width: 90vh;
 }
 .centered {
     margin-right: auto;
@@ -62,6 +62,8 @@ ol, ul {
     position: relative;
     width: 300rem;
     transform-origin: top left;
+    padding-right: 40rem;
+    padding-left: 40rem;
 }
 .collapsed {
     display: none !important;
@@ -119,6 +121,15 @@ header .wrapper {
 header .transformer {
     top: calc(100% / 7);
 }
+header .flex_column_item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: center;
+
+    padding-left: 40rem;
+    padding-right: 40rem;
+}
 header .header_block {
     display: flex;
     flex-direction: row;
@@ -159,7 +170,6 @@ header .header_block {
     vertical-align: middle;
 }
 #start_game button:hover,
-#start_game button:hover,
 #settings_btn button:hover {
     box-shadow: 0 0 10rem rgba(255,255,255,0.5);
 }
@@ -196,7 +206,7 @@ header .header_block {
 #settings_container .transformer {
     height: 340rem;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .field_settings_group {
     display: flex;
@@ -204,6 +214,8 @@ header .header_block {
     justify-content: space-between;
     text-align: center;
     padding-top: 25rem;
+    padding-right: 40rem;
+    padding-left: 40rem;
 }
 .field_settings_group .flex_row_item {
     width: 90rem;
@@ -221,8 +233,9 @@ header .header_block {
 }
 .inc.button,
 .dec.button {
+    position: relative;
     height: 23rem;
-    box-shadow: 0 0 10rem rgba(0,0,0,0.5);
+    box-shadow: 0 0 40rem rgba(70,70,70,0.5);
 }
 .inc.button:hover,
 .dec.button:hover {
@@ -235,12 +248,12 @@ header .header_block {
 .inc .fa-caret-up,
 .dec .fa-caret-down {
     position: relative;
-    top: 15px;
+    top: 2.5rem;
     color: rgb(255, 255, 255);
     font-size: 20rem;
 }
 .dec .fa-caret-down {
-    top: -1rem;
+    top: -4rem;
 }
 .cell_count {
     width: 100%;
@@ -249,11 +262,11 @@ header .header_block {
     color: rgb(81, 168, 255);
     font-size: 3rem;
     font-weight: bold;
-    box-shadow: 0 0 10rem rgba(0,0,0,0.5);
+    box-shadow: 0 0 40rem rgba(70,70,70,0.5);
 }
 .cell_count label {
     position: relative;
-    top: 6rem;
+    top: 8rem;
     font-size: 17rem;
 }
 .cell_count .settings-control {
@@ -291,13 +304,13 @@ header .header_block {
     height: 100%;
     text-indent: 5rem;
     border: none;
-    border-radius: 2rem;
+    border-radius: 3rem;
     color: rgb(255, 255, 255);
     background-color: rgb(112, 112, 112);
     font-size: 25rem;
     font-weight: bold;
     text-align: left;
-    box-shadow: 0 0 10rem rgba(0,0,0,0.5);
+    box-shadow: 0 0 40rem rgba(70,70,70,0.5);
 }
 .player_name input:hover {
     box-shadow: none;
@@ -318,7 +331,7 @@ header .header_block {
     border: none;
     border-radius: 50%;
     background-color: rgb(112, 112, 112);
-    box-shadow: 0 0 10rem rgba(0,0,0,0.5);
+    box-shadow: 0 0 40rem rgba(70,70,70,0.5);
 }
 .symbol_selected:hover,
 .type_selected:hover,
@@ -340,15 +353,17 @@ header .header_block {
 }
 .add_player {
     width: 100%;
-    height: 35rem;
+    height: 30rem;
     border-radius: 2rem;
     background-color: rgb(81, 168, 255);
-    box-shadow: 0 0 10rem rgb(81, 168, 255);
+    box-shadow: 0 0 30rem rgba(81, 168, 255, 0.5);
 }
 .add_player:hover {
     box-shadow: none;
 }
 .add_player > span {
+    position: relative;
+    top: 12px;
     color: rgb(255, 255, 255);
     font-size: 30rem;
 }
@@ -422,8 +437,8 @@ header .header_block {
 #game_field_container {
     overflow: hidden;
 }
-#game_field_container .container {
-    max-width: 100%;
+#game_field_container .transformer {
+    padding: 0;
 }
 #play_field {
     font-size: 10px;
@@ -437,15 +452,18 @@ header .header_block {
 #play_field_body .transformer {
     height: 300rem;
 }
+#play_field .flex_column {
+    left: auto;
+}
 .field_cell {
     position: relative;
-    width: 94rem;
-    padding-bottom: 94rem;
-    margin: 3em;
+    width: 88.4rem;
+    padding-bottom: 88.4rem;
+    margin: 5.8rem;
     border: none;
-    border-radius: 2rem;
+    border-radius: 3rem;
     background-color: rgb(112, 112, 112);
-    box-shadow: 0 0 10rem rgba(0,0,0,0.5);
+    box-shadow: 0 0 40rem rgba(70,70,70,0.5);
     cursor: pointer;
 }
 .field_cell:hover {

@@ -107,7 +107,10 @@ let gameDataManagerSingleton = (function() {
                         }
                     }
                 }
-                else if (prop === 'name' && !isPlayerNameOccupied(value)) {
+                else if (prop === 'name'
+                    && value !== null
+                    && value.match(/^ *$/) === null
+                    && !isPlayerNameOccupied(value)) {
                     player.name = value;
                 }
                 else if (prop === 'symbol' && _availableSymbolList.indexOf(value) >= 0) {
@@ -126,7 +129,6 @@ let gameDataManagerSingleton = (function() {
                 && playerTypeList[type]
                 && playerTypeList[type] !== undefined
                 && _availableSymbolList.indexOf(symbol) >= 0) {
-
                 let tempName = name;
                 let index = 1;
                 while (isPlayerNameOccupied(tempName)) {

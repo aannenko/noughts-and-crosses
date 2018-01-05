@@ -211,7 +211,7 @@ function createPlayFieldDiv(rows, columns) {
 
         for (let c = 0; c < columns; c++) {
             let fieldCell = flexRow.appendChild(document.createElement('div'));
-            fieldCell.setAttribute('class', 'field_cell flex_row_item');
+            fieldCell.setAttribute('class', 'field_cell flex_row_item gray_bg');
             fieldCell.setAttribute('id', r + '-' + c);
             flexRow.appendChild(fieldCell);
             setListenerToCell(fieldCell);
@@ -276,7 +276,7 @@ function changeCurrentStatus() {
     statusLine = [move, ' - ', name, symbol];
 
     if (status === 'Tie') {
-        statusLine = ['It is a ', status.toLowerCase()];
+        statusLine = ['It is a', status.toLowerCase()];
     }
     else if (status === 'Winner') {
         statusLine = [name, symbol, ' wins on ', move.toLowerCase()];
@@ -377,12 +377,14 @@ function addPlayer() {
     let defaultType = 'human';
     let defaultName = 'Player';
     let defaultSymbol = getAvailableSymbolsList()[0];
+    let el = document.querySelector("#settings_container .transformer");
     if (viewModel.addPlayer(defaultType, defaultName, defaultSymbol)) {
         let list = viewModel.getPlayersCollection();
         let newPlayer = list[list.length - 1];
         addPlayerInstance(newPlayer);
         updateSymbolsList();
         dropdownToggle();
+        el.scrollTo(0,el.scrollHeight);
     }
 }
 
@@ -445,7 +447,7 @@ function doResize() {
         }
 
         if (transformer[i] === settingsTransformer) {
-            settingsTransformer.style.height = (window.innerHeight * 0.8) / scale + 'px';
+            settingsTransformer.style.height = (window.outerHeight * 0.8) / scale + 'px';
         }
     }
 }

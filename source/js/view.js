@@ -23,6 +23,7 @@ let refreshBtn = document.querySelector('.fa-refresh');
 let playBtn = document.querySelector('.fa-play');
 let settingsBtn = document.querySelector('.fa-cog');
 let gameTitle = document.querySelector('.game_title');
+let settingsTransformer = document.querySelector('#settings_container .transformer');
 
 let symbolsImageArray = {
     'X': 'cross_green',
@@ -377,14 +378,14 @@ function addPlayer() {
     let defaultType = 'human';
     let defaultName = 'Player';
     let defaultSymbol = getAvailableSymbolsList()[0];
-    let el = document.querySelector("#settings_container .transformer");
     if (viewModel.addPlayer(defaultType, defaultName, defaultSymbol)) {
         let list = viewModel.getPlayersCollection();
         let newPlayer = list[list.length - 1];
         addPlayerInstance(newPlayer);
         updateSymbolsList();
         dropdownToggle();
-        el.scrollTo(0,el.scrollHeight);
+        settingsTransformer.scrollTop = settingsTransformer.scrollHeight;
+
     }
 }
 
@@ -423,7 +424,6 @@ function getPadding() {
 function doResize() {
     let wrapper = document.querySelectorAll('.wrapper');
     let plFieldTransformer = document.querySelector('#play_field_body.transformer');
-    let settingsTransformer = document.querySelector('#settings_container .transformer');
     let transformerWidth;
     let transformerHeight;
 
@@ -446,8 +446,8 @@ function doResize() {
             playFieldBody.style.top = (playField.offsetHeight - (plFieldTransformer.offsetHeight * scale)) / 2 + 'px';
         }
 
-        if (transformer[i] === settingsTransformer) {
-            settingsTransformer.style.height = (window.outerHeight * 0.8) / scale + 'px';
+        if (transformer[i] === settingsTransformer) {   
+            settingsTransformer.style.height =  wrapper[i].offsetHeight / scale + 'px';
         }
     }
 }

@@ -30,7 +30,6 @@ footer, header, menu, nav, section {
 
 
 /************* Main styles *************/
-/* * {outline: 1px solid red;} */
 @font-face {
     font-family: MyriadPro;
     src: url(../fonts/myriad-pro-regular.otf);
@@ -216,6 +215,10 @@ header .header_block {
     height: 340rem;
     overflow-x: hidden;
     overflow-y: auto;
+    -ms-overflow-style: none;
+}
+::-webkit-scrollbar {
+    width: 0px;
 }
 .field_settings_group {
     display: flex;
@@ -508,5 +511,31 @@ footer .wrapper {
 @media (max-width: 600px) {
     header .transformer {
         top: calc(100% / 5);
+    }
+}
+
+
+/*** Mozilla Firefox ***/
+@-moz-document url-prefix() {
+    #start_game button:hover,
+    #settings_btn button:hover {
+        box-shadow: 0 0 8rem rgba(255,255,255,0.5);
+    }
+    .inc.button,
+    .dec.button,
+    .cell_count,
+    .player_name input,
+    .symbol_selected,
+    .type_selected,
+    .remove_player,
+    .dropdown-menu,
+    .field_cell {
+        box-shadow: 0 0 6rem rgba(70,70,70,0.5);
+    }
+    .remove_player {
+        box-shadow: 0 0 6rem rgba(1, 168, 253, 0.5);
+    }
+    .add_player {
+        box-shadow: 0 0 7rem rgba(1, 168, 253, 0.5);
     }
 }

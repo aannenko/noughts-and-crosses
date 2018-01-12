@@ -93,10 +93,10 @@ let gameDataManagerSingleton = (function() {
         };
 
         this.updatePlayer = function(id, prop, value) {
-            let player = _playersCollection.find(function(item) {
+            let player = _playersCollection.filter(function(item) {
                 id = parseInt(id, 10);
                 return item.id === id;
-            });
+            })[0];
             prop = prop.toLowerCase();
 
             if (!(player === undefined || prop === 'id')) {

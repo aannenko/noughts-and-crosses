@@ -23,6 +23,7 @@ let refreshBtn = document.querySelector('.fa-refresh');
 let playBtn = document.querySelector('.fa-play');
 let settingsBtn = document.querySelector('.fa-cog');
 let gameTitle = document.querySelector('.game_title');
+let settingsTransformer = document.querySelector('#settings_container .transformer');
 
 let symbolsImageArray = {
     'X': 'cross_green',
@@ -56,7 +57,6 @@ function getAvailableSymbolsList() {
 
 /************ Starting game ************/
 window.onload = function() {
-    getPadding();
     doResize();
     rowsInput.value = viewModel.getRows();
     columnsInput.value = viewModel.getColumns();
@@ -104,18 +104,19 @@ function updateSymbolsList() {
         for (let i = 0; i < availableSymbols.length; i++) {
             let symbolLi = document.createElement('li');
             let symbolImg = document.createElement('img');
-
+            let _k = k
+            
             symbolLi.appendChild(symbolImg);
             symbolImg.setAttribute('src', 'images/' + symbolsImageArray[availableSymbols[i]] + '.png');
             symbolImg.setAttribute('alt', availableSymbols[i]);
             symbolImg.addEventListener('click', function() {
-                activeSymbol[k].removeChild(activeSymbol[k].firstChild);
-                activeSymbol[k].appendChild(symbolImg.cloneNode(true));
-                playerSymbolUList[k].querySelector('li').removeAttribute('class');
+                activeSymbol[_k].removeChild(activeSymbol[_k].firstChild);
+                activeSymbol[_k].appendChild(symbolImg.cloneNode(true));
+                playerSymbolUList[_k].querySelector('li').removeAttribute('class');
                 this.closest('li').setAttribute('class', 'active');
-                playerSymbolUList[k].classList.remove('show');
+                playerSymbolUList[_k].classList.remove('show');
             });
-            playerSymbolUList[k].appendChild(symbolLi);
+            playerSymbolUList[_k].appendChild(symbolLi);
         }
     }
 }
@@ -211,7 +212,7 @@ function createPlayFieldDiv(rows, columns) {
 
         for (let c = 0; c < columns; c++) {
             let fieldCell = flexRow.appendChild(document.createElement('div'));
-            fieldCell.setAttribute('class', 'field_cell flex_row_item');
+            fieldCell.setAttribute('class', 'field_cell flex_row_item gray_bg');
             fieldCell.setAttribute('id', r + '-' + c);
             flexRow.appendChild(fieldCell);
             setListenerToCell(fieldCell);
@@ -276,7 +277,7 @@ function changeCurrentStatus() {
     statusLine = [move, ' - ', name, symbol];
 
     if (status === 'Tie') {
-        statusLine = ['It is a ', status.toLowerCase()];
+        statusLine = ['It is a', status.toLowerCase()];
     }
     else if (status === 'Winner') {
         statusLine = [name, symbol, ' wins on ', move.toLowerCase()];
@@ -383,6 +384,7 @@ function addPlayer() {
         addPlayerInstance(newPlayer);
         updateSymbolsList();
         dropdownToggle();
+        settingsTransformer.scrollTop = settingsTransformer.scrollHeight;
     }
 }
 
@@ -396,38 +398,13 @@ function removePlayer(element) {
     }
 }
 
-function getPadding() {
-    let fieldSettingsGroup = document.querySelector('#settings_container .field_settings_group');
-    let headerFlexCol = document.querySelector('header .flex_column_item');
-    let width = window.innerHeight - window.innerWidth;
-    let padding;
-
-    if (width > window.innerHeight * 0.1) {
-        padding = Math.ceil(window.innerHeight * 0.1 * 40 / width) + 'rem';
-    }
-    else {
-        padding = '40rem';
-    }
-    for (let i = 0; i < transformer.length; i++) {
-        transformer[i].style.paddingLeft = padding;
-        transformer[i].style.paddingRight = padding;
-    }
-    fieldSettingsGroup.style.paddingLeft = padding;
-    fieldSettingsGroup.style.paddingRight = padding;
-    headerFlexCol.style.paddingLeft = padding;
-    headerFlexCol.style.paddingRight = padding;
-}
-
 function doResize() {
     let wrapper = document.querySelectorAll('.wrapper');
     let plFieldTransformer = document.querySelector('#play_field_body.transformer');
-    let settingsTransformer = document.querySelector('#settings_container .transformer');
     let transformerWidth;
     let transformerHeight;
 
     settingsTransformer.style.height = '3400px';
-
-    getPadding();
 
     for (let i = 0; i < wrapper.length; i++) {
         transformerWidth = transformer[i].offsetWidth;
@@ -445,7 +422,7 @@ function doResize() {
         }
 
         if (transformer[i] === settingsTransformer) {
-            settingsTransformer.style.height = (window.innerHeight * 0.8) / scale + 'px';
+            settingsTransformer.style.height = wrapper[i].offsetHeight / scale + 'px';
         }
     }
 }
@@ -471,4 +448,3 @@ function dropdownToggle() {
         }
     }
 }
-

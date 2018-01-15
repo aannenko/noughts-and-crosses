@@ -438,6 +438,9 @@ header .header_block {
 #game_field_container {
     overflow: hidden;
 }
+#game_field_container .container {
+    max-width: 100%;
+}
 #game_field_container .transformer {
     padding: 0;
 }

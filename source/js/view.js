@@ -109,7 +109,7 @@ function updateSymbolsList() {
             symbolLi.appendChild(symbolImg);
             symbolImg.setAttribute('src', 'images/' + symbolsImageArray[availableSymbols[i]] + '.png');
             symbolImg.setAttribute('alt', availableSymbols[i]);
-            symbolImg.addEventListener('click', function() {               
+            symbolImg.addEventListener('click', function() {
                 activeSymbol[_k].removeChild(activeSymbol[_k].firstChild);
                 activeSymbol[_k].appendChild(symbolImg.cloneNode(true));
                 playerSymbolUList[_k].querySelector('li').removeAttribute('class');
@@ -421,8 +421,8 @@ function doResize() {
             playFieldBody.style.top = (playField.offsetHeight - (plFieldTransformer.offsetHeight * scale)) / 2 + 'px';
         }
 
-        if (transformer[i] === settingsTransformer) {   
-            settingsTransformer.style.height =  wrapper[i].offsetHeight / scale + 'px';
+        if (transformer[i] === settingsTransformer) {
+            settingsTransformer.style.height = wrapper[i].offsetHeight / scale + 'px';
         }
     }
 }

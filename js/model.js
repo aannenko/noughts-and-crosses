@@ -145,7 +145,7 @@ let gameDataManagerSingleton = (function() {
         };
 
         this.removePlayer = function(id) {
-            if (canRemovePlayer()) {
+            if (!isNaN(id) && canRemovePlayer()) {
                 for (let i = 0; i < _playersCollection.length; i++) {
                     if (_playersCollection[i].id === id) {
                         _availableSymbolList.push(_playersCollection[i].symbol);
